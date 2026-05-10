@@ -1,0 +1,61 @@
+{
+  "navigation": {
+    "home": "الرئيسية",
+    "orders": "الطلبات",
+    "menu": "قائمة اليوم",
+    "players": "اللاعبون",
+    "validation": "التحقق",
+    "production": "الإنتاج",
+    "trips": "التنقلات",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  },
+  "orderStatus": {
+    "brouillon": "مسودة",
+    "soumise": "مُرسَل",
+    "en_attente_nutri": "في انتظار موافقة أخصائي التغذية",
+    "ajustee_nutri": "تم تعديله من قبل أخصائي التغذية",
+    "refusee_nutri": "مرفوض من قبل أخصائي التغذية",
+    "precision_demandee": "طلب توضيح",
+    "validee_nutri": "موافق عليه من قبل أخصائي التغذية",
+    "transmise_resto": "تم إرساله إلى المطعم",
+    "validee_resto": "موافق عليه من قبل المطعم",
+    "transmise_cuisine": "تم إرساله إلى المطبخ",
+    "en_preparation": "قيد التحضير",
+    "prete": "جاهز",
+    "transmise_hotel": "تم إرساله إلى الفندق",
+    "livree": "تم التسليم",
+    "consommee": "تم الاستهلاك",
+    "annulee": "ملغى"
+  },
+  "roles": {
+    "super_admin": "المدير العام",
+    "admin_resto": "مدير المطعم",
+    "admin_nutri": "أخصائي التغذية",
+    "admin_team_manager": "مدير الفريق",
+    "cuisine": "المطبخ",
+    "hotel": "الفندق",
+    "joueur": "اللاعب",
+    "direction": "الإدارة"
+  },
+  "common": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "close": "إغلاق",
+    "loading": "جارٍ التحميل…",
+    "error": "حدث خطأ",
+    "success": "تم بنجاح",
+    "required": "هذا الحقل مطلوب"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "loginTitle": "تسجيل الدخول إلى FOOD PASSPORT 360",
+    "email": "البريد الإلكتروني",
+    "magicLink": "إرسال رابط سحري",
+    "magicLinkSent": "تم إرسال الرابط! تحقق من بريدك الإلكتروني.",
+    "logout": "تسجيل الخروج"
+  }
+}
