@@ -2,31 +2,56 @@
 -- FOOD PASSPORT 360 — SCHÉMA SUPABASE COMPLET
 -- =============================================================================
 -- Conforme à SPEC_PRODUIT.md et CLAUDE.md
--- À exécuter en migration Supabase: supabase/migrations/0001_init.sql
+--
+-- ⚠️  SCHÉMA POSTGRESQL DÉDIÉ : food_passport
+--     Le projet Supabase est partagé avec l'app RH (tables employees, punches…).
+--     Toutes les tables FP360 sont dans le schéma "food_passport" pour éviter
+--     toute collision. Les clients Supabase utilisent { db: { schema: "food_passport" } }.
+--
+-- Migration appliquée en 5 étapes sur le projet OM-food-360 (vjulagaprzbnquynwjmt) :
+--   fp360_01_schema_types_sequences  — schéma + ENUMs + séquence
+--   fp360_02_tables_part1            — profiles → nutrition_protocols
+--   fp360_03_tables_part2            — menus → audit_logs
+--   fp360_04_functions_triggers      — fonctions helper + triggers
+--   fp360_05_rls_views_indexes_grants — RLS + vue opérationnelle + index + grants
 --
 -- Architecture:
---   1. Extensions et types ENUM
---   2. Auth & RBAC (profiles, rôles)
---   3. Players & passeport nutritionnel (fiche d'arrivée)
---   4. Catalogue articles & allergènes
---   5. Menus
---   6. Plans alimentaires & protocoles
---   7. Orders (cœur du produit) + workflow validation
---   8. Trips, hotels, accès temporaire
---   9. Feedback satisfaction
---  10. Photo proof / validation visuelle
---  11. Notifications
---  12. Audit logs
---  13. Translations (i18n contenu)
---  14. Triggers critiques (validation nutri obligatoire)
---  15. Helper functions
---  16. RLS policies par rôle
---  17. Indexes de performance
+--   1. Création du schéma food_passport + grants usage
+--   2. Extensions (uuid-ossp, pgcrypto, pg_trgm)
+--   3. ENUMs (dans food_passport)
+--   4. Auth & RBAC (profiles, rôles)
+--   5. Players & passeport nutritionnel
+--   6. Catalogue articles & allergènes
+--   7. Menus
+--   8. Plans alimentaires & protocoles
+--   9. Orders (cœur du produit) + workflow validation
+--  10. Trips, hotels, accès temporaire
+--  11. Feedback satisfaction
+--  12. Photo proof / validation visuelle
+--  13. Notifications
+--  14. Audit logs
+--  15. Translations (i18n contenu)
+--  16. Fonctions helper (SECURITY DEFINER, search_path = food_passport)
+--  17. Triggers critiques (validation nutri obligatoire)
+--  18. Vue players_operational (données non-sensibles)
+--  19. RLS policies par rôle
+--  20. Indexes de performance
+--  21. Grants (anon, authenticated, service_role)
 --
 -- RÈGLE FONDAMENTALE APPLIQUÉE NIVEAU DB:
---   Aucune commande joueur ne peut passer aux statuts transmise_*, en_preparation,
---   prete, livree sans validated_by_nutri_at IS NOT NULL. Trigger Postgres + RLS.
+--   Aucune commande joueur ne peut passer aux statuts transmise_cuisine /
+--   transmise_hotel sans validated_by_nutri_at IS NOT NULL.
+--   Enforced par : trigger enforce_nutri_validation + RLS cuisine/hotel.
 -- =============================================================================
+
+-- =============================================================================
+-- 0. SCHÉMA DÉDIÉ
+-- =============================================================================
+CREATE SCHEMA IF NOT EXISTS food_passport;
+GRANT USAGE ON SCHEMA food_passport TO anon, authenticated, service_role;
+
+-- Toutes les instructions suivantes s'exécutent dans food_passport
+SET search_path TO food_passport, extensions, public;
 
 -- =============================================================================
 -- 1. EXTENSIONS
@@ -36,9 +61,17 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- recherche fuzzy
 
 -- =============================================================================
--- 2. ENUMS
+-- 1. EXTENSIONS
 -- =============================================================================
-CREATE TYPE user_role AS ENUM (
+-- (Extensions installées dans le schéma extensions ou public du projet partagé)
+-- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+-- CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+
+-- =============================================================================
+-- 2. ENUMS (dans food_passport)
+-- =============================================================================
+CREATE TYPE food_passport.user_role AS ENUM (
   'super_admin',
   'admin_resto',
   'admin_nutri',
@@ -448,7 +481,7 @@ CREATE TABLE nutrition_plan_articles (
   id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   plan_id         UUID NOT NULL REFERENCES nutrition_plans(id) ON DELETE CASCADE,
   article_id      UUID NOT NULL REFERENCES articles(id),
-  authorization   TEXT NOT NULL DEFAULT 'autorise', -- autorise, recommande, bloque
+  auth_level      TEXT NOT NULL DEFAULT 'autorise', -- autorise, recommande, bloque
   recommended_portion_g INT,
   frequency       TEXT, -- 'quotidien', 'hebdo', 'pre_match'
   nutri_comment   TEXT
