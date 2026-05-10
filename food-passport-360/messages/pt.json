@@ -8,7 +8,16 @@
     "production": "Produção",
     "trips": "Deslocamentos",
     "settings": "Configurações",
-    "logout": "Sair"
+    "logout": "Sair",
+    "menu": "Menu",
+    "profile": "Perfil",
+    "commander": "Pedir",
+    "queue": "Fila",
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "confirmations": "Confirmações",
+    "rooming": "Quartos",
+    "access": "Acesso"
   },
   "orderStatus": {
     "brouillon": "Rascunho",

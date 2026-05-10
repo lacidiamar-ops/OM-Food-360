@@ -8,7 +8,16 @@
     "production": "Producción",
     "trips": "Desplazamientos",
     "settings": "Configuración",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "menu": "Menú",
+    "profile": "Perfil",
+    "commander": "Pedir",
+    "queue": "Cola",
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "confirmations": "Confirmaciones",
+    "rooming": "Habitaciones",
+    "access": "Acceso"
   },
   "orderStatus": {
     "brouillon": "Borrador",

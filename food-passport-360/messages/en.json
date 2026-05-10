@@ -8,7 +8,16 @@
     "production": "Production",
     "trips": "Trips",
     "settings": "Settings",
-    "logout": "Log out"
+    "logout": "Log out",
+    "menu": "Menu",
+    "profile": "Profile",
+    "commander": "Order",
+    "queue": "Queue",
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "confirmations": "Confirmations",
+    "rooming": "Rooming",
+    "access": "Access"
   },
   "orderStatus": {
     "brouillon": "Draft",

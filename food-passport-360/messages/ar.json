@@ -8,7 +8,16 @@
     "production": "الإنتاج",
     "trips": "التنقلات",
     "settings": "الإعدادات",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "menu": "القائمة",
+    "profile": "الملف الشخصي",
+    "commander": "اطلب",
+    "queue": "قائمة الانتظار",
+    "dashboard": "لوحة التحكم",
+    "kanban": "كانبان",
+    "confirmations": "التأكيدات",
+    "rooming": "الغرف",
+    "access": "الوصول"
   },
   "orderStatus": {
     "brouillon": "مسودة",

@@ -8,7 +8,16 @@
     "production": "Produzione",
     "trips": "Trasferte",
     "settings": "Impostazioni",
-    "logout": "Disconnetti"
+    "logout": "Disconnetti",
+    "menu": "Menu",
+    "profile": "Profilo",
+    "commander": "Ordina",
+    "queue": "Coda",
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "confirmations": "Conferme",
+    "rooming": "Camere",
+    "access": "Accesso"
   },
   "orderStatus": {
     "brouillon": "Bozza",

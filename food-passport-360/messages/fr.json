@@ -2,13 +2,21 @@
   "navigation": {
     "home": "Accueil",
     "orders": "Commandes",
-    "menu": "Menu du jour",
+    "menu": "Menu",
     "players": "Joueurs",
     "validation": "Validation",
     "production": "Production",
     "trips": "Déplacements",
     "settings": "Paramètres",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "profile": "Profil",
+    "commander": "Commander",
+    "queue": "File d'attente",
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "confirmations": "Confirmations",
+    "rooming": "Rooming",
+    "access": "Accès"
   },
   "orderStatus": {
     "brouillon": "Brouillon",
