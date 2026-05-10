@@ -151,6 +151,15 @@ export interface FPOrderItem {
   created_at: string
 }
 
+// ── article filter for nutri queue ────────────────────────
+export interface ArticleFilter {
+  category?: ArticleCategory
+  validated?: boolean | null   // null = pending (not validated, not blocked)
+  blocked?: boolean
+  active?: boolean
+  search?: string
+}
+
 // ── order_validation_logs ─────────────────────────────────
 export interface FPOrderValidationLog {
   id: string
@@ -167,27 +176,90 @@ export interface FPOrderValidationLog {
 // ── articles ──────────────────────────────────────────────
 export interface FPArticle {
   id: string
-  name_fr: string
+  name: string
   category: ArticleCategory
-  validated_by_nutri: boolean
-  nutri_notes: string | null
+  subcategory: string | null
   photo_url: string | null
-  is_active: boolean
+  short_description: string | null
+  standard_portion_g: number | null
+  unit: string | null
+  // diet flags
+  is_halal: boolean
+  is_vegetarian: boolean
+  is_vegan: boolean
+  is_gluten_free: boolean
+  is_lactose_free: boolean
+  // availability
+  available_center: boolean
+  available_hotel: boolean
+  available_room: boolean
+  available_smart_fridge: boolean
+  available_match_day: boolean
+  available_match_eve: boolean
+  available_recovery: boolean
+  // validation nutri
+  nutri_validated: boolean
+  nutri_validated_by: string | null
+  nutri_validated_at: string | null
+  nutri_blocked: boolean
+  nutri_comment: string | null
+  // resto
+  resto_comment: string | null
+  price_eur: number | null
+  cost_eur: number | null
+  supplier: string | null
+  active: boolean
+  out_of_stock: boolean
+  archived_at: string | null
   created_at: string
+  updated_at: string
+  created_by: string | null
+  last_modified_by: string | null
+}
+
+export interface FPArticleTranslation {
+  id: string
+  article_id: string
+  lang: SupportedLang
+  name: string
+  description: string | null
+  auto_translated: boolean
+  manual_correction: boolean
   updated_at: string
 }
 
 // ── menus ─────────────────────────────────────────────────
+export type MenuStatus = "draft" | "validated" | "published" | "archived"
+
 export interface FPMenu {
   id: string
-  label: string
-  service: ServiceType
+  title: string
   date: string
-  location_label: string | null
+  service: ServiceType
+  location_type: string
+  location_name: string | null
+  start_time: string | null
+  end_time: string | null
+  trip_id: string | null
+  status: MenuStatus
+  order_deadline: string | null
+  total_portions: number | null
+  nutri_validated: boolean
+  nutri_validated_at: string | null
+  published_at: string | null
   created_by: string | null
-  is_active: boolean
   created_at: string
   updated_at: string
+}
+
+export interface FPMenuItem {
+  id: string
+  menu_id: string
+  article_id: string
+  display_order: number
+  available: boolean
+  portions_available: number | null
+  notes: string | null
 }
 
 // ── trips ─────────────────────────────────────────────────

@@ -31,7 +31,16 @@ const ROLE_ALLOWED_PREFIXES: Record<UserRole, string[]> = {
   cuisine: ["/cuisine", "/profile"],
   hotel: ["/hotel", "/profile"],
   admin_team_manager: ["/team-manager", "/profile"],
-  super_admin: ["/admin", "/nutri", "/resto", "/cuisine", "/team-manager", "/hotel", "/profile"],
+  super_admin: [
+    "/admin",
+    "/joueur",
+    "/nutri",
+    "/resto",
+    "/cuisine",
+    "/team-manager",
+    "/hotel",
+    "/profile",
+  ],
   direction: ["/admin", "/profile"],
 };
 

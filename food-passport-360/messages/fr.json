@@ -150,5 +150,140 @@
       "medicalNotes": "Notes médicales",
       "privateNutriNotes": "Notes privées nutritionniste"
     }
+  },
+  "articles": {
+    "catalog": "Catalogue articles",
+    "new": "Nouvel article",
+    "search": "Rechercher un article…",
+    "empty": "Aucun article",
+    "outOfStock": "Rupture",
+    "validated": "Validé",
+    "blocked": "Bloqué",
+    "pending": "En attente",
+    "validate": "Valider",
+    "block": "Bloquer",
+    "validationQueue": "File de validation",
+    "articlesToValidate": "articles à valider",
+    "pendingValidation": "En attente de validation",
+    "allValidated": "Tous les articles sont validés ✓",
+    "allArticles": "Tous les articles",
+    "nutriComment": "Commentaire nutritionniste",
+    "commentPlaceholder": "Optionnel pour valider, requis pour bloquer…",
+    "commentRequired": "Un commentaire est requis pour bloquer un article",
+    "restoComment": "Note resto",
+    "archive": "Archiver l'article",
+    "photoComingSoon": "Upload photo (Semaine 7)",
+    "saveTranslation": "Enregistrer la traduction",
+    "baseFrLabel": "Texte source FR",
+    "section": {
+      "identity": "Identité",
+      "diet": "Profil alimentaire",
+      "availability": "Disponibilité",
+      "status": "Statut",
+      "translations": "Traductions"
+    },
+    "field": {
+      "name": "Nom",
+      "description": "Description",
+      "category": "Catégorie",
+      "subcategory": "Sous-catégorie",
+      "shortDescription": "Description courte",
+      "portionG": "Portion (g)",
+      "unit": "Unité",
+      "restoComment": "Notes internes (resto)"
+    },
+    "diet": {
+      "halal": "Halal",
+      "vegetarian": "Végétarien",
+      "vegan": "Végan",
+      "glutenFree": "Sans gluten",
+      "lactoseFree": "Sans lactose"
+    },
+    "avail": {
+      "center": "Centre",
+      "hotel": "Hôtel",
+      "room": "Room service",
+      "fridge": "Frigo connecté",
+      "matchDay": "Jour match",
+      "matchEve": "Veille match",
+      "recovery": "Récupération"
+    },
+    "status": {
+      "active": "Actif",
+      "outOfStock": "Rupture stock"
+    },
+    "filter": {
+      "all": "Tous",
+      "validated": "Validés",
+      "pending": "En attente",
+      "blocked": "Bloqués"
+    }
+  },
+  "diet": {
+    "halal": "Halal",
+    "vegetarian": "Végé",
+    "vegan": "Végan",
+    "glutenFree": "Sans gluten",
+    "lactoseFree": "Sans lactose"
+  },
+  "category": {
+    "feculent": "Féculent",
+    "proteine_animale": "Protéine animale",
+    "proteine_vegetale": "Protéine végétale",
+    "legume": "Légume",
+    "fruit": "Fruit",
+    "produit_laitier": "Laitier",
+    "sauce": "Sauce",
+    "boisson": "Boisson",
+    "epicerie": "Épicerie",
+    "collation": "Collation",
+    "dessert": "Dessert",
+    "autre": "Autre"
+  },
+  "service": {
+    "petit_dejeuner": "Petit-déjeuner",
+    "dejeuner": "Déjeuner",
+    "collation_pre": "Collation avant",
+    "collation_post": "Collation après",
+    "collation_recup": "Collation récup",
+    "diner": "Dîner",
+    "room_service": "Room service",
+    "after_match": "Après match",
+    "pre_match": "Avant match"
+  },
+  "menus": {
+    "title": "Menus",
+    "new": "Nouveau menu",
+    "create": "Créer le menu",
+    "empty": "Aucun menu",
+    "todaysMenu": "Menu du jour",
+    "noMenuToday": "Pas de menu publié aujourd'hui",
+    "composition": "Composition",
+    "addArticle": "Ajouter",
+    "searchArticle": "Rechercher un article…",
+    "emptyMenu": "Menu vide — ajoutez des articles",
+    "publish": "Publier",
+    "published": "Publié ✓",
+    "publishedAt": "Publié le",
+    "publishBlockedNotValidated": "Articles non validés — publication bloquée",
+    "readyToPublish": "Prêt à publier",
+    "pending": "À valider",
+    "blocked": "Bloqué",
+    "articles": "{count, plural, =0 {article} =1 {article} other {articles}}",
+    "field": {
+      "title": "Titre",
+      "date": "Date",
+      "service": "Service",
+      "locationType": "Type de lieu",
+      "locationName": "Nom du lieu",
+      "startTime": "Début",
+      "endTime": "Fin"
+    }
+  },
+  "menuStatus": {
+    "draft": "Brouillon",
+    "validated": "Validé",
+    "published": "Publié",
+    "archived": "Archivé"
   }
 }
