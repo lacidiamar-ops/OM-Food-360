@@ -56,7 +56,12 @@
     "loading": "Chargement…",
     "error": "Une erreur est survenue",
     "success": "Succès",
-    "required": "Ce champ est obligatoire"
+    "required": "Ce champ est obligatoire",
+    "back": "Retour",
+    "noData": "Aucune donnée",
+    "optional": "Optionnel",
+    "saving": "Enregistrement…",
+    "saved": "Enregistré"
   },
   "auth": {
     "login": "Connexion",
@@ -65,5 +70,85 @@
     "magicLink": "Recevoir un lien magique",
     "magicLinkSent": "Lien envoyé ! Vérifiez votre boîte mail.",
     "logout": "Déconnexion"
+  },
+  "passport": {
+    "title": "Mon passeport",
+    "subtitle": "Vos préférences alimentaires",
+    "noPassport": "Passeport en cours de création",
+    "noPassportDesc": "Votre nutritionniste complètera votre fiche lors du prochain rendez-vous.",
+    "section": {
+      "identity": "Identité",
+      "diet": "Alimentation",
+      "preferences": "Préférences",
+      "allergies": "Allergies & restrictions",
+      "travel": "En déplacement",
+      "matchDay": "Jour de match"
+    },
+    "field": {
+      "dietType": "Type d'alimentation",
+      "mealRhythm": "Rythme des repas",
+      "refusedFoods": "Aliments refusés",
+      "refusedTextures": "Textures évitées",
+      "spiceTolerance": "Tolérance épices",
+      "waterType": "Type d'eau préféré",
+      "preferredDrinks": "Boissons préférées",
+      "avoidedDrinks": "Boissons évitées",
+      "preferredCuisine": "Cuisines préférées",
+      "comfortFoods": "Plats réconfort",
+      "hotelBreakfastPref": "Petit-déjeuner hôtel",
+      "favPreMatchDish": "Plat pré-match favori",
+      "favPostMatchDish": "Plat post-match favori",
+      "playerLikes": "J'aime",
+      "playerDislikes": "Je n'aime pas"
+    },
+    "formStatus": {
+      "brouillon": "En cours",
+      "incomplete": "Incomplet",
+      "a_mettre_a_jour": "À mettre à jour",
+      "complete": "Complet",
+      "validee": "Validé"
+    },
+    "position": {
+      "gardien": "Gardien",
+      "defenseur": "Défenseur",
+      "milieu": "Milieu",
+      "attaquant": "Attaquant"
+    },
+    "status": {
+      "actif": "Actif",
+      "en_test": "En test",
+      "blesse": "Blessé",
+      "retour_blessure": "Retour blessure",
+      "inactif": "Inactif"
+    }
+  },
+  "nutri": {
+    "players": "Liste des joueurs",
+    "playerDetail": "Fiche joueur",
+    "onboardingForm": "Fiche d'arrivée",
+    "sensitiveData": "Données sensibles (Nutri seul)",
+    "operationalData": "Données opérationnelles",
+    "validate": "Valider la fiche",
+    "saving": "Enregistrement…",
+    "search": "Rechercher un joueur…",
+    "filterStatus": "Statut fiche",
+    "allStatuses": "Tous",
+    "formProgress": "Progression de la fiche",
+    "noPlayers": "Aucun joueur",
+    "noPlayersDesc": "Les joueurs apparaîtront ici après leur enregistrement.",
+    "field": {
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "jerseyNumber": "N° maillot",
+      "position": "Poste",
+      "squadGroup": "Groupe",
+      "preferredLang": "Langue préférée",
+      "status": "Statut",
+      "weightKg": "Poids (kg)",
+      "heightCm": "Taille (cm)",
+      "bodyObjectives": "Objectifs corporels",
+      "medicalNotes": "Notes médicales",
+      "privateNutriNotes": "Notes privées nutritionniste"
+    }
   }
 }
