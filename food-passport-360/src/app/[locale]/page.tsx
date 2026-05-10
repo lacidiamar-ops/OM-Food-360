@@ -1,4 +1,8 @@
+import { useTranslations } from "next-intl";
+
 export default function Home() {
+  const t = useTranslations("navigation");
+
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-16">
       <div className="w-full max-w-2xl space-y-8">
@@ -25,7 +29,7 @@ export default function Home() {
             </p>
           </div>
           <div className="rounded-lg border bg-card p-4 text-card-foreground">
-            <p className="text-sm font-medium">Thème</p>
+            <p className="text-sm font-medium">{t("home")}</p>
             <p className="mt-1 text-xs text-muted-foreground">
               Variables CSS placeholder neutres — palette finale par Claude
               Design.
@@ -34,8 +38,7 @@ export default function Home() {
         </div>
 
         <p className="text-xs text-muted-foreground">
-          Prochaine étape : configuration <code className="font-mono">next-intl</code>{" "}
-          (FR/EN/ES/IT/PT/AR), middleware Supabase, AppShell.
+          Prochaine étape : AppShell + middleware Supabase Auth.
         </p>
       </div>
     </main>

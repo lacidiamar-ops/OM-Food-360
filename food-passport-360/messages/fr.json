@@ -1,0 +1,61 @@
+{
+  "navigation": {
+    "home": "Accueil",
+    "orders": "Commandes",
+    "menu": "Menu du jour",
+    "players": "Joueurs",
+    "validation": "Validation",
+    "production": "Production",
+    "trips": "Déplacements",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "orderStatus": {
+    "brouillon": "Brouillon",
+    "soumise": "Soumise",
+    "en_attente_nutri": "En attente validation nutritionniste",
+    "ajustee_nutri": "Ajustée par le nutritionniste",
+    "refusee_nutri": "Refusée par le nutritionniste",
+    "precision_demandee": "Précision demandée",
+    "validee_nutri": "Validée par le nutritionniste",
+    "transmise_resto": "Transmise à la restauration",
+    "validee_resto": "Validée par la restauration",
+    "transmise_cuisine": "Transmise en cuisine",
+    "en_preparation": "En préparation",
+    "prete": "Prête",
+    "transmise_hotel": "Transmise à l'hôtel",
+    "livree": "Livrée",
+    "consommee": "Consommée",
+    "annulee": "Annulée"
+  },
+  "roles": {
+    "super_admin": "Super Administrateur",
+    "admin_resto": "Administrateur Restauration",
+    "admin_nutri": "Nutritionniste",
+    "admin_team_manager": "Team Manager",
+    "cuisine": "Cuisine",
+    "hotel": "Hôtel",
+    "joueur": "Joueur",
+    "direction": "Direction"
+  },
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue",
+    "success": "Succès",
+    "required": "Ce champ est obligatoire"
+  },
+  "auth": {
+    "login": "Connexion",
+    "loginTitle": "Connexion à FOOD PASSPORT 360",
+    "email": "Adresse e-mail",
+    "magicLink": "Recevoir un lien magique",
+    "magicLinkSent": "Lien envoyé ! Vérifiez votre boîte mail.",
+    "logout": "Déconnexion"
+  }
+}
