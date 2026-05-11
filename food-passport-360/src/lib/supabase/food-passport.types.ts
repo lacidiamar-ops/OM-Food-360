@@ -145,10 +145,18 @@ export interface FPOrderItem {
   order_id: string
   article_id: string
   quantity: number
-  unit: string | null
-  nutri_substitute_id: string | null
-  notes: string | null
-  created_at: string
+  portion_g: number | null
+  player_note: string | null
+  nutri_note: string | null
+  removed_by_nutri: boolean
+  added_by_nutri: boolean
+}
+
+export interface FPOrderItemInput {
+  article_id: string
+  quantity: number
+  portion_g?: number | null
+  player_note?: string | null
 }
 
 // ── article filter for nutri queue ────────────────────────

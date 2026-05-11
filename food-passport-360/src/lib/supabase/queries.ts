@@ -9,6 +9,12 @@ import type {
   ArticleFilter,
   SupportedLang,
   ServiceType,
+  FPOrder,
+  FPOrderItem,
+  FPOrderItemInput,
+  FPOrderValidationLog,
+  OrderStatus,
+  OrderPriority,
 } from "./food-passport.types";
 
 // Supabase client typed for food_passport schema
@@ -349,4 +355,437 @@ export async function publishMenu(
     .update({ status: "published", published_at: new Date().toISOString() })
     .eq("id", menuId);
   return { error: error?.message ?? null };
+}
+
+// ── Order queries ─────────────────────────────────────────
+// Toutes les transitions de statut critiques passent par des helpers
+// nommés. Le trigger DB enforce_nutri_validation garantit qu'aucune
+// transition vers transmise_resto → livree ne peut se faire sans
+// validated_by_nutri_at ; ces helpers ajoutent la couche application.
+
+export interface OrderWithItems {
+  order: FPOrder;
+  items: Array<FPOrderItem & { article: Pick<FPArticle, "id" | "name" | "category" | "photo_url" | "is_halal" | "is_vegetarian" | "is_vegan" | "is_gluten_free" | "is_lactose_free" | "nutri_validated" | "nutri_blocked"> }>;
+}
+
+export async function createOrder(
+  supabase: FPClient,
+  input: {
+    playerId: string;
+    service: ServiceType;
+    scheduledAt: string;
+    priority?: OrderPriority;
+    locationLabel?: string | null;
+    tripId?: string | null;
+    hotelId?: string | null;
+    roomNumber?: string | null;
+    playerComment?: string | null;
+    playerCommentLang?: SupportedLang | null;
+    items: FPOrderItemInput[];
+  }
+): Promise<{ orderId: string | null; error: string | null }> {
+  // Insert order in brouillon — pas de validation requise à ce stade
+  const { data: order, error: orderErr } = await supabase
+    .from("orders")
+    .insert({
+      player_id: input.playerId,
+      service: input.service,
+      scheduled_at: input.scheduledAt,
+      priority: input.priority ?? "normal",
+      location_label: input.locationLabel ?? null,
+      trip_id: input.tripId ?? null,
+      hotel_id: input.hotelId ?? null,
+      room_number: input.roomNumber ?? null,
+      player_comment_original: input.playerComment ?? null,
+      player_comment_lang: input.playerCommentLang ?? null,
+      status: "brouillon",
+    })
+    .select("id")
+    .single();
+
+  if (orderErr || !order) {
+    return { orderId: null, error: orderErr?.message ?? "Order insert failed" };
+  }
+
+  if (input.items.length > 0) {
+    const { error: itemsErr } = await supabase.from("order_items").insert(
+      input.items.map((it) => ({
+        order_id: order.id,
+        article_id: it.article_id,
+        quantity: it.quantity,
+        portion_g: it.portion_g ?? null,
+        player_note: it.player_note ?? null,
+      }))
+    );
+    if (itemsErr) {
+      // best-effort cleanup ; le trigger n'empêche pas la suppression d'un brouillon
+      await supabase.from("orders").delete().eq("id", order.id);
+      return { orderId: null, error: itemsErr.message };
+    }
+  }
+
+  return { orderId: order.id, error: null };
+}
+
+export async function submitOrder(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ error: string | null }> {
+  // brouillon → envoyee_joueur (passe la commande à la file nutri)
+  const { error } = await supabase
+    .from("orders")
+    .update({ status: "envoyee_joueur" })
+    .eq("id", orderId)
+    .eq("status", "brouillon");
+  return { error: error?.message ?? null };
+}
+
+export async function cancelOrder(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ error: string | null }> {
+  // Annulation autorisée seulement avant transmission cuisine/hotel
+  const { error } = await supabase
+    .from("orders")
+    .update({ status: "annulee" })
+    .eq("id", orderId)
+    .in("status", [
+      "brouillon",
+      "envoyee_joueur",
+      "en_attente_nutri",
+      "precision_demandee",
+      "ajustee_nutri",
+    ]);
+  return { error: error?.message ?? null };
+}
+
+export async function listMyOrders(
+  supabase: FPClient,
+  playerId: string,
+  limit = 50
+): Promise<FPOrder[]> {
+  const { data } = await supabase
+    .from("orders")
+    .select("*")
+    .eq("player_id", playerId)
+    .is("archived_at", null)
+    .order("scheduled_at", { ascending: false })
+    .limit(limit);
+  return data ?? [];
+}
+
+export async function getOrderWithItems(
+  supabase: FPClient,
+  orderId: string,
+  lang: SupportedLang = "fr"
+): Promise<OrderWithItems | null> {
+  const { data: order } = await supabase
+    .from("orders")
+    .select("*")
+    .eq("id", orderId)
+    .single();
+  if (!order) return null;
+
+  const { data: items } = await supabase
+    .from("order_items")
+    .select(
+      `
+      id, order_id, article_id, quantity, portion_g, player_note, nutri_note, removed_by_nutri, added_by_nutri,
+      article:articles!inner (
+        id, name, category, photo_url,
+        is_halal, is_vegetarian, is_vegan, is_gluten_free, is_lactose_free,
+        nutri_validated, nutri_blocked,
+        translations:article_translations ( lang, name )
+      )
+    `
+    )
+    .eq("order_id", orderId);
+
+  // Resolve translated name when available
+  type RawItem = FPOrderItem & {
+    article: Pick<
+      FPArticle,
+      | "id"
+      | "name"
+      | "category"
+      | "photo_url"
+      | "is_halal"
+      | "is_vegetarian"
+      | "is_vegan"
+      | "is_gluten_free"
+      | "is_lactose_free"
+      | "nutri_validated"
+      | "nutri_blocked"
+    > & { translations: { lang: SupportedLang; name: string }[] };
+  };
+  const resolved = ((items ?? []) as RawItem[]).map((it) => {
+    const t = it.article.translations?.find((x) => x.lang === lang);
+    const { translations: _omit, ...articleRest } = it.article;
+    void _omit;
+    return {
+      ...it,
+      article: { ...articleRest, name: t?.name ?? articleRest.name },
+    };
+  });
+
+  return { order, items: resolved };
+}
+
+// ── Nutri validation queue ────────────────────────────────
+
+export async function listOrdersAwaitingNutri(
+  supabase: FPClient
+): Promise<FPOrder[]> {
+  const { data } = await supabase
+    .from("orders")
+    .select("*")
+    .in("status", ["envoyee_joueur", "en_attente_nutri", "precision_demandee"])
+    .is("archived_at", null)
+    .order("scheduled_at");
+  return data ?? [];
+}
+
+// Validation OK — passe à validee_nutri et set validated_by_nutri_at
+export async function validateOrderNutri(
+  supabase: FPClient,
+  orderId: string,
+  nutriId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      status: "validee_nutri",
+      validated_by_nutri: nutriId,
+      validated_by_nutri_at: new Date().toISOString(),
+      nutri_refusal_reason: null,
+    })
+    .eq("id", orderId);
+  return { error: error?.message ?? null };
+}
+
+// Ajustement — modifications d'items + valide
+export async function adjustOrderNutri(
+  supabase: FPClient,
+  orderId: string,
+  nutriId: string,
+  input: {
+    notes: string;
+    addedItems?: FPOrderItemInput[];
+    removedItemIds?: string[];
+    itemNotes?: Array<{ itemId: string; nutri_note: string }>;
+  }
+): Promise<{ error: string | null }> {
+  if (input.removedItemIds && input.removedItemIds.length > 0) {
+    const { error } = await supabase
+      .from("order_items")
+      .update({ removed_by_nutri: true })
+      .in("id", input.removedItemIds);
+    if (error) return { error: error.message };
+  }
+
+  if (input.addedItems && input.addedItems.length > 0) {
+    const { error } = await supabase.from("order_items").insert(
+      input.addedItems.map((it) => ({
+        order_id: orderId,
+        article_id: it.article_id,
+        quantity: it.quantity,
+        portion_g: it.portion_g ?? null,
+        nutri_note: it.player_note ?? null,
+        added_by_nutri: true,
+      }))
+    );
+    if (error) return { error: error.message };
+  }
+
+  if (input.itemNotes && input.itemNotes.length > 0) {
+    for (const n of input.itemNotes) {
+      const { error } = await supabase
+        .from("order_items")
+        .update({ nutri_note: n.nutri_note })
+        .eq("id", n.itemId);
+      if (error) return { error: error.message };
+    }
+  }
+
+  const { error: orderErr } = await supabase
+    .from("orders")
+    .update({
+      status: "ajustee_nutri",
+      validated_by_nutri: nutriId,
+      validated_by_nutri_at: new Date().toISOString(),
+      nutri_adjustment_notes: input.notes,
+    })
+    .eq("id", orderId);
+  return { error: orderErr?.message ?? null };
+}
+
+// Refus — pas de validation, status refusee_nutri, raison obligatoire
+export async function refuseOrderNutri(
+  supabase: FPClient,
+  orderId: string,
+  nutriId: string,
+  reason: string
+): Promise<{ error: string | null }> {
+  if (!reason.trim()) {
+    return { error: "Refusal reason is required" };
+  }
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      status: "refusee_nutri",
+      validated_by_nutri: nutriId,
+      validated_by_nutri_at: null,
+      nutri_refusal_reason: reason,
+    })
+    .eq("id", orderId);
+  return { error: error?.message ?? null };
+}
+
+// Demande de précision — pas de validation, renvoie au joueur
+export async function askPrecisionNutri(
+  supabase: FPClient,
+  orderId: string,
+  nutriId: string,
+  message: string
+): Promise<{ error: string | null }> {
+  if (!message.trim()) {
+    return { error: "Precision message is required" };
+  }
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      status: "precision_demandee",
+      validated_by_nutri: nutriId,
+      validated_by_nutri_at: null,
+      nutri_adjustment_notes: message,
+    })
+    .eq("id", orderId);
+  return { error: error?.message ?? null };
+}
+
+// ── Resto / cuisine / hotel transitions ───────────────────
+// Toutes ces transitions sont gardées par le trigger DB.
+// L'app ajoute des contrôles de cohérence (statut source attendu).
+
+export async function transmitToResto(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("orders")
+    .update({ status: "transmise_resto" })
+    .eq("id", orderId)
+    .in("status", ["validee_nutri", "ajustee_nutri"]);
+  return { error: error?.message ?? null };
+}
+
+export async function validateOrderResto(
+  supabase: FPClient,
+  orderId: string,
+  restoUserId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      status: "validee_resto",
+      validated_by_resto: restoUserId,
+      validated_by_resto_at: new Date().toISOString(),
+    })
+    .eq("id", orderId)
+    .eq("status", "transmise_resto");
+  return { error: error?.message ?? null };
+}
+
+export async function transmitToKitchen(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      status: "transmise_cuisine",
+      transmitted_to_kitchen_at: new Date().toISOString(),
+    })
+    .eq("id", orderId)
+    .eq("status", "validee_resto");
+  return { error: error?.message ?? null };
+}
+
+export async function transmitToHotel(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      status: "transmise_hotel",
+      transmitted_to_hotel_at: new Date().toISOString(),
+    })
+    .eq("id", orderId)
+    .eq("status", "validee_resto");
+  return { error: error?.message ?? null };
+}
+
+export async function markPrepStarted(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("orders")
+    .update({
+      status: "en_preparation",
+      prep_started_at: new Date().toISOString(),
+    })
+    .eq("id", orderId)
+    .eq("status", "transmise_cuisine");
+  return { error: error?.message ?? null };
+}
+
+export async function markReady(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("orders")
+    .update({ status: "prete", ready_at: new Date().toISOString() })
+    .eq("id", orderId)
+    .eq("status", "en_preparation");
+  return { error: error?.message ?? null };
+}
+
+export async function markDelivered(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("orders")
+    .update({ status: "livree", delivered_at: new Date().toISOString() })
+    .eq("id", orderId)
+    .in("status", ["prete", "transmise_hotel"]);
+  return { error: error?.message ?? null };
+}
+
+// ── Validation logs ───────────────────────────────────────
+
+export async function getOrderValidationLogs(
+  supabase: FPClient,
+  orderId: string
+): Promise<FPOrderValidationLog[]> {
+  const { data } = await supabase
+    .from("order_validation_logs")
+    .select("*")
+    .eq("order_id", orderId)
+    .order("created_at", { ascending: true });
+  return data ?? [];
+}
+
+// Compteurs file nutri (badge UI)
+export async function countOrdersAwaitingNutri(
+  supabase: FPClient
+): Promise<number> {
+  const { count } = await supabase
+    .from("orders")
+    .select("id", { count: "exact", head: true })
+    .in("status", ["envoyee_joueur", "en_attente_nutri"]);
+  return count ?? 0;
 }
