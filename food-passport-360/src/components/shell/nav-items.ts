@@ -34,9 +34,8 @@ export const navItemsByRole: Record<UserRole, NavItem[]> = {
   ],
   admin_nutri: [
     { key: "queue", href: "/nutri", icon: ClipboardList },
-    { key: "players", href: "/nutri", icon: Users },
+    { key: "players", href: "/nutri/players", icon: Users },
     { key: "validation", href: "/nutri/articles", icon: FileText },
-    { key: "menu", href: "/nutri/articles", icon: UtensilsCrossed },
     { key: "profile", href: "/nutri/profile", icon: User },
   ],
   admin_resto: [

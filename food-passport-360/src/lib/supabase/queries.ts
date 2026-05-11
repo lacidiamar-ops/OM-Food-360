@@ -779,6 +779,23 @@ export async function getOrderValidationLogs(
   return data ?? [];
 }
 
+// Batch fetch player names (id → "Prénom Nom") pour décorer une liste de commandes
+export async function getPlayerNamesByIds(
+  supabase: FPClient,
+  ids: string[]
+): Promise<Record<string, string>> {
+  if (ids.length === 0) return {};
+  const { data } = await supabase
+    .from("players")
+    .select("id, first_name, last_name")
+    .in("id", ids);
+  const map: Record<string, string> = {};
+  (data ?? []).forEach((p: { id: string; first_name: string; last_name: string }) => {
+    map[p.id] = `${p.first_name} ${p.last_name}`.trim();
+  });
+  return map;
+}
+
 // Compteurs file nutri (badge UI)
 export async function countOrdersAwaitingNutri(
   supabase: FPClient
