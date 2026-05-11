@@ -40,8 +40,12 @@ export interface TestContext {
   cuisineProfileId: string;
   hotelProfileId: string;
   hotelAccessId: string;
+  hotelId: string;
+  tripId: string;
   articleId: string;
   menuId: string;
+  cuisineEmail: string;
+  hotelEmail: string;
 }
 
 async function createTestUser(
@@ -64,10 +68,12 @@ export async function setupTestContext(): Promise<TestContext> {
   const suffix = Date.now();
 
   // Create auth users
+  const cuisineEmail = `cuisine+${suffix}@test.fp360`;
+  const hotelEmail = `hotel+${suffix}@test.fp360`;
   const playerUserId = await createTestUser(admin, `player+${suffix}@test.fp360`, "joueur");
   const nutriUserId = await createTestUser(admin, `nutri+${suffix}@test.fp360`, "admin_nutri");
-  const cuisineUserId = await createTestUser(admin, `cuisine+${suffix}@test.fp360`, "cuisine");
-  const hotelUserId = await createTestUser(admin, `hotel+${suffix}@test.fp360`, "hotel");
+  const cuisineUserId = await createTestUser(admin, cuisineEmail, "cuisine");
+  const hotelUserId = await createTestUser(admin, hotelEmail, "hotel");
 
   // Profiles (needed for FK references)
   const { data: profiles, error: profErr } = await admin
@@ -100,17 +106,38 @@ export async function setupTestContext(): Promise<TestContext> {
   // Menu
   const { data: menuRow, error: menuErr } = await admin
     .from("menus")
-    .insert({ label: "Test Menu", service: "dejeuner", date: new Date().toISOString().slice(0, 10), status: "publie" })
+    .insert({ title: "Test Menu", service: "dejeuner", location_type: "centre", date: new Date().toISOString().slice(0, 10), status: "publie" })
     .select("id")
     .single();
   if (menuErr) throw new Error(`menus: ${menuErr.message}`);
+
+  // Hotel (required FK for hotel_access)
+  const { data: hotelRow, error: hotelErr } = await admin
+    .from("hotels")
+    .insert({ name: "Test Hotel" })
+    .select("id")
+    .single();
+  if (hotelErr) throw new Error(`hotels: ${hotelErr.message}`);
+
+  // Trip (required FK for hotel_access)
+  const today = new Date().toISOString().slice(0, 10);
+  const { data: tripRow, error: tripErr } = await admin
+    .from("trips")
+    .insert({ name: "Test Trip", start_date: today, end_date: today, hotel_id: hotelRow.id })
+    .select("id")
+    .single();
+  if (tripErr) throw new Error(`trips: ${tripErr.message}`);
 
   // Hotel access — active (for S4/S5 tests, we'll manipulate expires_at/revoked_at per test)
   const { data: haRow, error: haErr } = await admin
     .from("hotel_access")
     .insert({
       profile_id: hotelUserId,
-      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // +24h
+      trip_id: tripRow.id,
+      hotel_id: hotelRow.id,
+      token_hash: `test-token-${suffix}`,
+      starts_at: new Date().toISOString(),
+      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       revoked_at: null,
     })
     .select("id")
@@ -124,8 +151,12 @@ export async function setupTestContext(): Promise<TestContext> {
     cuisineProfileId: cuisineUserId,
     hotelProfileId: hotelUserId,
     hotelAccessId: haRow.id,
+    hotelId: hotelRow.id,
+    tripId: tripRow.id,
     articleId: artRow.id,
     menuId: menuRow.id,
+    cuisineEmail,
+    hotelEmail,
   };
 }
 
@@ -137,6 +168,8 @@ export async function cleanupTestContext(ctx: TestContext) {
   );
   await admin.from("orders").delete().eq("player_id", ctx.playerId);
   await admin.from("hotel_access").delete().eq("id", ctx.hotelAccessId);
+  await admin.from("trips").delete().eq("id", ctx.tripId);
+  await admin.from("hotels").delete().eq("id", ctx.hotelId);
   await admin.from("menus").delete().eq("id", ctx.menuId);
   await admin.from("articles").delete().eq("id", ctx.articleId);
   await admin.from("players").delete().eq("id", ctx.playerId);

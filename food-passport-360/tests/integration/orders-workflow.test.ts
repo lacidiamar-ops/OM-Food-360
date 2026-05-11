@@ -105,7 +105,7 @@ describe("S1 – Trigger bloque la transmission sans validation nutri", () => {
 describe("S2 – Cuisine voit uniquement les commandes validées", () => {
   it("cuisine ne voit pas une commande non validée", async () => {
     const order = await createOrder(ctx, { status: "envoyee_joueur" });
-    const cuisineC = await signInClient(`cuisine+${ctx.cuisineProfileId.slice(0, 8)}@test.fp360`);
+    const cuisineC = await signInClient(ctx.cuisineEmail);
 
     const { data } = await cuisineC.from("orders").select("id").eq("id", order.id);
     expect(data).toHaveLength(0);
@@ -118,7 +118,7 @@ describe("S2 – Cuisine voit uniquement les commandes validées", () => {
       status: "transmise_cuisine",
       validated_by_nutri_at: new Date().toISOString(),
     });
-    const cuisineC = await signInClient(`cuisine+${ctx.cuisineProfileId.slice(0, 8)}@test.fp360`);
+    const cuisineC = await signInClient(ctx.cuisineEmail);
 
     const { data } = await cuisineC.from("orders").select("id").eq("id", order.id);
     expect(data).toHaveLength(1);
@@ -138,7 +138,7 @@ describe("S3 – Commande refusée invisible à la cuisine", () => {
       validated_by_nutri_at: null,
       nutri_refusal_reason: "Trop de glucides",
     });
-    const cuisineC = await signInClient(`cuisine+${ctx.cuisineProfileId.slice(0, 8)}@test.fp360`);
+    const cuisineC = await signInClient(ctx.cuisineEmail);
 
     const { data } = await cuisineC.from("orders").select("id").eq("id", order.id);
     expect(data).toHaveLength(0);
@@ -164,7 +164,7 @@ describe("S4 – Hotel sans accès actif ne voit rien", () => {
       validated_by_nutri_at: new Date().toISOString(),
     });
 
-    const hotelC = await signInClient(`hotel+${ctx.hotelProfileId.slice(0, 8)}@test.fp360`);
+    const hotelC = await signInClient(ctx.hotelEmail);
     const { data } = await hotelC.from("orders").select("id").eq("id", order.id);
     expect(data).toHaveLength(0);
 
@@ -194,7 +194,7 @@ describe("S5 – Hotel avec accès expiré ne voit rien", () => {
       validated_by_nutri_at: new Date().toISOString(),
     });
 
-    const hotelC = await signInClient(`hotel+${ctx.hotelProfileId.slice(0, 8)}@test.fp360`);
+    const hotelC = await signInClient(ctx.hotelEmail);
     const { data } = await hotelC.from("orders").select("id").eq("id", order.id);
     expect(data).toHaveLength(0);
 
