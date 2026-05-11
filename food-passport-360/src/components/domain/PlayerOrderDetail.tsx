@@ -14,6 +14,7 @@ import type {
 import OrderStatusBadge from "./OrderStatusBadge";
 import OrderTimeline from "./OrderTimeline";
 import { cancelOrderAction } from "@/app/[locale]/(joueur)/joueur/orders/[id]/actions";
+import { useOrderRealtime } from "@/hooks/useOrderRealtime";
 
 const CANCELLABLE: OrderStatus[] = [
   "brouillon",
@@ -55,6 +56,8 @@ export default function PlayerOrderDetail({ order, items, logs }: Props) {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
+  useOrderRealtime(order.id);
 
   const canCancel = CANCELLABLE.includes(order.status);
 

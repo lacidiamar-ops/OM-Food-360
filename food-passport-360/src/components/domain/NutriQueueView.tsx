@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { ClipboardCheck } from "lucide-react";
 import type { FPOrder } from "@/lib/supabase/food-passport.types";
 import NutriOrderQueueItem from "./NutriOrderQueueItem";
+import { useOrdersQueueRealtime } from "@/hooks/useOrderRealtime";
 
 interface Props {
   orders: Array<FPOrder & { player_name?: string | null }>;
@@ -11,6 +12,7 @@ interface Props {
 
 export default function NutriQueueView({ orders }: Props) {
   const t = useTranslations("nutriQueue");
+  useOrdersQueueRealtime();
 
   if (orders.length === 0) {
     return (

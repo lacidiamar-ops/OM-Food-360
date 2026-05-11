@@ -21,6 +21,7 @@ import type {
 import OrderStatusBadge from "./OrderStatusBadge";
 import OrderTimeline from "./OrderTimeline";
 import ValidationModal, { type ValidationMode } from "./ValidationModal";
+import { useOrderRealtime } from "@/hooks/useOrderRealtime";
 
 type ItemWithArticle = FPOrderItem & {
   article: Pick<FPArticle, "id" | "name" | "category" | "photo_url">;
@@ -67,6 +68,8 @@ export default function NutriOrderDetail({
   const tcat = useTranslations("category");
   const locale = useLocale();
   const [mode, setMode] = useState<ValidationMode>(null);
+
+  useOrderRealtime(order.id);
 
   const canAct = ACTIONABLE.includes(order.status);
 
