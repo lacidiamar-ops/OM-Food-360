@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils";
 
 interface TopBarProps {
   title: string;
+  className?: string;
 }
 
-export default function TopBar({ title }: TopBarProps) {
+export default function TopBar({ title, className }: TopBarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const isRoot = pathname === "/";
@@ -19,7 +20,8 @@ export default function TopBar({ title }: TopBarProps) {
       className={cn(
         "sticky top-0 z-40 flex h-14 items-center gap-3 px-4",
         "border-b border-border bg-card",
-        "lg:h-16 lg:px-6"
+        "lg:h-16 lg:px-6",
+        className
       )}
     >
       {/* Left — back ou logo */}

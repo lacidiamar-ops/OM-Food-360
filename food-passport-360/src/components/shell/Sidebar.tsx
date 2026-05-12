@@ -9,9 +9,10 @@ import { LogOut } from "lucide-react";
 
 interface SidebarProps {
   role: UserRole;
+  className?: string;
 }
 
-export default function Sidebar({ role }: SidebarProps) {
+export default function Sidebar({ role, className }: SidebarProps) {
   const t = useTranslations("navigation");
   const pathname = usePathname();
   const items = navItemsByRole[role] ?? navItemsByRole.joueur;
@@ -21,7 +22,8 @@ export default function Sidebar({ role }: SidebarProps) {
       className={cn(
         "hidden lg:flex lg:flex-col",
         "fixed inset-y-0 left-0 z-40 w-60",
-        "border-r border-sidebar-border bg-sidebar"
+        "border-r border-sidebar-border bg-sidebar",
+        className
       )}
       aria-label="Navigation latérale"
     >

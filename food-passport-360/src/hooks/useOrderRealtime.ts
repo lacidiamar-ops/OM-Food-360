@@ -36,6 +36,35 @@ export function useOrderRealtime(orderId: string) {
 }
 
 /**
+ * Subscribes to INSERT/UPDATE on kitchen orders.
+ * Fires router.refresh() so the KitchenBoard server component re-queries.
+ */
+export function useKitchenRealtime() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const supabase = createClient();
+    const channel = supabase
+      .channel("orders:kitchen")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "food_passport", table: "orders" },
+        () => router.refresh()
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "food_passport", table: "orders" },
+        () => router.refresh()
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [router]);
+}
+
+/**
  * Subscribes to any INSERT/UPDATE on orders for the nutri queue.
  * Fires router.refresh() — the server component re-queries
  * listOrdersAwaitingNutri to reflect new submissions / status changes.

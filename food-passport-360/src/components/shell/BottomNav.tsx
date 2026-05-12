@@ -8,16 +8,17 @@ import { cn } from "@/lib/utils";
 
 interface BottomNavProps {
   role: UserRole;
+  className?: string;
 }
 
-export default function BottomNav({ role }: BottomNavProps) {
+export default function BottomNav({ role, className }: BottomNavProps) {
   const t = useTranslations("navigation");
   const pathname = usePathname();
   const items = navItemsByRole[role] ?? navItemsByRole.joueur;
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card lg:hidden"
+      className={cn("fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card lg:hidden", className)}
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label="Navigation principale"
     >

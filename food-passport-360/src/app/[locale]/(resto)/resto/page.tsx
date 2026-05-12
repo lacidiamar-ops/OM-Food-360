@@ -1,9 +1,15 @@
-export default function RestoPage() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center px-6">
-      <div className="text-4xl">🍽️</div>
-      <h1 className="text-xl font-semibold">Dashboard Restauration</h1>
-      <p className="text-sm text-muted-foreground">Semaine 5 — en cours de construction.</p>
-    </div>
-  );
+import { createClient } from "@/lib/supabase/server";
+import { getKitchenStats, listRestoOrdersToday } from "@/lib/supabase/queries";
+import RestoDashboard from "@/components/domain/RestoDashboard";
+
+export default async function RestoPage() {
+  const supabase = await createClient();
+  const today = new Date().toISOString().slice(0, 10);
+
+  const [stats, orders] = await Promise.all([
+    getKitchenStats(supabase, today),
+    listRestoOrdersToday(supabase, today),
+  ]);
+
+  return <RestoDashboard stats={stats} orders={orders} date={today} />;
 }

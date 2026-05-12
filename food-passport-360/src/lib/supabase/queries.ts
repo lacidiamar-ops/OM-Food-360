@@ -806,3 +806,164 @@ export async function countOrdersAwaitingNutri(
     .in("status", ["envoyee_joueur", "en_attente_nutri"]);
   return count ?? 0;
 }
+
+// ── Cuisine / Kanban ──────────────────────────────────────
+
+export interface KitchenOrder {
+  id: string;
+  reference: string;
+  player_id: string;
+  player_first_name: string;
+  player_last_name: string;
+  service: ServiceType;
+  scheduled_at: string;
+  status: OrderStatus;
+  priority: OrderPriority;
+  location_label: string | null;
+  transmitted_to_kitchen_at: string | null;
+  prep_started_at: string | null;
+  ready_at: string | null;
+  player_comment_original: string | null;
+  is_halal: boolean;
+  is_gluten_free: boolean;
+  items_summary: string;
+  items_count: number;
+}
+
+export interface KitchenStats {
+  transmise_cuisine: number;
+  en_preparation: number;
+  prete: number;
+  livree_today: number;
+  annulee_today: number;
+  total_validated_today: number;
+}
+
+export async function listKitchenOrders(
+  supabase: FPClient,
+  date?: string
+): Promise<KitchenOrder[]> {
+  const d = date ?? new Date().toISOString().slice(0, 10);
+  const { data } = await supabase
+    .from("orders")
+    .select(
+      `id, reference, player_id, service, scheduled_at, status, priority, location_label,
+       transmitted_to_kitchen_at, prep_started_at, ready_at, player_comment_original,
+       player:players!inner(first_name, last_name),
+       order_items(removed_by_nutri, article:articles!inner(name, is_halal, is_gluten_free))`
+    )
+    .in("status", ["transmise_cuisine", "en_preparation", "prete"])
+    .gte("scheduled_at", `${d}T00:00:00.000Z`)
+    .lte("scheduled_at", `${d}T23:59:59.999Z`)
+    .is("archived_at", null)
+    .order("scheduled_at");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((row: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const active = (row.order_items ?? []).filter((it: any) => !it.removed_by_nutri);
+    return {
+      id: row.id,
+      reference: row.reference,
+      player_id: row.player_id,
+      player_first_name: row.player?.first_name ?? "",
+      player_last_name: row.player?.last_name ?? "",
+      service: row.service,
+      scheduled_at: row.scheduled_at,
+      status: row.status,
+      priority: row.priority,
+      location_label: row.location_label,
+      transmitted_to_kitchen_at: row.transmitted_to_kitchen_at,
+      prep_started_at: row.prep_started_at,
+      ready_at: row.ready_at,
+      player_comment_original: row.player_comment_original,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      is_halal: active.some((it: any) => it.article?.is_halal),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      is_gluten_free: active.some((it: any) => it.article?.is_gluten_free),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      items_summary: active.map((it: any) => it.article?.name).filter(Boolean).join(", "),
+      items_count: active.length,
+    };
+  });
+}
+
+export async function getKitchenStats(
+  supabase: FPClient,
+  date?: string
+): Promise<KitchenStats> {
+  const d = date ?? new Date().toISOString().slice(0, 10);
+  const { data } = await supabase
+    .from("orders")
+    .select("status")
+    .not("status", "in", "(brouillon,envoyee_joueur,en_attente_nutri,precision_demandee)")
+    .gte("scheduled_at", `${d}T00:00:00.000Z`)
+    .lte("scheduled_at", `${d}T23:59:59.999Z`)
+    .is("archived_at", null);
+
+  const counts: Record<string, number> = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (data ?? []).forEach((row: any) => {
+    counts[row.status] = (counts[row.status] ?? 0) + 1;
+  });
+
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  return {
+    transmise_cuisine: counts["transmise_cuisine"] ?? 0,
+    en_preparation: counts["en_preparation"] ?? 0,
+    prete: counts["prete"] ?? 0,
+    livree_today: counts["livree"] ?? 0,
+    annulee_today: counts["annulee"] ?? 0,
+    total_validated_today: total,
+  };
+}
+
+// Resto dashboard — toutes les commandes validées nutri pour aujourd'hui
+export interface RestoOrder {
+  id: string;
+  reference: string;
+  player_first_name: string;
+  player_last_name: string;
+  service: ServiceType;
+  scheduled_at: string;
+  status: OrderStatus;
+  priority: OrderPriority;
+  validated_by_nutri_at: string | null;
+  location_label: string | null;
+  items_count: number;
+}
+
+export async function listRestoOrdersToday(
+  supabase: FPClient,
+  date?: string
+): Promise<RestoOrder[]> {
+  const d = date ?? new Date().toISOString().slice(0, 10);
+  const { data } = await supabase
+    .from("orders")
+    .select(
+      `id, reference, service, scheduled_at, status, priority, validated_by_nutri_at, location_label,
+       player:players!inner(first_name, last_name),
+       order_items(removed_by_nutri)`
+    )
+    .not("validated_by_nutri_at", "is", null)
+    .gte("scheduled_at", `${d}T00:00:00.000Z`)
+    .lte("scheduled_at", `${d}T23:59:59.999Z`)
+    .is("archived_at", null)
+    .order("scheduled_at");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    reference: row.reference,
+    player_first_name: row.player?.first_name ?? "",
+    player_last_name: row.player?.last_name ?? "",
+    service: row.service,
+    scheduled_at: row.scheduled_at,
+    status: row.status,
+    priority: row.priority,
+    validated_by_nutri_at: row.validated_by_nutri_at,
+    location_label: row.location_label,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items_count: (row.order_items ?? []).filter((it: any) => !it.removed_by_nutri).length,
+  }));
+}
