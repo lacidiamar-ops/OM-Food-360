@@ -15,6 +15,9 @@ import type {
   FPOrderValidationLog,
   OrderStatus,
   OrderPriority,
+  FPTrip,
+  FPHotel,
+  FPHotelAccess,
 } from "./food-passport.types";
 
 // Supabase client typed for food_passport schema
@@ -966,4 +969,267 @@ export async function listRestoOrdersToday(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     items_count: (row.order_items ?? []).filter((it: any) => !it.removed_by_nutri).length,
   }));
+}
+
+// ── Hotels ────────────────────────────────────────────────
+
+export async function listHotels(
+  supabase: FPClient
+): Promise<FPHotel[]> {
+  const { data } = await supabase
+    .from("hotels")
+    .select("*")
+    .is("archived_at", null)
+    .order("name");
+  return data ?? [];
+}
+
+export async function upsertHotel(
+  supabase: FPClient,
+  values: Partial<FPHotel>
+): Promise<{ data: FPHotel | null; error: string | null }> {
+  const { data, error } = await supabase
+    .from("hotels")
+    .upsert(values, { onConflict: "id" })
+    .select()
+    .single();
+  return { data, error: error?.message ?? null };
+}
+
+// ── Trips ─────────────────────────────────────────────────
+
+export interface TripWithHotel extends FPTrip {
+  hotel: Pick<FPHotel, "id" | "name" | "city"> | null;
+  access_count: number;
+}
+
+export async function listTrips(
+  supabase: FPClient
+): Promise<TripWithHotel[]> {
+  const { data } = await supabase
+    .from("trips")
+    .select(`
+      *,
+      hotel:hotels(id, name, city),
+      hotel_access(id)
+    `)
+    .order("start_date", { ascending: false });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((row: any) => ({
+    ...row,
+    hotel: row.hotel ?? null,
+    access_count: (row.hotel_access ?? []).length,
+  }));
+}
+
+export interface TripWithDetails extends FPTrip {
+  hotel: FPHotel | null;
+  accesses: Array<FPHotelAccess & { profile: { email: string } | null }>;
+}
+
+export async function getTripWithDetails(
+  supabase: FPClient,
+  tripId: string
+): Promise<TripWithDetails | null> {
+  const { data } = await supabase
+    .from("trips")
+    .select(`
+      *,
+      hotel:hotels(*),
+      accesses:hotel_access(*, profile:profiles(email))
+    `)
+    .eq("id", tripId)
+    .single();
+
+  if (!data) return null;
+  return {
+    ...data,
+    hotel: data.hotel ?? null,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    accesses: (data.accesses ?? []) as any,
+  };
+}
+
+export async function createTrip(
+  supabase: FPClient,
+  values: {
+    name: string;
+    city?: string | null;
+    start_date: string;
+    end_date: string;
+    hotel_id?: string | null;
+    stadium?: string | null;
+    match_time?: string | null;
+    meal_times?: string | null;
+    created_by: string;
+  }
+): Promise<{ data: FPTrip | null; error: string | null }> {
+  const { data, error } = await supabase
+    .from("trips")
+    .insert({ ...values, status: "planifie" })
+    .select()
+    .single();
+  return { data, error: error?.message ?? null };
+}
+
+export async function updateTrip(
+  supabase: FPClient,
+  tripId: string,
+  values: Partial<FPTrip>
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("trips")
+    .update(values)
+    .eq("id", tripId);
+  return { error: error?.message ?? null };
+}
+
+export async function archiveTrip(
+  supabase: FPClient,
+  tripId: string
+): Promise<{ error: string | null }> {
+  // Marque annule — pas de DELETE (audit trail)
+  const { error } = await supabase
+    .from("trips")
+    .update({ status: "annule" })
+    .eq("id", tripId);
+  return { error: error?.message ?? null };
+}
+
+// ── Hotel access ──────────────────────────────────────────
+
+export interface HotelAccessWithProfile extends FPHotelAccess {
+  profile: { email: string } | null;
+}
+
+export async function listHotelProfiles(
+  supabase: FPClient
+): Promise<Array<{ id: string; email: string }>> {
+  const { data } = await supabase
+    .from("profiles")
+    .select("id, email")
+    .eq("role", "hotel")
+    .order("email");
+  return data ?? [];
+}
+
+export async function createHotelAccess(
+  supabase: FPClient,
+  values: {
+    trip_id: string;
+    hotel_id: string;
+    profile_id: string;
+    granted_by: string;
+    starts_at: string;
+    expires_at: string;
+    raw_token: string;   // fourni par le server action (UUID en clair)
+  }
+): Promise<{ data: FPHotelAccess | null; error: string | null }> {
+  const { data, error } = await supabase
+    .from("hotel_access")
+    .insert({
+      trip_id: values.trip_id,
+      hotel_id: values.hotel_id,
+      profile_id: values.profile_id,
+      granted_by: values.granted_by,
+      starts_at: values.starts_at,
+      expires_at: values.expires_at,
+      token_hash: values.raw_token, // server action hash côté Node avant d'appeler
+    })
+    .select()
+    .single();
+  return { data, error: error?.message ?? null };
+}
+
+export async function revokeHotelAccess(
+  supabase: FPClient,
+  accessId: string
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .from("hotel_access")
+    .update({ revoked_at: new Date().toISOString() })
+    .eq("id", accessId);
+  return { error: error?.message ?? null };
+}
+
+// ── Portail hôtel — commandes du jour ─────────────────────
+
+export interface HotelOrder {
+  id: string;
+  reference: string;
+  player_first_name: string;
+  player_last_name: string;
+  service: ServiceType;
+  scheduled_at: string;
+  status: OrderStatus;
+  location_label: string | null;
+  room_number: string | null;
+  nutri_adjustment_notes: string | null;
+  is_halal: boolean;
+  is_gluten_free: boolean;
+  is_vegetarian: boolean;
+  items: Array<{ name: string; quantity: number; nutri_note: string | null }>;
+}
+
+export async function listHotelOrdersToday(
+  supabase: FPClient,
+  date?: string
+): Promise<HotelOrder[]> {
+  const d = date ?? new Date().toISOString().slice(0, 10);
+  const { data } = await supabase
+    .from("orders")
+    .select(`
+      id, reference, service, scheduled_at, status,
+      location_label, room_number, nutri_adjustment_notes,
+      player:players!inner(first_name, last_name),
+      order_items(
+        quantity, nutri_note, removed_by_nutri,
+        article:articles!inner(name, is_halal, is_gluten_free, is_vegetarian)
+      )
+    `)
+    .eq("status", "transmise_hotel")
+    .not("validated_by_nutri_at", "is", null)
+    .gte("scheduled_at", `${d}T00:00:00.000Z`)
+    .lte("scheduled_at", `${d}T23:59:59.999Z`)
+    .is("archived_at", null)
+    .order("scheduled_at");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((row: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const active = (row.order_items ?? []).filter((it: any) => !it.removed_by_nutri);
+    return {
+      id: row.id,
+      reference: row.reference,
+      player_first_name: row.player?.first_name ?? "",
+      player_last_name: row.player?.last_name ?? "",
+      service: row.service,
+      scheduled_at: row.scheduled_at,
+      status: row.status,
+      location_label: row.location_label,
+      room_number: row.room_number,
+      nutri_adjustment_notes: row.nutri_adjustment_notes,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      is_halal: active.some((it: any) => it.article?.is_halal),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      is_gluten_free: active.some((it: any) => it.article?.is_gluten_free),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      is_vegetarian: active.some((it: any) => it.article?.is_vegetarian),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      items: active.map((it: any) => ({
+        name: it.article?.name ?? "",
+        quantity: it.quantity,
+        nutri_note: it.nutri_note,
+      })),
+    };
+  });
+}
+
+export async function checkHotelHasActiveAccess(
+  supabase: FPClient
+): Promise<boolean> {
+  // Appelle la fonction RPC Postgres hotel_has_active_access()
+  const { data } = await supabase.rpc("hotel_has_active_access");
+  return data === true;
 }

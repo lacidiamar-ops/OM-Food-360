@@ -273,12 +273,17 @@ export interface FPMenuItem {
 // ── trips ─────────────────────────────────────────────────
 export interface FPTrip {
   id: string
-  label: string
-  destination: string
-  departure_at: string
-  return_at: string
+  name: string
+  city: string | null
+  start_date: string       // date ISO YYYY-MM-DD
+  end_date: string         // date ISO YYYY-MM-DD
+  hotel_id: string | null
+  stadium: string | null
+  match_time: string | null
+  training_times: string | null
+  meal_times: string | null
+  status: string           // planifie | en_cours | termine | annule
   created_by: string | null
-  status: string
   created_at: string
   updated_at: string
 }
@@ -287,14 +292,17 @@ export interface FPTrip {
 export interface FPHotel {
   id: string
   name: string
-  city: string
+  city: string | null
   country: string | null
   address: string | null
-  contact_name: string | null
-  contact_email: string | null
-  contact_phone: string | null
+  preferred_lang: string | null
+  contact_chef: string | null
+  contact_fb: string | null
+  email: string | null
+  phone: string | null
+  constraints: string | null
+  archived_at: string | null
   created_at: string
-  updated_at: string
 }
 
 // ── hotel_access ──────────────────────────────────────────
