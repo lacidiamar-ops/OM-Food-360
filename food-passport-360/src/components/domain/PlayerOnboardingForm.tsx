@@ -7,6 +7,7 @@ import { useLocale } from "next-intl";
 import { ChevronLeft, Save, Lock, User, Utensils, Heart, Plane, Trophy } from "lucide-react";
 import type { FPPlayer, FPOnboardingForm } from "@/lib/supabase/food-passport.types";
 import { savePlayerAction, saveFormAction } from "@/app/[locale]/(nutri)/nutri/players/[id]/actions";
+import PlayerPhotoUpload from "./PlayerPhotoUpload";
 
 interface Props {
   player: FPPlayer;
@@ -76,6 +77,7 @@ export default function PlayerOnboardingForm({ player, form }: Props) {
   const [toast, setToast] = useState<string | null>(null);
 
   // Player fields
+  const [photoUrl, setPhotoUrl] = useState<string | null>(player.photo_url);
   const [firstName, setFirstName] = useState(player.first_name);
   const [lastName, setLastName] = useState(player.last_name);
   const [jerseyNumber, setJerseyNumber] = useState(String(player.jersey_number ?? ""));
@@ -183,13 +185,16 @@ export default function PlayerOnboardingForm({ player, form }: Props) {
       </div>
 
       {/* Player header */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary font-bold">
-          {player.first_name[0]}{player.last_name[0]}
-        </div>
+      <div className="flex items-center gap-4">
+        <PlayerPhotoUpload
+          playerId={player.id}
+          currentPhotoUrl={photoUrl}
+          initials={`${player.first_name[0]}${player.last_name[0]}`}
+          onSuccess={(url) => setPhotoUrl(url)}
+        />
         <div>
           <h1 className="font-bold text-base">
-            {player.first_name} {player.last_name}
+            {firstName} {lastName}
           </h1>
           <p className="text-xs text-muted-foreground">{t("onboardingForm")}</p>
         </div>
