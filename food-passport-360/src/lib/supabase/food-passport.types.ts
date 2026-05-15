@@ -273,12 +273,17 @@ export interface FPMenuItem {
 // ── trips ─────────────────────────────────────────────────
 export interface FPTrip {
   id: string
-  label: string
-  destination: string
-  departure_at: string
-  return_at: string
-  created_by: string | null
+  name: string
+  city: string | null
+  start_date: string
+  end_date: string
+  hotel_id: string | null
+  stadium: string | null
+  match_time: string | null
+  training_times: string | null
+  meal_times: string | null
   status: string
+  created_by: string | null
   created_at: string
   updated_at: string
 }
@@ -287,14 +292,17 @@ export interface FPTrip {
 export interface FPHotel {
   id: string
   name: string
-  city: string
+  city: string | null
   country: string | null
   address: string | null
-  contact_name: string | null
-  contact_email: string | null
-  contact_phone: string | null
+  preferred_lang: string | null
+  contact_chef: string | null
+  contact_fb: string | null
+  email: string | null
+  phone: string | null
+  constraints: string | null
+  archived_at: string | null
   created_at: string
-  updated_at: string
 }
 
 // ── hotel_access ──────────────────────────────────────────
@@ -320,6 +328,49 @@ export interface FPNotification {
   body_fr: string
   data: Record<string, unknown> | null
   read_at: string | null
+  created_at: string
+}
+
+// ── action_photos ─────────────────────────────────────────
+export interface FPActionPhoto {
+  id: string
+  storage_path: string
+  uploaded_by: string
+  uploader_role: UserRole
+  order_id: string | null
+  trip_id: string | null
+  hotel_id: string | null
+  feedback_id: string | null
+  context_type: string
+  caption: string | null
+  status: PhotoStatus
+  validated_by: string | null
+  validated_at: string | null
+  validator_comment: string | null
+  created_at: string
+}
+
+// ── feedbacks ─────────────────────────────────────────────
+export interface FPFeedback {
+  id: string
+  order_id: string | null
+  player_id: string
+  trip_id: string | null
+  hotel_id: string | null
+  topic: FeedbackTopic[]
+  rating: number
+  smiley: string | null
+  comment_original: string | null
+  comment_lang: SupportedLang | null
+  tags: string[] | null
+  created_at: string
+}
+
+export interface FPFeedbackTranslation {
+  id: string
+  feedback_id: string
+  lang: SupportedLang
+  translated_comment: string | null
   created_at: string
 }
 
