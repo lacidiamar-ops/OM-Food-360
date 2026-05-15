@@ -567,5 +567,33 @@
       "subtitle": "Avis reçus sur les repas",
       "empty": "Aucun avis reçu pour l'instant."
     }
+  },
+  "export": {
+    "title": "Export commandes",
+    "subtitle": "Télécharger les commandes au format Excel",
+    "from": "Du",
+    "to": "Au",
+    "contentTitle": "Le fichier contiendra :",
+    "col1": "Référence commande",
+    "col2": "Joueur",
+    "col3": "Service & statut",
+    "col4": "Heures (prévue, validation nutri, livraison)",
+    "col5": "Nombre d'articles",
+    "download": "Télécharger Excel",
+    "generating": "Génération…",
+    "error": "Erreur lors de la génération du fichier"
+  },
+  "menus": {
+    "back": "Retour",
+    "print": "Imprimer",
+    "noItems": "Aucun article dans ce menu"
+  },
+  "admin": {
+    "title": "Super Admin",
+    "subtitle": "Vue globale de l'application",
+    "audit": {
+      "title": "Audit logs",
+      "subtitle": "200 dernières actions"
+    }
   }
 }

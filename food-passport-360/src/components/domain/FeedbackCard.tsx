@@ -59,7 +59,7 @@ export default function FeedbackCard({ feedback }: Props) {
 
       {feedback.topic.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
-          {feedback.topic.map((tp) => (
+          {feedback.topic.map((tp: string) => (
             <FeedbackTopicBadge key={tp} topic={tp as FeedbackTopic} />
           ))}
         </div>

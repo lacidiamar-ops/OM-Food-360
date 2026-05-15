@@ -32,7 +32,7 @@ export default async function PlayerOrderPhotoPage({ params }: Props) {
 
   // Bucket privé → URLs signées (1 h) générées côté serveur
   const photos = await Promise.all(
-    rawPhotos.map(async (p) => {
+    rawPhotos.map(async (p: { id: string; storage_path: string; status: string; caption: string | null; created_at: string }) => {
       const { data: signed } = await supabase.storage
         .from("action-photos")
         .createSignedUrl(p.storage_path, 3600);
@@ -71,7 +71,7 @@ export default async function PlayerOrderPhotoPage({ params }: Props) {
         <section className="space-y-3">
           <h2 className="font-semibold text-sm">{t("myPhotos")}</h2>
           <ul className="space-y-3">
-            {photos.map((photo) => {
+            {photos.map((photo: { id: string; storage_path: string; status: string; caption: string | null; created_at: string; signedUrl: string | null }) => {
               const statusColor =
                 photo.status === "validee"
                   ? "text-emerald-600"

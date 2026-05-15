@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import { listFeedbacks } from "@/lib/supabase/queries";
+import { listFeedbacks, type FeedbackWithPlayer } from "@/lib/supabase/queries";
 import FeedbackCard from "@/components/domain/FeedbackCard";
 import { Star } from "lucide-react";
 
@@ -11,7 +11,7 @@ export default async function NutriFeedbackPage() {
 
   const avgRating =
     feedbacks.length > 0
-      ? (feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length).toFixed(1)
+      ? (feedbacks.reduce((sum: number, f: FeedbackWithPlayer) => sum + f.rating, 0) / feedbacks.length).toFixed(1)
       : null;
 
   return (
@@ -36,7 +36,7 @@ export default async function NutriFeedbackPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {feedbacks.map((fb) => (
+          {feedbacks.map((fb: FeedbackWithPlayer) => (
             <FeedbackCard key={fb.id} feedback={fb} />
           ))}
         </div>

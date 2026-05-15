@@ -4,6 +4,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { createClient } from "@/lib/supabase/server";
+import PushNotificationProvider from "@/components/pwa/PushNotificationProvider";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -38,6 +40,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   const messages = await getMessages();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
   return (
     <html
@@ -47,6 +51,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     >
       <body className="min-h-full flex flex-col">
         <NextIntlClientProvider messages={messages}>
+          <PushNotificationProvider userId={user?.id ?? null} />
           {children}
         </NextIntlClientProvider>
       </body>

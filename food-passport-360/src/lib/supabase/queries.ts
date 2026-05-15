@@ -1233,3 +1233,328 @@ export async function checkHotelHasActiveAccess(
   const { data } = await supabase.rpc("hotel_has_active_access");
   return data === true;
 }
+
+// ────────────────────────────────────────────────────────────────────────────
+// SEMAINE 7 — Photos preuve repas + Feedbacks satisfaction
+// ────────────────────────────────────────────────────────────────────────────
+
+export interface ActionPhotoWithPlayer {
+  id: string;
+  storage_path: string;
+  caption: string | null;
+  context_type: string;
+  status: string;
+  uploaded_by: string;
+  uploader_role: string;
+  order_id: string | null;
+  trip_id: string | null;
+  validator_comment: string | null;
+  validated_at: string | null;
+  created_at: string;
+  order_reference: string | null;
+  player_first_name: string | null;
+  player_last_name: string | null;
+}
+
+export async function insertActionPhoto(
+  supabase: FPClient,
+  data: {
+    storage_path: string;
+    uploaded_by: string;
+    uploader_role: string;
+    order_id?: string | null;
+    trip_id?: string | null;
+    context_type: string;
+    caption?: string | null;
+  }
+): Promise<{ id: string | null; error: string | null }> {
+  const { data: row, error } = await supabase
+    .schema("food_passport")
+    .from("action_photos")
+    .insert({ status: "en_attente", ...data })
+    .select("id")
+    .single();
+  return { id: row?.id ?? null, error: error?.message ?? null };
+}
+
+export async function listActionPhotosPending(
+  supabase: FPClient,
+  _role: "nutri" | "resto"
+): Promise<ActionPhotoWithPlayer[]> {
+  const { data } = await supabase
+    .schema("food_passport")
+    .from("action_photos")
+    .select(
+      `id, storage_path, caption, context_type, status, uploaded_by, uploader_role,
+       order_id, trip_id, validator_comment, validated_at, created_at,
+       order:orders(reference, player:players!inner(first_name, last_name))`
+    )
+    .eq("status", "en_attente")
+    .order("created_at");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    storage_path: row.storage_path,
+    caption: row.caption,
+    context_type: row.context_type,
+    status: row.status,
+    uploaded_by: row.uploaded_by,
+    uploader_role: row.uploader_role,
+    order_id: row.order_id,
+    trip_id: row.trip_id,
+    validator_comment: row.validator_comment,
+    validated_at: row.validated_at,
+    created_at: row.created_at,
+    order_reference: row.order?.reference ?? null,
+    player_first_name: row.order?.player?.first_name ?? null,
+    player_last_name: row.order?.player?.last_name ?? null,
+  }));
+}
+
+export async function validateActionPhoto(
+  supabase: FPClient,
+  photoId: string,
+  newStatus: "validee" | "refusee" | "non_conforme",
+  validatorId: string,
+  comment?: string | null
+): Promise<{ error: string | null }> {
+  const { error } = await supabase
+    .schema("food_passport")
+    .from("action_photos")
+    .update({
+      status: newStatus,
+      validated_by: validatorId,
+      validated_at: new Date().toISOString(),
+      validator_comment: comment ?? null,
+    })
+    .eq("id", photoId);
+  return { error: error?.message ?? null };
+}
+
+export async function listMyActionPhotos(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ id: string; storage_path: string; status: string; caption: string | null; created_at: string }[]> {
+  const { data } = await supabase
+    .schema("food_passport")
+    .from("action_photos")
+    .select("id, storage_path, status, caption, created_at")
+    .eq("order_id", orderId)
+    .order("created_at");
+  return data ?? [];
+}
+
+export interface FeedbackWithPlayer {
+  id: string;
+  order_id: string | null;
+  player_id: string;
+  trip_id: string | null;
+  topic: string[];
+  rating: number;
+  smiley: string | null;
+  comment_original: string | null;
+  comment_lang: string | null;
+  tags: string[] | null;
+  created_at: string;
+  player_first_name: string | null;
+  player_last_name: string | null;
+  order_reference: string | null;
+}
+
+export async function insertFeedback(
+  supabase: FPClient,
+  data: {
+    order_id?: string | null;
+    player_id: string;
+    trip_id?: string | null;
+    hotel_id?: string | null;
+    topic: string[];
+    rating: number;
+    smiley?: string | null;
+    comment_original?: string | null;
+    comment_lang?: string | null;
+    tags?: string[] | null;
+  }
+): Promise<{ id: string | null; error: string | null }> {
+  const { data: row, error } = await supabase
+    .schema("food_passport")
+    .from("feedbacks")
+    .insert(data)
+    .select("id")
+    .single();
+  return { id: row?.id ?? null, error: error?.message ?? null };
+}
+
+export async function listFeedbacks(
+  supabase: FPClient,
+  limit = 50
+): Promise<FeedbackWithPlayer[]> {
+  const { data } = await supabase
+    .schema("food_passport")
+    .from("feedbacks")
+    .select(
+      `id, order_id, player_id, trip_id, topic, rating, smiley, comment_original, comment_lang, tags, created_at,
+       player:players!inner(first_name, last_name),
+       order:orders(reference)`
+    )
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    order_id: row.order_id,
+    player_id: row.player_id,
+    trip_id: row.trip_id,
+    topic: row.topic ?? [],
+    rating: row.rating,
+    smiley: row.smiley,
+    comment_original: row.comment_original,
+    comment_lang: row.comment_lang,
+    tags: row.tags,
+    created_at: row.created_at,
+    player_first_name: row.player?.first_name ?? null,
+    player_last_name: row.player?.last_name ?? null,
+    order_reference: row.order?.reference ?? null,
+  }));
+}
+
+export async function getMyFeedbackForOrder(
+  supabase: FPClient,
+  orderId: string
+): Promise<{ id: string } | null> {
+  const { data } = await supabase
+    .schema("food_passport")
+    .from("feedbacks")
+    .select("id")
+    .eq("order_id", orderId)
+    .maybeSingle();
+  return data ?? null;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// SEMAINE 8 — Audit logs + stats globales
+// ────────────────────────────────────────────────────────────────────────────
+
+export interface AuditLogEntry {
+  id: string;
+  actor_id: string | null;
+  actor_role: string | null;
+  actor_name: string | null;
+  action: string;
+  table_name: string | null;
+  record_id: string | null;
+  old_value: Record<string, unknown> | null;
+  new_value: Record<string, unknown> | null;
+  created_at: string;
+}
+
+export async function listAuditLogs(
+  supabase: FPClient,
+  opts: { limit?: number; table_name?: string; actor_role?: string } = {}
+): Promise<AuditLogEntry[]> {
+  let q = supabase
+    .schema("food_passport")
+    .from("audit_logs")
+    .select(
+      `id, actor_id, actor_role, action, table_name, record_id, old_value, new_value, created_at,
+       actor:profiles(full_name)`
+    )
+    .order("created_at", { ascending: false })
+    .limit(opts.limit ?? 100);
+
+  if (opts.table_name) q = q.eq("table_name", opts.table_name);
+  if (opts.actor_role) q = q.eq("actor_role", opts.actor_role);
+
+  const { data } = await q;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((row: any) => ({
+    id: row.id,
+    actor_id: row.actor_id,
+    actor_role: row.actor_role,
+    actor_name: row.actor?.full_name ?? null,
+    action: row.action,
+    table_name: row.table_name,
+    record_id: row.record_id,
+    old_value: row.old_value,
+    new_value: row.new_value,
+    created_at: row.created_at,
+  }));
+}
+
+export interface GlobalStats {
+  total_players: number;
+  orders_today: number;
+  orders_pending_nutri: number;
+  feedbacks_total: number;
+  photos_pending: number;
+  active_trips: number;
+}
+
+export async function getGlobalStats(supabase: FPClient): Promise<GlobalStats> {
+  const today = new Date().toISOString().slice(0, 10);
+
+  const [players, ordersToday, ordersPending, feedbacks, photos, trips] = await Promise.all([
+    supabase.schema("food_passport").from("players").select("id", { count: "exact", head: true }).is("archived_at", null),
+    supabase.schema("food_passport").from("orders").select("id", { count: "exact", head: true })
+      .gte("scheduled_at", `${today}T00:00:00Z`).lte("scheduled_at", `${today}T23:59:59Z`).is("archived_at", null),
+    supabase.schema("food_passport").from("orders").select("id", { count: "exact", head: true })
+      .eq("status", "en_attente_nutri").is("archived_at", null),
+    supabase.schema("food_passport").from("feedbacks").select("id", { count: "exact", head: true }),
+    supabase.schema("food_passport").from("action_photos").select("id", { count: "exact", head: true }).eq("status", "en_attente"),
+    supabase.schema("food_passport").from("trips").select("id", { count: "exact", head: true }).eq("status", "en_cours"),
+  ]);
+
+  return {
+    total_players: players.count ?? 0,
+    orders_today: ordersToday.count ?? 0,
+    orders_pending_nutri: ordersPending.count ?? 0,
+    feedbacks_total: feedbacks.count ?? 0,
+    photos_pending: photos.count ?? 0,
+    active_trips: trips.count ?? 0,
+  };
+}
+
+export interface OrderExportRow {
+  reference: string;
+  player: string;
+  service: string;
+  status: string;
+  scheduled_at: string;
+  validated_by_nutri_at: string | null;
+  delivered_at: string | null;
+  items_count: number;
+}
+
+export async function listOrdersForExport(
+  supabase: FPClient,
+  fromDate: string,
+  toDate: string
+): Promise<OrderExportRow[]> {
+  const { data } = await supabase
+    .schema("food_passport")
+    .from("orders")
+    .select(
+      `reference, service, status, scheduled_at, validated_by_nutri_at, delivered_at,
+       player:players!inner(first_name, last_name),
+       order_items(removed_by_nutri)`
+    )
+    .gte("scheduled_at", `${fromDate}T00:00:00Z`)
+    .lte("scheduled_at", `${toDate}T23:59:59Z`)
+    .is("archived_at", null)
+    .order("scheduled_at");
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (data ?? []).map((row: any) => ({
+    reference: row.reference,
+    player: `${row.player?.first_name ?? ""} ${row.player?.last_name ?? ""}`.trim(),
+    service: row.service,
+    status: row.status,
+    scheduled_at: row.scheduled_at,
+    validated_by_nutri_at: row.validated_by_nutri_at,
+    delivered_at: row.delivered_at,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    items_count: (row.order_items ?? []).filter((it: any) => !it.removed_by_nutri).length,
+  }));
+}

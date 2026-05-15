@@ -1,9 +1,9 @@
-export default function AdminPage() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center px-6">
-      <div className="text-4xl">⚙️</div>
-      <h1 className="text-xl font-semibold">Administration</h1>
-      <p className="text-sm text-muted-foreground">Super Admin — gestion globale.</p>
-    </div>
-  );
+import { createClient } from "@/lib/supabase/server";
+import { getGlobalStats } from "@/lib/supabase/queries";
+import AdminDashboard from "@/components/domain/AdminDashboard";
+
+export default async function AdminPage() {
+  const supabase = await createClient();
+  const stats = await getGlobalStats(supabase);
+  return <AdminDashboard stats={stats} />;
 }
