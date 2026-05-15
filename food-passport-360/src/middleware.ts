@@ -79,7 +79,7 @@ function isAllowed(role: UserRole, bare: string) {
   return ROLE_ALLOWED_PREFIXES[role].some((p) => bare === p || bare.startsWith(p + "/"));
 }
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // 1. Run next-intl first (locale routing + redirects)
   const intlResponse = intlMiddleware(request);
 
