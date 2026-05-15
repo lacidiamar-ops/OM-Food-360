@@ -3,7 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { Clock, MapPin, MinusCircle, PlusCircle, UtensilsCrossed, XCircle } from "lucide-react";
+import { Camera, Clock, MapPin, MessageCircle, MinusCircle, PlusCircle, UtensilsCrossed, XCircle } from "lucide-react";
+import Link from "next/link";
 import type {
   FPArticle,
   FPOrder,
@@ -210,6 +211,26 @@ export default function PlayerOrderDetail({ order, items, logs }: Props) {
 
       {/* Timeline */}
       <OrderTimeline logs={logs} currentStatus={order.status} />
+
+      {/* Photo + feedback CTAs when delivered */}
+      {order.status === "livree" && (
+        <div className="flex gap-3 pt-2">
+          <Link
+            href={`/joueur/orders/${order.id}/photo`}
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
+          >
+            <Camera className="h-4 w-4" />
+            {t("photoProof")}
+          </Link>
+          <Link
+            href={`/joueur/orders/${order.id}/feedback`}
+            className="flex-1 inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-card px-4 py-3 text-sm font-medium hover:bg-muted/50 transition-colors"
+          >
+            <MessageCircle className="h-4 w-4" />
+            {t("feedback")}
+          </Link>
+        </div>
+      )}
 
       {/* Cancel */}
       {canCancel && (
