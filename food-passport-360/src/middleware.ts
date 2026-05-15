@@ -8,6 +8,9 @@ const intlMiddleware = createIntlMiddleware(routing);
 
 const PUBLIC_PATHS = ["/login", "/auth"];
 
+// Paths sans préfixe locale qui doivent passer sans auth check
+const PUBLIC_ROOT_PREFIXES = ["/auth/"];
+
 // Cookie name for caching the user role across requests
 const ROLE_COOKIE = "fp360_role";
 
@@ -80,10 +83,18 @@ function isAllowed(role: UserRole, bare: string) {
 }
 
 export async function middleware(request: NextRequest) {
-  // 1. Run next-intl first (locale routing + redirects)
+  const { pathname } = request.nextUrl;
+
+  // 1. Laisser passer /auth/* sans aucun traitement Supabase
+  //    Le callback OTP doit pouvoir échanger le code AVANT qu'une session existe.
+  if (PUBLIC_ROOT_PREFIXES.some((p) => pathname.startsWith(p))) {
+    return NextResponse.next();
+  }
+
+  // 2. Run next-intl first (locale routing + redirects)
   const intlResponse = intlMiddleware(request);
 
-  // 2. Skip Supabase if not configured (dev without .env.local)
+  // 3. Skip Supabase if not configured (dev without .env.local)
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
@@ -91,7 +102,7 @@ export async function middleware(request: NextRequest) {
     return intlResponse;
   }
 
-  // 3. Refresh Supabase session — write session cookies onto the intl response
+  // 4. Refresh Supabase session — write session cookies onto the intl response
   let roleFromDb: UserRole | null = null;
 
   const supabase = createServerClient(
@@ -115,8 +126,6 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
-  const { pathname } = request.nextUrl;
 
   // 4. Unauthenticated → redirect to /[locale]/login
   if (!user) {
@@ -175,6 +184,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    // Exclut : API routes, callback auth, assets statiques Next.js, fichiers statiques
+    "/((?!api|auth|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt)$).*)",
   ],
 };
