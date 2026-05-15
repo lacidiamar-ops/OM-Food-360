@@ -1,0 +1,70 @@
+{
+  "navigation": {
+    "home": "Início",
+    "orders": "Pedidos",
+    "menu": "Menu do dia",
+    "players": "Jogadores",
+    "validation": "Validação",
+    "production": "Produção",
+    "trips": "Deslocamentos",
+    "settings": "Configurações",
+    "logout": "Sair",
+    "menu": "Menu",
+    "profile": "Perfil",
+    "commander": "Pedir",
+    "queue": "Fila",
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "confirmations": "Confirmações",
+    "rooming": "Quartos",
+    "access": "Acesso"
+  },
+  "orderStatus": {
+    "brouillon": "Rascunho",
+    "soumise": "Enviado",
+    "en_attente_nutri": "Aguardando validação do nutricionista",
+    "ajustee_nutri": "Ajustado pelo nutricionista",
+    "refusee_nutri": "Recusado pelo nutricionista",
+    "precision_demandee": "Esclarecimento solicitado",
+    "validee_nutri": "Validado pelo nutricionista",
+    "transmise_resto": "Enviado à restauração",
+    "validee_resto": "Validado pela restauração",
+    "transmise_cuisine": "Enviado à cozinha",
+    "en_preparation": "Em preparação",
+    "prete": "Pronto",
+    "transmise_hotel": "Enviado ao hotel",
+    "livree": "Entregue",
+    "consommee": "Consumido",
+    "annulee": "Cancelado"
+  },
+  "roles": {
+    "super_admin": "Super Administrador",
+    "admin_resto": "Administrador de Restauração",
+    "admin_nutri": "Nutricionista",
+    "admin_team_manager": "Team Manager",
+    "cuisine": "Cozinha",
+    "hotel": "Hotel",
+    "joueur": "Jogador",
+    "direction": "Direção"
+  },
+  "common": {
+    "save": "Salvar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Fechar",
+    "loading": "Carregando…",
+    "error": "Ocorreu um erro",
+    "success": "Sucesso",
+    "required": "Este campo é obrigatório"
+  },
+  "auth": {
+    "login": "Entrar",
+    "loginTitle": "Entrar no FOOD PASSPORT 360",
+    "email": "Endereço de e-mail",
+    "magicLink": "Enviar link mágico",
+    "magicLinkSent": "Link enviado! Verifique sua caixa de entrada.",
+    "logout": "Sair"
+  }
+}

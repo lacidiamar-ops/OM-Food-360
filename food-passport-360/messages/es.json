@@ -1,0 +1,70 @@
+{
+  "navigation": {
+    "home": "Inicio",
+    "orders": "Pedidos",
+    "menu": "Menú del día",
+    "players": "Jugadores",
+    "validation": "Validación",
+    "production": "Producción",
+    "trips": "Desplazamientos",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión",
+    "menu": "Menú",
+    "profile": "Perfil",
+    "commander": "Pedir",
+    "queue": "Cola",
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "confirmations": "Confirmaciones",
+    "rooming": "Habitaciones",
+    "access": "Acceso"
+  },
+  "orderStatus": {
+    "brouillon": "Borrador",
+    "soumise": "Enviado",
+    "en_attente_nutri": "En espera de validación del nutricionista",
+    "ajustee_nutri": "Ajustado por el nutricionista",
+    "refusee_nutri": "Rechazado por el nutricionista",
+    "precision_demandee": "Aclaración solicitada",
+    "validee_nutri": "Validado por el nutricionista",
+    "transmise_resto": "Enviado a restauración",
+    "validee_resto": "Validado por restauración",
+    "transmise_cuisine": "Enviado a cocina",
+    "en_preparation": "En preparación",
+    "prete": "Listo",
+    "transmise_hotel": "Enviado al hotel",
+    "livree": "Entregado",
+    "consommee": "Consumido",
+    "annulee": "Cancelado"
+  },
+  "roles": {
+    "super_admin": "Super Administrador",
+    "admin_resto": "Administrador de Restauración",
+    "admin_nutri": "Nutricionista",
+    "admin_team_manager": "Team Manager",
+    "cuisine": "Cocina",
+    "hotel": "Hotel",
+    "joueur": "Jugador",
+    "direction": "Dirección"
+  },
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "close": "Cerrar",
+    "loading": "Cargando…",
+    "error": "Se produjo un error",
+    "success": "Éxito",
+    "required": "Este campo es obligatorio"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "loginTitle": "Iniciar sesión en FOOD PASSPORT 360",
+    "email": "Correo electrónico",
+    "magicLink": "Enviar enlace mágico",
+    "magicLinkSent": "¡Enlace enviado! Revisa tu correo.",
+    "logout": "Cerrar sesión"
+  }
+}

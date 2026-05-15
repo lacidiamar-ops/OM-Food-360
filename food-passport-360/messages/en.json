@@ -1,0 +1,70 @@
+{
+  "navigation": {
+    "home": "Home",
+    "orders": "Orders",
+    "menu": "Today's menu",
+    "players": "Players",
+    "validation": "Validation",
+    "production": "Production",
+    "trips": "Trips",
+    "settings": "Settings",
+    "logout": "Log out",
+    "menu": "Menu",
+    "profile": "Profile",
+    "commander": "Order",
+    "queue": "Queue",
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "confirmations": "Confirmations",
+    "rooming": "Rooming",
+    "access": "Access"
+  },
+  "orderStatus": {
+    "brouillon": "Draft",
+    "soumise": "Submitted",
+    "en_attente_nutri": "Awaiting nutritionist validation",
+    "ajustee_nutri": "Adjusted by nutritionist",
+    "refusee_nutri": "Refused by nutritionist",
+    "precision_demandee": "Clarification requested",
+    "validee_nutri": "Validated by nutritionist",
+    "transmise_resto": "Sent to catering",
+    "validee_resto": "Validated by catering",
+    "transmise_cuisine": "Sent to kitchen",
+    "en_preparation": "In preparation",
+    "prete": "Ready",
+    "transmise_hotel": "Sent to hotel",
+    "livree": "Delivered",
+    "consommee": "Consumed",
+    "annulee": "Cancelled"
+  },
+  "roles": {
+    "super_admin": "Super Administrator",
+    "admin_resto": "Catering Administrator",
+    "admin_nutri": "Nutritionist",
+    "admin_team_manager": "Team Manager",
+    "cuisine": "Kitchen",
+    "hotel": "Hotel",
+    "joueur": "Player",
+    "direction": "Management"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "loading": "Loading…",
+    "error": "An error occurred",
+    "success": "Success",
+    "required": "This field is required"
+  },
+  "auth": {
+    "login": "Sign in",
+    "loginTitle": "Sign in to FOOD PASSPORT 360",
+    "email": "Email address",
+    "magicLink": "Send magic link",
+    "magicLinkSent": "Link sent! Check your inbox.",
+    "logout": "Sign out"
+  }
+}
