@@ -8,7 +8,7 @@ const intlMiddleware = createIntlMiddleware(routing);
 
 const PUBLIC_PATHS = ["/login", "/auth"];
 
-// Paths sans préfixe locale qui doivent passer sans auth check
+// Paths without locale prefix that must bypass auth checks
 const PUBLIC_ROOT_PREFIXES = ["/auth/"];
 
 // Cookie name for caching the user role across requests
@@ -65,7 +65,6 @@ function getLocaleFromPath(pathname: string) {
   );
 }
 
-// Strip /{locale} prefix to get the bare pathname
 function stripLocale(pathname: string) {
   for (const locale of routing.locales) {
     if (pathname.startsWith(`/${locale}/`)) return pathname.slice(locale.length + 1);
@@ -79,14 +78,16 @@ function isRootOrIndex(bare: string) {
 }
 
 function isAllowed(role: UserRole, bare: string) {
-  return ROLE_ALLOWED_PREFIXES[role].some((p) => bare === p || bare.startsWith(p + "/"));
+  return ROLE_ALLOWED_PREFIXES[role].some(
+    (p) => bare === p || bare.startsWith(p + "/")
+  );
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // 1. Laisser passer /auth/* sans aucun traitement Supabase
-  //    Le callback OTP doit pouvoir échanger le code AVANT qu'une session existe.
+  // 1. Pass /auth/* through without any Supabase processing.
+  //    The OTP callback must exchange the code BEFORE a session exists.
   if (PUBLIC_ROOT_PREFIXES.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
@@ -102,7 +103,7 @@ export async function middleware(request: NextRequest) {
     return intlResponse;
   }
 
-  // 4. Refresh Supabase session — write session cookies onto the intl response
+  // 4. Refresh Supabase session — write refreshed cookies onto the intl response
   let roleFromDb: UserRole | null = null;
 
   const supabase = createServerClient(
@@ -115,6 +116,7 @@ export async function middleware(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
+            // Mirror into request so same-request reads see refreshed values
             request.cookies.set(name, value);
             intlResponse.cookies.set(name, value, options);
           });
@@ -127,7 +129,7 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 4. Unauthenticated → redirect to /[locale]/login
+  // 5. Unauthenticated → redirect to /[locale]/login
   if (!user) {
     if (isPublicPath(pathname)) return intlResponse;
 
@@ -135,13 +137,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
   }
 
-  // 5. Resolve role: cookie first (fast), then DB (first request after login)
+  // 6. Resolve role: cookie cache (8 h) then DB (first request after login)
   const cachedRole = request.cookies.get(ROLE_COOKIE)?.value as UserRole | undefined;
 
   if (cachedRole && Object.keys(ROLE_HOME).includes(cachedRole)) {
     roleFromDb = cachedRole;
   } else {
-    // Use service-role-free DB call via authenticated client
     const { data } = await supabase
       .schema("food_passport" as never)
       .from("profiles")
@@ -151,7 +152,6 @@ export async function middleware(request: NextRequest) {
 
     roleFromDb = (data?.role as UserRole) ?? null;
 
-    // Cache the role in a secure cookie for 8 h
     if (roleFromDb) {
       intlResponse.cookies.set(ROLE_COOKIE, roleFromDb, {
         httpOnly: true,
@@ -162,19 +162,19 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // No profile yet (new user not onboarded) → let them reach login or a pending page
+  // No profile yet (new user not onboarded) → let them reach login
   if (!roleFromDb) return intlResponse;
 
   const bare = stripLocale(pathname);
   const locale = getLocaleFromPath(pathname);
   const home = ROLE_HOME[roleFromDb];
 
-  // 6. Root path → redirect to role home
+  // 7. Root path → redirect to role home
   if (isRootOrIndex(bare)) {
     return NextResponse.redirect(new URL(`/${locale}${home}`, request.url));
   }
 
-  // 7. Wrong section for this role → redirect to their home
+  // 8. Wrong section for this role → redirect to their home
   if (!isPublicPath(pathname) && !isRootOrIndex(bare) && !isAllowed(roleFromDb, bare)) {
     return NextResponse.redirect(new URL(`/${locale}${home}`, request.url));
   }
@@ -184,7 +184,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // Exclut : API routes, callback auth, assets statiques Next.js, fichiers statiques
     "/((?!api|auth|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt)$).*)",
   ],
 };

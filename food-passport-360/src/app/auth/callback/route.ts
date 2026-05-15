@@ -1,17 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import type { ResponseCookie } from "next/dist/compiled/@edge-runtime/cookies";
-
-const ROLE_HOME: Record<string, string> = {
-  joueur: "/joueur",
-  admin_nutri: "/nutri",
-  admin_resto: "/resto",
-  cuisine: "/cuisine",
-  hotel: "/hotel",
-  admin_team_manager: "/team-manager",
-  super_admin: "/admin",
-  direction: "/admin",
-};
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
@@ -30,9 +18,16 @@ export async function GET(request: NextRequest) {
       .toLowerCase() ??
     "fr";
 
-  // Capture cookies written by exchangeCodeForSession — we'll apply them to the
-  // final response once we know the redirect destination.
-  const pendingCookies: Array<{ name: string; value: string; options: Partial<ResponseCookie> }> = [];
+  // Redirect target: explicit next param, or root (proxy handles role redirect)
+  const destination = next ? `/${locale}${next}` : `/${locale}/`;
+
+  // ── Official Supabase SSR pattern for Route Handlers ─────────────────────
+  // The response MUST exist before createServerClient so that setAll can write
+  // session cookies directly to it as exchangeCodeForSession fires SIGNED_IN.
+  // Any mutation of Location header after the fact is unreliable — instead we
+  // always redirect to /{locale}/ and rely on the proxy to bounce the user to
+  // their role-specific home page on the next request.
+  const response = NextResponse.redirect(new URL(destination, origin));
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -43,8 +38,9 @@ export async function GET(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
+          // Write session cookies directly onto the response that will be sent.
           cookiesToSet.forEach(({ name, value, options }) => {
-            pendingCookies.push({ name, value, options });
+            response.cookies.set(name, value, options);
           });
         },
       },
@@ -55,44 +51,12 @@ export async function GET(request: NextRequest) {
 
   if (error) {
     return NextResponse.redirect(
-      new URL(`/${locale}/login?error=${encodeURIComponent(error.message)}`, origin)
+      new URL(
+        `/${locale}/login?error=${encodeURIComponent(error.message)}`,
+        origin
+      )
     );
   }
-
-  // Determine redirect destination
-  let destination: string;
-
-  if (next) {
-    destination = `/${locale}${next}`;
-  } else {
-    // Read role from DB to redirect to the right module home
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user) {
-      const { data: profile } = await supabase
-        .schema("food_passport" as never)
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-      const role = profile?.role as string | undefined;
-      const home = role && ROLE_HOME[role] ? ROLE_HOME[role] : "/";
-      destination = `/${locale}${home}`;
-    } else {
-      destination = `/${locale}/`;
-    }
-  }
-
-  // Build the final response with the correct destination URL, then apply all
-  // session cookies that were captured during exchangeCodeForSession.
-  const response = NextResponse.redirect(new URL(destination, origin));
-
-  pendingCookies.forEach(({ name, value, options }) => {
-    response.cookies.set(name, value, options);
-  });
 
   return response;
 }
