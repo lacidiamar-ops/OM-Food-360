@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { CheckCircle, ShieldAlert, XCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -16,12 +16,16 @@ export default function PhotoValidationCard({ photo, onDone }: Props) {
   const t = useTranslations("photoValidation");
   const [comment, setComment] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [signedUrl, setSignedUrl] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const supabase = createClient();
-  const { data: urlData } = supabase.storage
-    .from("action-photos")
-    .getPublicUrl(photo.storage_path);
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.storage
+      .from("action-photos")
+      .createSignedUrl(photo.storage_path, 3600)
+      .then(({ data }) => { if (data?.signedUrl) setSignedUrl(data.signedUrl); });
+  }, [photo.storage_path]);
 
   function act(status: "validee" | "refusee" | "non_conforme") {
     setError(null);
@@ -35,11 +39,17 @@ export default function PhotoValidationCard({ photo, onDone }: Props) {
   return (
     <div className="rounded-2xl border border-border bg-card overflow-hidden">
       <div className="aspect-video bg-muted relative">
-        <img
-          src={urlData.publicUrl}
-          alt={photo.caption ?? ""}
-          className="w-full h-full object-contain"
-        />
+        {signedUrl ? (
+          <img
+            src={signedUrl}
+            alt={photo.caption ?? ""}
+            className="w-full h-full object-contain"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-border border-t-foreground" />
+          </div>
+        )}
       </div>
 
       <div className="p-4 space-y-3">

@@ -28,7 +28,17 @@ export default async function PlayerOrderPhotoPage({ params }: Props) {
   if (!data || data.order.player_id !== player.id) notFound();
 
   const order = data.order;
-  const photos = await listMyActionPhotos(supabase, id);
+  const rawPhotos = await listMyActionPhotos(supabase, id);
+
+  // Bucket privé → URLs signées (1 h) générées côté serveur
+  const photos = await Promise.all(
+    rawPhotos.map(async (p) => {
+      const { data: signed } = await supabase.storage
+        .from("action-photos")
+        .createSignedUrl(p.storage_path, 3600);
+      return { ...p, signedUrl: signed?.signedUrl ?? null };
+    })
+  );
 
   const canUpload = order.status === "livree";
 
@@ -73,7 +83,15 @@ export default async function PlayerOrderPhotoPage({ params }: Props) {
                   key={photo.id}
                   className="rounded-2xl border border-border bg-card p-3 flex items-center gap-3"
                 >
-                  <ShieldCheck className={`h-5 w-5 shrink-0 ${statusColor}`} />
+                  {photo.signedUrl ? (
+                    <img
+                      src={photo.signedUrl}
+                      alt=""
+                      className="h-12 w-12 rounded-xl object-cover flex-shrink-0"
+                    />
+                  ) : (
+                    <ShieldCheck className={`h-5 w-5 shrink-0 ${statusColor}`} />
+                  )}
                   <div className="flex-1 min-w-0 space-y-0.5">
                     {photo.caption && (
                       <p className="text-sm font-medium truncate">{photo.caption}</p>
