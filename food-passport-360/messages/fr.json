@@ -158,7 +158,8 @@
     "email": "Adresse e-mail",
     "magicLink": "Recevoir un lien magique",
     "magicLinkSent": "Lien envoyé ! Vérifiez votre boîte mail.",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "authError": "Erreur d'authentification — détail :"
   },
   "passport": {
     "title": "Mon passeport",

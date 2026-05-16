@@ -7,8 +7,13 @@ export async function generateMetadata() {
   return { title: t("loginTitle") };
 }
 
-export default async function LoginPage() {
+interface Props {
+  searchParams: Promise<{ error?: string }>;
+}
+
+export default async function LoginPage({ searchParams }: Props) {
   const t = await getTranslations("auth");
+  const { error } = await searchParams;
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center px-6 py-12">
@@ -27,6 +32,16 @@ export default async function LoginPage() {
             <p className="text-sm text-muted-foreground">{t("loginTitle")}</p>
           </div>
         </FadeIn>
+
+        {/* Auth error from callback */}
+        {error && (
+          <FadeIn delay={0.04}>
+            <div className="rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <p className="font-medium mb-1">{t("authError")}</p>
+              <p className="font-mono text-xs break-all opacity-80">{decodeURIComponent(error)}</p>
+            </div>
+          </FadeIn>
+        )}
 
         {/* Formulaire */}
         <FadeIn delay={0.08}>

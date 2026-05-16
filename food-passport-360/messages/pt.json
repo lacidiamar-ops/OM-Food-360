@@ -2,14 +2,13 @@
   "navigation": {
     "home": "Início",
     "orders": "Pedidos",
-    "menu": "Menu do dia",
+    "menu": "Menu",
     "players": "Jogadores",
     "validation": "Validação",
     "production": "Produção",
     "trips": "Deslocamentos",
     "settings": "Configurações",
     "logout": "Sair",
-    "menu": "Menu",
     "profile": "Perfil",
     "commander": "Pedir",
     "queue": "Fila",
@@ -65,6 +64,7 @@
     "email": "Endereço de e-mail",
     "magicLink": "Enviar link mágico",
     "magicLinkSent": "Link enviado! Verifique sua caixa de entrada.",
-    "logout": "Sair"
+    "logout": "Sair",
+    "authError": "Erro de autenticação — detalhe:"
   }
 }

@@ -2,14 +2,13 @@
   "navigation": {
     "home": "Home",
     "orders": "Ordini",
-    "menu": "Menu del giorno",
+    "menu": "Menu",
     "players": "Giocatori",
     "validation": "Validazione",
     "production": "Produzione",
     "trips": "Trasferte",
     "settings": "Impostazioni",
     "logout": "Disconnetti",
-    "menu": "Menu",
     "profile": "Profilo",
     "commander": "Ordina",
     "queue": "Coda",
@@ -65,6 +64,7 @@
     "email": "Indirizzo email",
     "magicLink": "Invia link magico",
     "magicLinkSent": "Link inviato! Controlla la tua casella email.",
-    "logout": "Disconnetti"
+    "logout": "Disconnetti",
+    "authError": "Errore di autenticazione — dettaglio:"
   }
 }

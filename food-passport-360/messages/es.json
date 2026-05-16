@@ -2,14 +2,13 @@
   "navigation": {
     "home": "Inicio",
     "orders": "Pedidos",
-    "menu": "Menú del día",
+    "menu": "Menú",
     "players": "Jugadores",
     "validation": "Validación",
     "production": "Producción",
     "trips": "Desplazamientos",
     "settings": "Configuración",
     "logout": "Cerrar sesión",
-    "menu": "Menú",
     "profile": "Perfil",
     "commander": "Pedir",
     "queue": "Cola",
@@ -65,6 +64,7 @@
     "email": "Correo electrónico",
     "magicLink": "Enviar enlace mágico",
     "magicLinkSent": "¡Enlace enviado! Revisa tu correo.",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "authError": "Error de autenticación — detalle:"
   }
 }

@@ -2,14 +2,13 @@
   "navigation": {
     "home": "Home",
     "orders": "Orders",
-    "menu": "Today's menu",
+    "menu": "Menu",
     "players": "Players",
     "validation": "Validation",
     "production": "Production",
     "trips": "Trips",
     "settings": "Settings",
     "logout": "Log out",
-    "menu": "Menu",
     "profile": "Profile",
     "commander": "Order",
     "queue": "Queue",
@@ -65,6 +64,7 @@
     "email": "Email address",
     "magicLink": "Send magic link",
     "magicLinkSent": "Link sent! Check your inbox.",
-    "logout": "Sign out"
+    "logout": "Sign out",
+    "authError": "Authentication error — detail:"
   }
 }
