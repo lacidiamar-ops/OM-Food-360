@@ -335,3 +335,48 @@ export interface FPNotification {
 export type FPOrderInsert = Omit<FPOrder, "id" | "reference" | "created_at" | "updated_at">
 export type FPPlayerInsert = Omit<FPPlayer, "id" | "created_at" | "updated_at">
 export type FPOnboardingFormInsert = Omit<FPOnboardingForm, "id" | "created_at" | "updated_at">
+
+// ── Nutrition Tracking ────────────────────────────────────
+export type TrackingStatus = 'valide' | 'a_surveiller' | 'alerte';
+
+export interface FPNutritionTracking {
+  id: string;
+  player_id: string;
+  nutri_id: string;
+  tracking_date: string;
+  weight_kg: number | null;
+  hydration: number | null;
+  sleep_hours: number | null;
+  fatigue: number | null;
+  breakfast_quality: number | null;
+  lunch_quality: number | null;
+  dinner_quality: number | null;
+  proteins_g: number | null;
+  carbs_g: number | null;
+  lipids_g: number | null;
+  calories: number | null;
+  nutri_comment: string | null;
+  status: TrackingStatus;
+  score_nutrition: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FPNutritionTrackingInsert {
+  player_id: string;
+  nutri_id: string;
+  tracking_date?: string;
+  weight_kg?: number | null;
+  hydration?: number | null;
+  sleep_hours?: number | null;
+  fatigue?: number | null;
+  breakfast_quality?: number | null;
+  lunch_quality?: number | null;
+  dinner_quality?: number | null;
+  proteins_g?: number | null;
+  carbs_g?: number | null;
+  lipids_g?: number | null;
+  calories?: number | null;
+  nutri_comment?: string | null;
+  status?: TrackingStatus;
+}

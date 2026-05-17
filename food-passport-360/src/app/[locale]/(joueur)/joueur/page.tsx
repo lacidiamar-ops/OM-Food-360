@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import { getPlayerByProfileId, getOnboardingForm } from "@/lib/supabase/queries";
+import { getPlayerByProfileId, getOnboardingForm, getLatestNutritionTracking } from "@/lib/supabase/queries";
 import PlayerPassportView from "@/components/domain/PlayerPassportView";
 
 export async function generateMetadata() {
@@ -21,13 +21,12 @@ export default async function JoueurPage() {
     redirect(`/${locale}/login`);
   }
 
-  const [player, form] = await Promise.all([
-    getPlayerByProfileId(supabase, user.id),
-    // form fetched after we have player id
-    getPlayerByProfileId(supabase, user.id).then((p) =>
-      p ? getOnboardingForm(supabase, p.id) : null
-    ),
+  const player = await getPlayerByProfileId(supabase, user.id);
+
+  const [form, tracking] = await Promise.all([
+    player ? getOnboardingForm(supabase, player.id) : Promise.resolve(null),
+    player ? getLatestNutritionTracking(supabase, player.id) : Promise.resolve(null),
   ]);
 
-  return <PlayerPassportView player={player} form={form} />;
+  return <PlayerPassportView player={player} form={form} tracking={tracking} />;
 }

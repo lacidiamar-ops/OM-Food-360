@@ -596,5 +596,37 @@
       "title": "Audit logs",
       "subtitle": "200 dernières actions"
     }
+  },
+  "tracking": {
+    "title": "Suivi nutritionnel",
+    "weight": "Poids du jour (kg)",
+    "hydration": "Hydratation",
+    "sleep": "Sommeil (heures)",
+    "fatigue": "Fatigue",
+    "breakfastQuality": "Qualité petit-déjeuner",
+    "lunchQuality": "Qualité déjeuner",
+    "dinnerQuality": "Qualité dîner",
+    "proteins": "Protéines (g)",
+    "carbs": "Glucides (g)",
+    "lipids": "Lipides (g)",
+    "calories": "Calories",
+    "comment": "Commentaire nutritionniste",
+    "status": "Statut",
+    "statusValide": "Validé",
+    "statusSurveiller": "À surveiller",
+    "statusAlerte": "Alerte",
+    "scoreNutrition": "Score nutrition",
+    "save": "Enregistrer le suivi",
+    "saving": "Enregistrement...",
+    "saved": "Suivi enregistré",
+    "lastTracking": "Dernier suivi",
+    "noTracking": "Passeport en cours de création — Votre nutritionniste complétera votre fiche lors du prochain rendez-vous.",
+    "trackingBtn": "Suivi nutritionnel",
+    "recommendations": "Recommandations du nutritionniste",
+    "passportStatus": "État du passeport",
+    "statusActif": "Actif",
+    "statusEnCours": "En cours",
+    "statusPerformance": "Performance",
+    "statusAlertePasport": "Alerte"
   }
 }

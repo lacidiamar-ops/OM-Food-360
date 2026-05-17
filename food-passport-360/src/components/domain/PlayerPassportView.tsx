@@ -1,12 +1,14 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { FPPlayer, FPOnboardingForm } from "@/lib/supabase/food-passport.types";
-import { User, UtensilsCrossed, Heart, Plane, Trophy } from "lucide-react";
+import type { FPPlayer, FPOnboardingForm, FPNutritionTracking } from "@/lib/supabase/food-passport.types";
+import { User, UtensilsCrossed, Heart, Plane, Trophy, Activity } from "lucide-react";
+import AvatarEvolution from "./AvatarEvolution";
 
 interface Props {
   player: FPPlayer | null;
   form: FPOnboardingForm | null;
+  tracking?: FPNutritionTracking | null;
 }
 
 function Section({
@@ -57,10 +59,11 @@ function StatusBadge({ status }: { status: FPPlayer["status"] }) {
   );
 }
 
-export default function PlayerPassportView({ player, form }: Props) {
+export default function PlayerPassportView({ player, form, tracking }: Props) {
   const t = useTranslations("passport");
   const tf = useTranslations("passport.field");
   const tc = useTranslations("common");
+  const tt = useTranslations("tracking");
 
   if (!player) {
     return (
@@ -108,6 +111,45 @@ export default function PlayerPassportView({ player, form }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Suivi nutritionnel */}
+      {tracking ? (
+        <section className="rounded-2xl border border-border bg-card p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <Activity className="h-4 w-4 text-primary" />
+            </div>
+            <h2 className="font-semibold text-sm">{tt("title")}</h2>
+            <span className="ml-auto text-xs text-muted-foreground">
+              {new Date(tracking.tracking_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <AvatarEvolution score={tracking.score_nutrition} size="sm" />
+            <div className="flex-1 space-y-1">
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-2xl font-bold tabular-nums">
+                  {tracking.score_nutrition ?? "—"}
+                </span>
+                {tracking.score_nutrition != null && (
+                  <span className="text-xs text-muted-foreground">/100</span>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">{tt("scoreNutrition")}</p>
+            </div>
+          </div>
+          {tracking.nutri_comment && (
+            <div className="rounded-xl bg-muted/50 px-3 py-2">
+              <p className="text-xs font-medium text-muted-foreground mb-0.5">{tt("recommendations")}</p>
+              <p className="text-sm">{tracking.nutri_comment}</p>
+            </div>
+          )}
+        </section>
+      ) : (
+        <section className="rounded-2xl border border-border bg-muted/30 p-4 text-center">
+          <p className="text-sm text-muted-foreground">{tt("noTracking")}</p>
+        </section>
+      )}
 
       {form && (
         <>

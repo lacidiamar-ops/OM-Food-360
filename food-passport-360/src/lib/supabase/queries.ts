@@ -18,6 +18,8 @@ import type {
   FPTrip,
   FPHotel,
   FPHotelAccess,
+  FPNutritionTracking,
+  FPNutritionTrackingInsert,
 } from "./food-passport.types";
 
 // Supabase client typed for food_passport schema
@@ -1557,4 +1559,52 @@ export async function listOrdersForExport(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     items_count: (row.order_items ?? []).filter((it: any) => !it.removed_by_nutri).length,
   }));
+}
+
+// ── Nutrition Tracking ──────────────────────────────────────────────────────
+
+export async function getLatestNutritionTracking(
+  supabase: FPClient,
+  playerId: string
+): Promise<FPNutritionTracking | null> {
+  const { data, error } = await supabase
+    .schema("food_passport")
+    .from("nutrition_tracking")
+    .select("*")
+    .eq("player_id", playerId)
+    .order("tracking_date", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (error) throw error;
+  return data as FPNutritionTracking | null;
+}
+
+export async function listNutritionTracking(
+  supabase: FPClient,
+  playerId: string,
+  limit = 10
+): Promise<FPNutritionTracking[]> {
+  const { data, error } = await supabase
+    .schema("food_passport")
+    .from("nutrition_tracking")
+    .select("*")
+    .eq("player_id", playerId)
+    .order("tracking_date", { ascending: false })
+    .limit(limit);
+  if (error) throw error;
+  return (data ?? []) as FPNutritionTracking[];
+}
+
+export async function upsertNutritionTracking(
+  supabase: FPClient,
+  payload: FPNutritionTrackingInsert & { id?: string }
+): Promise<FPNutritionTracking> {
+  const { data, error } = await supabase
+    .schema("food_passport")
+    .from("nutrition_tracking")
+    .upsert(payload, { onConflict: "id" })
+    .select()
+    .single();
+  if (error) throw error;
+  return data as FPNutritionTracking;
 }
