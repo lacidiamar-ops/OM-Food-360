@@ -66,5 +66,15 @@
     "magicLinkSent": "Link inviato! Controlla la tua casella email.",
     "logout": "Disconnetti",
     "authError": "Errore di autenticazione — dettaglio:"
+  },
+  "tracking": {
+    "tierAlert": "Allerta nutrizionale",
+    "tierProgress": "In progressione",
+    "tierPerformance": "Prestazione",
+    "sectionPhysique": "Fisico",
+    "sectionWellbeing": "Benessere",
+    "sectionMeals": "Qualità dei pasti",
+    "sectionMacros": "Macronutrienti",
+    "commentPlaceholder": "Raccomandazioni, osservazioni, aggiustamenti futuri…"
   }
 }

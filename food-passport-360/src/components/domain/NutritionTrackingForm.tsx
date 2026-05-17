@@ -208,7 +208,7 @@ export default function NutritionTrackingForm({ playerId, nutriId, playerName, e
 
       {/* Poids */}
       <section className="rounded-2xl border border-border bg-card p-4 space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Physique</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{t("sectionPhysique")}</h3>
         <div className="space-y-1.5">
           <label className="text-sm font-medium">{t("weight")}</label>
           <Controller
@@ -235,7 +235,7 @@ export default function NutritionTrackingForm({ playerId, nutriId, playerName, e
 
       {/* Bien-être */}
       <section className="rounded-2xl border border-border bg-card p-4 space-y-5">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Bien-être</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{t("sectionWellbeing")}</h3>
         <Controller
           name="hydration"
           control={control}
@@ -281,7 +281,7 @@ export default function NutritionTrackingForm({ playerId, nutriId, playerName, e
 
       {/* Qualité repas */}
       <section className="rounded-2xl border border-border bg-card p-4 space-y-5">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Qualité des repas</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{t("sectionMeals")}</h3>
         <Controller
           name="breakfast_quality"
           control={control}
@@ -319,7 +319,7 @@ export default function NutritionTrackingForm({ playerId, nutriId, playerName, e
 
       {/* Macronutriments */}
       <section className="rounded-2xl border border-border bg-card p-4 space-y-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Macronutriments</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{t("sectionMacros")}</h3>
         <div className="grid grid-cols-2 gap-3">
           {(["proteins_g", "carbs_g", "lipids_g", "calories"] as const).map((field) => (
             <div key={field} className="space-y-1">
@@ -389,7 +389,7 @@ export default function NutritionTrackingForm({ playerId, nutriId, playerName, e
           render={({ field }) => (
             <textarea
               rows={4}
-              placeholder="Recommandations, observations, ajustements à venir…"
+              placeholder={t("commentPlaceholder")}
               value={field.value ?? ""}
               onChange={(e) => field.onChange(e.target.value || null)}
               className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring resize-none"

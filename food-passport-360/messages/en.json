@@ -66,5 +66,15 @@
     "magicLinkSent": "Link sent! Check your inbox.",
     "logout": "Sign out",
     "authError": "Authentication error — detail:"
+  },
+  "tracking": {
+    "tierAlert": "Nutritional alert",
+    "tierProgress": "In progress",
+    "tierPerformance": "Performance",
+    "sectionPhysique": "Physical",
+    "sectionWellbeing": "Well-being",
+    "sectionMeals": "Meal quality",
+    "sectionMacros": "Macronutrients",
+    "commentPlaceholder": "Recommendations, observations, upcoming adjustments…"
   }
 }

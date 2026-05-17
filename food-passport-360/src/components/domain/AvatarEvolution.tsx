@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 interface Props {
   score: number | null;
@@ -20,7 +21,7 @@ const TIER_CONFIG = {
     gradient: "from-orange-500/20 via-red-500/10 to-red-600/20",
     glow: "shadow-red-500/40",
     ring: "ring-red-500/60",
-    label: "Alerte nutritionnelle",
+    labelKey: "tierAlert" as const,
     textColor: "text-red-500",
   },
   progress: {
@@ -28,7 +29,7 @@ const TIER_CONFIG = {
     gradient: "from-blue-500/20 via-violet-500/10 to-purple-600/20",
     glow: "shadow-blue-500/40",
     ring: "ring-blue-500/60",
-    label: "En progression",
+    labelKey: "tierProgress" as const,
     textColor: "text-blue-500",
   },
   performance: {
@@ -36,7 +37,7 @@ const TIER_CONFIG = {
     gradient: "from-yellow-400/25 via-amber-400/15 to-yellow-500/25",
     glow: "shadow-yellow-400/50",
     ring: "ring-yellow-400/70",
-    label: "Performance",
+    labelKey: "tierPerformance" as const,
     textColor: "text-yellow-500",
   },
 };
@@ -48,6 +49,7 @@ const SIZES = {
 };
 
 export default function AvatarEvolution({ score, size = "md" }: Props) {
+  const t = useTranslations("tracking");
   const tier = getScoreTier(score);
   const cfg = TIER_CONFIG[tier];
   const sz = SIZES[size];
@@ -103,7 +105,7 @@ export default function AvatarEvolution({ score, size = "md" }: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        {cfg.label}
+        {t(cfg.labelKey)}
       </motion.span>
     </motion.div>
   );

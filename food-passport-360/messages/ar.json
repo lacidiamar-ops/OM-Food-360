@@ -66,5 +66,15 @@
     "magicLinkSent": "تم إرسال الرابط! تحقق من بريدك الإلكتروني.",
     "logout": "تسجيل الخروج",
     "authError": "خطأ في المصادقة — التفاصيل:"
+  },
+  "tracking": {
+    "tierAlert": "تنبيه غذائي",
+    "tierProgress": "في تقدم",
+    "tierPerformance": "أداء عالٍ",
+    "sectionPhysique": "الجسم",
+    "sectionWellbeing": "الرفاهية",
+    "sectionMeals": "جودة الوجبات",
+    "sectionMacros": "العناصر الغذائية الكبرى",
+    "commentPlaceholder": "توصيات، ملاحظات، تعديلات قادمة…"
   }
 }

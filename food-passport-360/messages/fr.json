@@ -627,6 +627,14 @@
     "statusActif": "Actif",
     "statusEnCours": "En cours",
     "statusPerformance": "Performance",
-    "statusAlertePasport": "Alerte"
+    "statusAlertePasport": "Alerte",
+    "tierAlert": "Alerte nutritionnelle",
+    "tierProgress": "En progression",
+    "tierPerformance": "Performance",
+    "sectionPhysique": "Physique",
+    "sectionWellbeing": "Bien-être",
+    "sectionMeals": "Qualité des repas",
+    "sectionMacros": "Macronutriments",
+    "commentPlaceholder": "Recommandations, observations, ajustements à venir…"
   }
 }
