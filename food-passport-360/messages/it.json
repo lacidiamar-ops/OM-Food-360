@@ -79,5 +79,24 @@
   },
   "orders": {
     "emptyDesc": "Effettua il tuo primo ordine con il servizio di ristorazione."
+  },
+  "admin": {
+    "statsTitle": "Attività in tempo reale",
+    "navTitle": "Accedi a un'interfaccia",
+    "navNutriDesc": "Validazione ordini, passaporti, monitoraggio nutrizionale",
+    "navJoueurDesc": "Passaporto, ordini, menu del giorno",
+    "navCuisineDesc": "Produzione, kanban, bolle d'ordine",
+    "navHotelDesc": "Portale hotel, rooming, accesso trasferta",
+    "navRestoDesc": "Dashboard, articoli, esportazioni",
+    "navManagerDesc": "Trasferte, hotel, accessi temporanei",
+    "navDirectionDesc": "KPI, audit, panoramica globale",
+    "statsPlayers": "Giocatori attivi",
+    "statsOrdersToday": "Ordini oggi",
+    "statsPendingNutri": "In attesa nutri",
+    "statsPhotos": "Foto da validare",
+    "statsFeedbacks": "Feedback ricevuti",
+    "statsTrips": "Trasferte attive",
+    "quickLinks": "Scorciatoie",
+    "accessDenied": "Accesso negato — ruolo insufficiente"
   }
 }

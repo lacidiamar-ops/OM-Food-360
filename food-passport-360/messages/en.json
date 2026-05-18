@@ -79,5 +79,24 @@
   },
   "orders": {
     "emptyDesc": "Place your first order with the catering team."
+  },
+  "admin": {
+    "statsTitle": "Live activity",
+    "navTitle": "Access an interface",
+    "navNutriDesc": "Order validation, passports, nutrition tracking",
+    "navJoueurDesc": "Passport, orders, today's menu",
+    "navCuisineDesc": "Production, kanban, order sheets",
+    "navHotelDesc": "Hotel portal, rooming, travel access",
+    "navRestoDesc": "Dashboard, articles, order exports",
+    "navManagerDesc": "Trips, hotels, temporary access",
+    "navDirectionDesc": "KPIs, audit, global overview",
+    "statsPlayers": "Active players",
+    "statsOrdersToday": "Orders today",
+    "statsPendingNutri": "Pending nutri",
+    "statsPhotos": "Photos to validate",
+    "statsFeedbacks": "Feedbacks received",
+    "statsTrips": "Active trips",
+    "quickLinks": "Quick links",
+    "accessDenied": "Access denied — insufficient role"
   }
 }

@@ -79,5 +79,24 @@
   },
   "orders": {
     "emptyDesc": "Faça seu primeiro pedido junto ao serviço de restauração."
+  },
+  "admin": {
+    "statsTitle": "Atividade em tempo real",
+    "navTitle": "Acessar uma interface",
+    "navNutriDesc": "Validação de pedidos, passaportes, acompanhamento nutricional",
+    "navJoueurDesc": "Passaporte, pedidos, menu do dia",
+    "navCuisineDesc": "Produção, kanban, notas de pedido",
+    "navHotelDesc": "Portal hotel, rooming, acesso deslocamento",
+    "navRestoDesc": "Dashboard, artigos, exportações",
+    "navManagerDesc": "Deslocamentos, hotéis, acessos temporários",
+    "navDirectionDesc": "KPIs, auditoria, visão global",
+    "statsPlayers": "Jogadores ativos",
+    "statsOrdersToday": "Pedidos hoje",
+    "statsPendingNutri": "Aguardando nutri",
+    "statsPhotos": "Fotos a validar",
+    "statsFeedbacks": "Feedbacks recebidos",
+    "statsTrips": "Deslocamentos ativos",
+    "quickLinks": "Atalhos",
+    "accessDenied": "Acesso negado — função insuficiente"
   }
 }

@@ -79,5 +79,24 @@
   },
   "orders": {
     "emptyDesc": "Realiza tu primer pedido con el servicio de restauración."
+  },
+  "admin": {
+    "statsTitle": "Actividad en tiempo real",
+    "navTitle": "Acceder a una interfaz",
+    "navNutriDesc": "Validación de pedidos, pasaportes, seguimiento nutricional",
+    "navJoueurDesc": "Pasaporte, pedidos, menú del día",
+    "navCuisineDesc": "Producción, kanban, albaranes",
+    "navHotelDesc": "Portal hotel, rooming, acceso desplazamiento",
+    "navRestoDesc": "Dashboard, artículos, exportaciones",
+    "navManagerDesc": "Desplazamientos, hoteles, accesos temporales",
+    "navDirectionDesc": "KPIs, auditoría, vista global",
+    "statsPlayers": "Jugadores activos",
+    "statsOrdersToday": "Pedidos hoy",
+    "statsPendingNutri": "Pendientes nutri",
+    "statsPhotos": "Fotos a validar",
+    "statsFeedbacks": "Feedbacks recibidos",
+    "statsTrips": "Desplazamientos activos",
+    "quickLinks": "Accesos directos",
+    "accessDenied": "Acceso denegado — rol insuficiente"
   }
 }

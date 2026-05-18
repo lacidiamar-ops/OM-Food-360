@@ -518,7 +518,24 @@
     "audit": {
       "title": "Audit logs",
       "subtitle": "200 dernières actions"
-    }
+    },
+    "statsTitle": "Activité en temps réel",
+    "navTitle": "Accéder à une interface",
+    "navNutriDesc": "Validation commandes, passeports, suivi nutritionnel",
+    "navJoueurDesc": "Passeport, commandes, menu du jour",
+    "navCuisineDesc": "Production, kanban, bons de commande",
+    "navHotelDesc": "Portail hôtel, rooming, accès déplacement",
+    "navRestoDesc": "Dashboard, articles, exports commandes",
+    "navManagerDesc": "Déplacements, hôtels, accès temporaires",
+    "navDirectionDesc": "KPIs, audit, vue globale",
+    "statsPlayers": "Joueurs actifs",
+    "statsOrdersToday": "Commandes aujourd'hui",
+    "statsPendingNutri": "En attente nutri",
+    "statsPhotos": "Photos à valider",
+    "statsFeedbacks": "Feedbacks reçus",
+    "statsTrips": "Déplacements actifs",
+    "quickLinks": "Raccourcis",
+    "accessDenied": "Accès refusé — rôle insuffisant"
   },
   "tracking": {
     "title": "Suivi nutritionnel",

@@ -79,5 +79,24 @@
   },
   "orders": {
     "emptyDesc": "قدّم طلبك الأول مع فريق الإطعام."
+  },
+  "admin": {
+    "statsTitle": "النشاط الفوري",
+    "navTitle": "الوصول إلى واجهة",
+    "navNutriDesc": "التحقق من الطلبات، جوازات السفر، المتابعة الغذائية",
+    "navJoueurDesc": "الجواز، الطلبات، قائمة اليوم",
+    "navCuisineDesc": "الإنتاج، لوحة المهام، أوراق الطلبات",
+    "navHotelDesc": "بوابة الفندق، الغرف، الوصول للرحلات",
+    "navRestoDesc": "لوحة التحكم، المقالات، التصدير",
+    "navManagerDesc": "الرحلات، الفنادق، الصلاحيات المؤقتة",
+    "navDirectionDesc": "مؤشرات الأداء، التدقيق، نظرة عامة",
+    "statsPlayers": "اللاعبون النشطون",
+    "statsOrdersToday": "طلبات اليوم",
+    "statsPendingNutri": "بانتظار التغذية",
+    "statsPhotos": "صور للتحقق",
+    "statsFeedbacks": "التغذية الراجعة",
+    "statsTrips": "رحلات نشطة",
+    "quickLinks": "روابط سريعة",
+    "accessDenied": "رفض الوصول — صلاحية غير كافية"
   }
 }
