@@ -18,7 +18,7 @@ function Stars({ rating }: { rating: number }) {
           key={n}
           className={`h-3.5 w-3.5 ${
             n <= rating
-              ? "fill-amber-400 text-amber-400"
+              ? "fill-warning text-warning"
               : "fill-transparent text-muted-foreground/30"
           }`}
         />

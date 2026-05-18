@@ -2,12 +2,12 @@ import { useTranslations } from "next-intl";
 import type { FeedbackTopic } from "@/lib/supabase/food-passport.types";
 
 const COLORS: Record<string, string> = {
-  qualite: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-  quantite: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-  temperature: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
-  gout: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-  delai: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
-  presentation: "bg-pink-100 text-pink-800 dark:bg-pink-900/30 dark:text-pink-300",
+  qualite: "bg-active/10 text-active",
+  quantite: "bg-om/10 text-om",
+  temperature: "bg-energy/10 text-energy",
+  gout: "bg-energy/10 text-energy",
+  delai: "bg-warning/10 text-warning",
+  presentation: "bg-energy/10 text-energy",
 };
 
 interface Props {

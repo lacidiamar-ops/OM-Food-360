@@ -16,7 +16,7 @@ export default async function NutriPhotosPage() {
           <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
         </div>
         {photos.length > 0 && (
-          <span className="rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300 px-2.5 py-0.5 text-xs font-medium">
+          <span className="rounded-full bg-warning/10 text-warning px-2.5 py-0.5 text-xs font-medium">
             {photos.length}
           </span>
         )}

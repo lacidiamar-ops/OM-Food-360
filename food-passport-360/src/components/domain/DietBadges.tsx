@@ -12,11 +12,11 @@ interface Props {
 }
 
 const BADGE_STYLES = {
-  halal: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400",
-  vegetarian: "bg-green-500/15 text-green-700 dark:text-green-400",
-  vegan: "bg-lime-500/15 text-lime-700 dark:text-lime-400",
-  gluten_free: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
-  lactose_free: "bg-sky-500/15 text-sky-700 dark:text-sky-400",
+  halal: "bg-active/15 text-active",
+  vegetarian: "bg-active/15 text-active",
+  vegan: "bg-active/10 text-active",
+  gluten_free: "bg-warning/15 text-warning",
+  lactose_free: "bg-om/15 text-om",
 };
 
 export default function DietBadges({ article, size = "sm" }: Props) {

@@ -19,9 +19,9 @@ function StatusIcon({ article }: { article: FPArticle }) {
     return <Ban className="h-3.5 w-3.5 text-destructive flex-shrink-0" />;
   }
   if (article.nutri_validated) {
-    return <CheckCircle2 className="h-3.5 w-3.5 text-green-600 dark:text-green-400 flex-shrink-0" />;
+    return <CheckCircle2 className="h-3.5 w-3.5 text-active flex-shrink-0" />;
   }
-  return <AlertTriangle className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 flex-shrink-0" />;
+  return <AlertTriangle className="h-3.5 w-3.5 text-warning flex-shrink-0" />;
 }
 
 export default function ArticleCard({
@@ -78,7 +78,7 @@ export default function ArticleCard({
         <DietBadges article={article} />
 
         {variant === "list" && article.nutri_comment && (
-          <p className="text-xs text-amber-700 dark:text-amber-400 italic line-clamp-2">
+          <p className="text-xs text-warning italic line-clamp-2">
             {article.nutri_comment}
           </p>
         )}

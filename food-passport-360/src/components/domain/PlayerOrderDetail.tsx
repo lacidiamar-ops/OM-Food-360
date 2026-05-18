@@ -114,8 +114,8 @@ export default function PlayerOrderDetail({ order, items, logs }: Props) {
 
       {/* Nutri adjustment notes */}
       {order.nutri_adjustment_notes && (
-        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-3 space-y-1">
-          <div className="font-medium text-sm text-amber-700 dark:text-amber-300">
+        <div className="rounded-2xl border border-warning/30 bg-warning/5 p-3 space-y-1">
+          <div className="font-medium text-sm text-warning">
             {t("nutriComment")}
           </div>
           <p className="text-sm">{order.nutri_adjustment_notes}</p>
@@ -133,7 +133,7 @@ export default function PlayerOrderDetail({ order, items, logs }: Props) {
                 it.removed_by_nutri
                   ? "border-red-500/30 bg-red-500/5 opacity-70"
                   : it.added_by_nutri
-                  ? "border-green-500/30 bg-green-500/5"
+                  ? "border-active/30 bg-active/5"
                   : "border-border bg-card"
               }`}
             >
@@ -156,7 +156,7 @@ export default function PlayerOrderDetail({ order, items, logs }: Props) {
                     <MinusCircle className="h-3.5 w-3.5 text-red-600 flex-shrink-0" />
                   )}
                   {it.added_by_nutri && (
-                    <PlusCircle className="h-3.5 w-3.5 text-green-600 flex-shrink-0" />
+                    <PlusCircle className="h-3.5 w-3.5 text-active flex-shrink-0" />
                   )}
                   <span className={it.removed_by_nutri ? "line-through" : ""}>
                     {it.article.name}
@@ -179,7 +179,7 @@ export default function PlayerOrderDetail({ order, items, logs }: Props) {
                   </p>
                 )}
                 {it.added_by_nutri && (
-                  <p className="text-[11px] text-green-700 dark:text-green-400 italic">
+                  <p className="text-[11px] text-active italic">
                     {t("addedByNutri")}
                   </p>
                 )}

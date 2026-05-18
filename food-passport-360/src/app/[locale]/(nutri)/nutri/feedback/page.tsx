@@ -22,8 +22,8 @@ export default async function NutriFeedbackPage() {
           <p className="text-sm text-muted-foreground">{t("nutri.subtitle")}</p>
         </div>
         {avgRating && (
-          <div className="flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-50 dark:bg-amber-900/20 px-3 py-1.5 text-amber-700 dark:text-amber-300">
-            <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
+          <div className="flex items-center gap-1.5 rounded-full border border-warning/30 bg-warning/10 px-3 py-1.5 text-warning">
+            <Star className="h-4 w-4 fill-warning text-warning" />
             <span className="font-semibold text-sm">{avgRating}</span>
             <span className="text-xs">/ 5</span>
           </div>

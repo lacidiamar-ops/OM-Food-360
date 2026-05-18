@@ -126,7 +126,7 @@ export default function NewMenuPage() {
         type="button"
         onClick={handleCreate}
         disabled={isPending || !title.trim()}
-        className="w-full rounded-xl bg-primary text-primary-foreground text-sm py-3 font-medium hover:bg-primary/90 disabled:opacity-60"
+        className="btn-primary w-full rounded-xl py-3 text-sm font-medium disabled:opacity-60"
       >
         {isPending ? tc("saving") : t("create")}
       </button>

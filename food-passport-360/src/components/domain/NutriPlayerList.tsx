@@ -32,7 +32,7 @@ const STATUS_COLORS: Record<FormStatus, string> = {
   incomplete: "bg-orange-500/15 text-orange-700 dark:text-orange-400",
   a_mettre_a_jour: "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400",
   complete: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
-  validee: "bg-green-500/15 text-green-700 dark:text-green-400",
+  validee: "bg-active/15 text-active",
 };
 
 function ProgressBar({ value }: { value: number }) {

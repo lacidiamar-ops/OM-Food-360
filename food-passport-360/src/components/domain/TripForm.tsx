@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
 import { Save, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { FPHotel, FPTrip } from "@/lib/supabase/food-passport.types";
 import { createTripAction, updateTripAction } from "@/app/[locale]/(team-manager)/team-manager/trips/actions";
 
@@ -140,10 +139,7 @@ export default function TripForm({ hotels, trip, onCancel }: Props) {
           type="button"
           onClick={handleSubmit}
           disabled={isPending}
-          className={cn(
-            "flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-medium",
-            "text-primary-foreground hover:bg-primary/90 disabled:opacity-60 transition-colors"
-          )}
+          className="btn-primary flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium disabled:opacity-60"
         >
           <Save className="h-3.5 w-3.5" />
           {isPending ? tc("saving") : trip ? tc("save") : t("create")}

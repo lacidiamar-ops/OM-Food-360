@@ -126,13 +126,11 @@ export default function LoginForm() {
             type="submit"
             disabled={state === "loading"}
             className={cn(
+              "btn-primary",
               "flex h-11 items-center justify-center gap-2 rounded-lg",
-              "bg-primary text-primary-foreground",
               "text-sm font-medium",
-              "transition-all duration-100",
-              "hover:opacity-90 active:scale-[0.97]",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              "disabled:opacity-60 disabled:cursor-not-allowed"
+              "disabled:cursor-not-allowed"
             )}
           >
             {state === "loading" ? (

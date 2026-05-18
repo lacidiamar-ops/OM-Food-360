@@ -94,7 +94,7 @@ export default function PhotoValidationCard({ photo, onDone }: Props) {
             type="button"
             disabled={pending}
             onClick={() => act("validee")}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-medium text-white disabled:opacity-60"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-success px-3 py-2 text-xs font-medium text-success-foreground disabled:opacity-60"
           >
             <CheckCircle className="h-3.5 w-3.5" />
             {t("validate")}
@@ -103,7 +103,7 @@ export default function PhotoValidationCard({ photo, onDone }: Props) {
             type="button"
             disabled={pending}
             onClick={() => act("non_conforme")}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-amber-500 px-3 py-2 text-xs font-medium text-white disabled:opacity-60"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-warning px-3 py-2 text-xs font-medium text-warning-foreground disabled:opacity-60"
           >
             <ShieldAlert className="h-3.5 w-3.5" />
             {t("nonConforme")}
