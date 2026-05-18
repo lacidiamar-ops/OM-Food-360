@@ -76,5 +76,8 @@
     "sectionMeals": "Calidad de las comidas",
     "sectionMacros": "Macronutrientes",
     "commentPlaceholder": "Recomendaciones, observaciones, ajustes próximos…"
+  },
+  "orders": {
+    "emptyDesc": "Realiza tu primer pedido con el servicio de restauración."
   }
 }

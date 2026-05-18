@@ -46,16 +46,20 @@ export default async function MyOrdersPage() {
       </div>
 
       {orders.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-muted">
-            <ShoppingBag className="h-6 w-6 text-muted-foreground" />
+        <div className="empty-state">
+          <div className="empty-state__icon">
+            <ShoppingBag className="h-8 w-8" />
           </div>
-          <p className="text-sm text-muted-foreground">{t("empty")}</p>
+          <div>
+            <p className="empty-state__title">{t("empty")}</p>
+            <p className="empty-state__sub">{t("emptyDesc")}</p>
+          </div>
           <Link
             href={`/${locale}/joueur/commander`}
-            className="text-sm font-medium text-primary"
+            className="btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm"
           >
-            {t("emptyCta")} →
+            <Plus className="h-4 w-4" />
+            {t("emptyCta")}
           </Link>
         </div>
       ) : (

@@ -76,5 +76,8 @@
     "sectionMeals": "جودة الوجبات",
     "sectionMacros": "العناصر الغذائية الكبرى",
     "commentPlaceholder": "توصيات، ملاحظات، تعديلات قادمة…"
+  },
+  "orders": {
+    "emptyDesc": "قدّم طلبك الأول مع فريق الإطعام."
   }
 }

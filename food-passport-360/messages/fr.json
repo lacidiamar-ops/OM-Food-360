@@ -123,7 +123,8 @@
     "timeline": "Suivi",
     "ref": "Référence",
     "photoProof": "Photo preuve",
-    "feedback": "Avis repas"
+    "feedback": "Avis repas",
+    "emptyDesc": "Passez votre première commande auprès de la restauration."
   },
   "roles": {
     "super_admin": "Super Administrateur",
@@ -342,33 +343,9 @@
     "pre_match": "Avant match"
   },
   "menus": {
-    "title": "Menus",
-    "new": "Nouveau menu",
-    "create": "Créer le menu",
-    "empty": "Aucun menu",
-    "todaysMenu": "Menu du jour",
-    "noMenuToday": "Pas de menu publié aujourd'hui",
-    "composition": "Composition",
-    "addArticle": "Ajouter",
-    "searchArticle": "Rechercher un article…",
-    "emptyMenu": "Menu vide — ajoutez des articles",
-    "publish": "Publier",
-    "published": "Publié ✓",
-    "publishedAt": "Publié le",
-    "publishBlockedNotValidated": "Articles non validés — publication bloquée",
-    "readyToPublish": "Prêt à publier",
-    "pending": "À valider",
-    "blocked": "Bloqué",
-    "articles": "{count, plural, =0 {article} =1 {article} other {articles}}",
-    "field": {
-      "title": "Titre",
-      "date": "Date",
-      "service": "Service",
-      "locationType": "Type de lieu",
-      "locationName": "Nom du lieu",
-      "startTime": "Début",
-      "endTime": "Fin"
-    }
+    "back": "Retour",
+    "print": "Imprimer",
+    "noItems": "Aucun article dans ce menu"
   },
   "menuStatus": {
     "draft": "Brouillon",
@@ -388,69 +365,6 @@
     "updating": "Mise à jour…",
     "emptyBoard": "Aucune commande en cours",
     "emptyBoardDesc": "Toutes les commandes du jour sont traitées."
-  },
-  "trips": {
-    "title": "Déplacements",
-    "subtitle": "Gestion des voyages et accès hôtel",
-    "new": "Nouveau",
-    "newTitle": "Nouveau déplacement",
-    "newSubtitle": "Créez un trip et associez-y un hôtel",
-    "create": "Créer le déplacement",
-    "empty": "Aucun déplacement créé",
-    "backToList": "Retour aux déplacements",
-    "archive": "Archiver",
-    "archiveConfirm": "Archiver ce déplacement ? Il sera marqué annulé.",
-    "fieldName": "Nom du déplacement",
-    "fieldCity": "Ville",
-    "fieldHotel": "Hôtel associé",
-    "fieldStartDate": "Date de départ",
-    "fieldEndDate": "Date de retour",
-    "fieldStadium": "Stade",
-    "fieldMatchTime": "Heure du match",
-    "fieldMealTimes": "Horaires repas",
-    "noHotel": "Sans hôtel",
-    "errorRequired": "Nom, date départ et date retour sont obligatoires",
-    "accessSection": "Accès hôtel",
-    "generateAccess": "Générer un accès",
-    "generateAccessTitle": "Générer un accès hôtel",
-    "noAccess": "Aucun accès généré",
-    "accessActive": "Actif",
-    "accessExpired": "Expiré",
-    "accessRevoked": "Révoqué",
-    "accessExpires": "Expire le",
-    "tokenOnce": "Token — copier maintenant, affiché une seule fois",
-    "revokeAccess": "Révoquer cet accès",
-    "revoking": "Révocation…",
-    "generateCta": "Générer",
-    "generating": "Génération…",
-    "accessProfileLabel": "Compte hôtel",
-    "selectProfile": "Sélectionner",
-    "accessFrom": "Début",
-    "accessUntil": "Fin",
-    "errorSelectProfile": "Sélectionnez un compte hôtel",
-    "errorNoHotel": "Ce déplacement n'a pas d'hôtel associé"
-  },
-  "hotelPortal": {
-    "title": "Commandes du jour",
-    "noAccessTitle": "Accès non autorisé",
-    "noAccessDesc": "Votre accès hôtel est expiré ou révoqué. Contactez le Team Manager.",
-    "noOrders": "Aucune commande transmise",
-    "noOrdersDesc": "Les commandes validées apparaîtront ici.",
-    "readOnlyNotice": "Portail lecture seule — aucune action possible"
-  },
-  "restoDashboard": {
-    "title": "Dashboard Restauration",
-    "print": "Imprimer",
-    "printTitle": "Récapitulatif commandes",
-    "backToDashboard": "Retour",
-    "kpiTotal": "Total validées",
-    "kpiToPrepare": "À produire",
-    "kpiInPrep": "En préparation",
-    "kpiReady": "Prêtes",
-    "kpiDelivered": "Livrées",
-    "ordersToday": "Commandes du jour",
-    "ordersCount": "commandes",
-    "noOrders": "Aucune commande validée aujourd'hui"
   },
   "trips": {
     "title": "Déplacements",
@@ -506,6 +420,20 @@
     "noOrders": "Aucune commande",
     "noOrdersDesc": "Il n'y a pas encore de commandes validées pour aujourd'hui.",
     "readOnlyNotice": "Portail en lecture seule. Les commandes sont gérées par le staff de l'équipe."
+  },
+  "restoDashboard": {
+    "title": "Dashboard Restauration",
+    "print": "Imprimer",
+    "printTitle": "Récapitulatif commandes",
+    "backToDashboard": "Retour",
+    "kpiTotal": "Total validées",
+    "kpiToPrepare": "À produire",
+    "kpiInPrep": "En préparation",
+    "kpiReady": "Prêtes",
+    "kpiDelivered": "Livrées",
+    "ordersToday": "Commandes du jour",
+    "ordersCount": "commandes",
+    "noOrders": "Aucune commande validée aujourd'hui"
   },
   "photo": {
     "pageTitle": "Photo preuve repas",
@@ -583,11 +511,6 @@
     "download": "Télécharger Excel",
     "generating": "Génération…",
     "error": "Erreur lors de la génération du fichier"
-  },
-  "menus": {
-    "back": "Retour",
-    "print": "Imprimer",
-    "noItems": "Aucun article dans ce menu"
   },
   "admin": {
     "title": "Super Admin",

@@ -1,161 +1,142 @@
+/* Outfit Variable — jsDelivr CDN */
+@import url("https://cdn.jsdelivr.net/npm/@fontsource-variable/outfit@5/index.min.css");
+
 @import "tailwindcss";
 
 @custom-variant dark (&:is(.dark *));
 
 /* =============================================================================
- * FOOD PASSPORT 360 — Variables CSS thématisables
- * -----------------------------------------------------------------------------
- * IMPORTANT (cf. CLAUDE.md §5.1 et SKILL_FOOD_360.md §3.1) :
- *   Aucune couleur de marque définitive ne doit être figée ici.
- *   Les valeurs ci-dessous sont des PLACEHOLDERS neutres (grayscale) en attente
- *   de la charte définitive de Claude Design (Phase post-MVP).
- *   Pour rebrander toute l'application, il suffit de modifier UNIQUEMENT ce
- *   fichier — aucun composant ne doit contenir de hex en dur.
+ * FOOD PASSPORT 360 — Design System dark (palette OM PRO)
+ * Un seul thème : dark premium par défaut.
+ * Pour rebrand : modifier UNIQUEMENT les valeurs ici, jamais dans les composants.
  * ============================================================================= */
 
 :root {
   /* Géométrie */
-  --radius: 0.75rem;
+  --radius: 0.875rem;   /* 14px */
   --radius-sm: 0.5rem;
   --radius-lg: 1rem;
 
-  /* Surfaces — placeholder neutre */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  /* ── Fond & surfaces ── */
+  --background:         #07080f;
+  --foreground:         #ffffff;
+  --card:               rgba(255, 255, 255, 0.04);
+  --card-foreground:    #ffffff;
+  --popover:            #0d0f1e;
+  --popover-foreground: #ffffff;
 
-  /* Couleurs fonctionnelles — placeholder neutre */
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  /* ── Texte utilitaire ── */
+  --muted:              rgba(255, 255, 255, 0.06);
+  --muted-foreground:   rgba(255, 255, 255, 0.55);
+  --disabled:           rgba(255, 255, 255, 0.28);
 
-  /* Statuts (sémantiques, à teinter par Claude Design) */
-  --success: oklch(0.45 0 0);
-  --success-foreground: oklch(0.985 0 0);
-  --warning: oklch(0.55 0 0);
-  --warning-foreground: oklch(0.985 0 0);
-  --danger: oklch(0.4 0 0);
-  --danger-foreground: oklch(0.985 0 0);
-  --info: oklch(0.5 0 0);
-  --info-foreground: oklch(0.985 0 0);
-  --destructive: var(--danger);
+  /* ── Interactif primaire — Bleu OM glassy ── */
+  --primary:            rgba(0, 91, 172, 0.15);
+  --primary-border:     rgba(0, 91, 172, 0.5);
+  --primary-foreground: #4dffb4;
+  --primary-solid:      #005bac;
+
+  /* ── Secondaire ── */
+  --secondary:          rgba(255, 255, 255, 0.07);
+  --secondary-foreground: #ffffff;
+
+  /* ── Accent — violet énergie ── */
+  --accent:             #8b7ff5;
+  --accent-foreground:  #ffffff;
+
+  /* ── Statuts sémantiques ── */
+  --success:            #4dffb4;
+  --success-foreground: #07080f;
+  --warning:            #ffd700;
+  --warning-foreground: #07080f;
+  --danger:             #ff4d6a;
+  --danger-foreground:  #ffffff;
+  --info:               #005bac;
+  --info-foreground:    #ffffff;
+  --destructive:        var(--danger);
   --destructive-foreground: var(--danger-foreground);
 
-  /* Bordures, focus, inputs */
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  /* ── Bordures & focus ── */
+  --border:  rgba(255, 255, 255, 0.07);
+  --input:   rgba(255, 255, 255, 0.10);
+  --ring:    #4dffb4;
 
-  /* Charts (placeholders) */
-  --chart-1: oklch(0.6 0 0);
-  --chart-2: oklch(0.5 0 0);
-  --chart-3: oklch(0.4 0 0);
-  --chart-4: oklch(0.7 0 0);
-  --chart-5: oklch(0.3 0 0);
+  /* ── Brand tokens ── */
+  --color-active:  #4dffb4;   /* vert performance */
+  --color-energy:  #8b7ff5;   /* violet énergie */
+  --color-gold:    #ffd700;   /* or ultime */
+  --color-om:      #005bac;   /* bleu OM */
 
-  /* Sidebar */
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-}
+  /* ── Navigation bottom ── */
+  --nav-bg:       #0d0f1e;
+  --nav-border:   rgba(255, 255, 255, 0.06);
+  --nav-inactive: rgba(255, 255, 255, 0.35);
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  /* ── Charts ── */
+  --chart-1: #4dffb4;
+  --chart-2: #8b7ff5;
+  --chart-3: #ffd700;
+  --chart-4: #005bac;
+  --chart-5: rgba(255, 255, 255, 0.35);
 
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-
-  --success: oklch(0.6 0 0);
-  --success-foreground: oklch(0.145 0 0);
-  --warning: oklch(0.7 0 0);
-  --warning-foreground: oklch(0.145 0 0);
-  --danger: oklch(0.55 0 0);
-  --danger-foreground: oklch(0.985 0 0);
-  --info: oklch(0.65 0 0);
-  --info-foreground: oklch(0.145 0 0);
-  --destructive: var(--danger);
-  --destructive-foreground: var(--danger-foreground);
-
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-
-  --chart-1: oklch(0.7 0 0);
-  --chart-2: oklch(0.6 0 0);
-  --chart-3: oklch(0.5 0 0);
-  --chart-4: oklch(0.8 0 0);
-  --chart-5: oklch(0.4 0 0);
-
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.985 0 0);
-  --sidebar-primary-foreground: oklch(0.205 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* ── Sidebar desktop ── */
+  --sidebar:                    #0d0f1e;
+  --sidebar-foreground:         rgba(255, 255, 255, 0.55);
+  --sidebar-primary:            #4dffb4;
+  --sidebar-primary-foreground: #07080f;
+  --sidebar-accent:             rgba(255, 255, 255, 0.06);
+  --sidebar-accent-foreground:  #ffffff;
+  --sidebar-border:             rgba(255, 255, 255, 0.06);
+  --sidebar-ring:               #4dffb4;
 }
 
 /* =============================================================================
- * Mapping vers les utilitaires Tailwind v4
- * Les composants doivent utiliser bg-background, text-primary, etc.
- * Jamais de couleur en dur.
+ * Mapping Tailwind v4 — @theme inline
  * ============================================================================= */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
+  --color-background:    var(--background);
+  --color-foreground:    var(--foreground);
+  --color-card:          var(--card);
   --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
+  --color-popover:       var(--popover);
   --color-popover-foreground: var(--popover-foreground);
 
-  --color-primary: var(--primary);
+  --color-primary:          var(--primary);
+  --color-primary-border:   var(--primary-border);
+  --color-primary-solid:    var(--primary-solid);
   --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
+  --color-secondary:        var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
-  --color-accent: var(--accent);
+  --color-accent:           var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-muted: var(--muted);
+  --color-muted:            var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-disabled:         var(--disabled);
 
-  --color-success: var(--success);
+  --color-success:     var(--success);
   --color-success-foreground: var(--success-foreground);
-  --color-warning: var(--warning);
+  --color-warning:     var(--warning);
   --color-warning-foreground: var(--warning-foreground);
-  --color-danger: var(--danger);
+  --color-danger:      var(--danger);
   --color-danger-foreground: var(--danger-foreground);
-  --color-info: var(--info);
+  --color-info:        var(--info);
   --color-info-foreground: var(--info-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
 
   --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-input:  var(--input);
+  --color-ring:   var(--ring);
+
+  /* Brand */
+  --color-active:  var(--color-active);
+  --color-energy:  var(--color-energy);
+  --color-gold:    var(--color-gold);
+  --color-om:      var(--color-om);
+
+  /* Nav */
+  --color-nav:          var(--nav-bg);
+  --color-nav-inactive: var(--nav-inactive);
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -163,36 +144,124 @@
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar:                    var(--sidebar);
+  --color-sidebar-foreground:         var(--sidebar-foreground);
+  --color-sidebar-primary:            var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-accent:             var(--sidebar-accent);
+  --color-sidebar-accent-foreground:  var(--sidebar-accent-foreground);
+  --color-sidebar-border:             var(--sidebar-border);
+  --color-sidebar-ring:               var(--sidebar-ring);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Police globale : Outfit Variable */
+  --font-sans: 'Outfit Variable', 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, monospace;
 }
 
+/* =============================================================================
+ * Base
+ * ============================================================================= */
 @layer base {
   * {
     border-color: var(--border);
+    box-sizing: border-box;
   }
+
+  html {
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+    font-family: var(--font-sans);
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  html {
-    text-size-adjust: 100%;
+
+  /* Titres plus gras par défaut */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+  }
+
+  /* Inputs & textareas sombres */
+  input, textarea, select {
+    color: var(--foreground);
+    background-color: var(--input);
+    border-color: var(--border);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--muted-foreground);
+  }
+}
+
+/* =============================================================================
+ * Components
+ * ============================================================================= */
+@layer components {
+  /* Bouton primaire OM — glass bleu + texte vert */
+  .btn-primary {
+    background-color: var(--primary);
+    border: 1px solid var(--primary-border);
+    color: var(--primary-foreground);
+    border-radius: 14px;
+    font-weight: 600;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+  }
+  .btn-primary:hover:not(:disabled) {
+    opacity: 0.85;
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Carte vide stylée (empty state) */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    background-color: var(--card);
+  }
+
+  .empty-state__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: var(--radius-lg);
+    background: rgba(77, 255, 180, 0.08);
+    border: 1px solid rgba(77, 255, 180, 0.2);
+    color: var(--success);
+  }
+
+  .empty-state__title {
+    color: var(--foreground);
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  .empty-state__sub {
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    margin-top: 0.25rem;
   }
 }

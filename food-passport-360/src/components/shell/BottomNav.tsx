@@ -18,8 +18,12 @@ export default function BottomNav({ role, className }: BottomNavProps) {
 
   return (
     <nav
-      className={cn("fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-card lg:hidden", className)}
-      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+      className={cn("fixed bottom-0 left-0 right-0 z-40 lg:hidden", className)}
+      style={{
+        background: "var(--nav-bg)",
+        borderTop: "1px solid var(--nav-border)",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+      }}
       aria-label="Navigation principale"
     >
       <div className="flex h-16 items-center justify-around px-1">
@@ -33,21 +37,19 @@ export default function BottomNav({ role, className }: BottomNavProps) {
               href={href}
               className={cn(
                 "flex min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5",
-                "rounded-lg py-1 text-[10px] font-medium transition-colors duration-100",
+                "rounded-lg py-1 text-[10px] font-semibold transition-colors duration-150",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                isActive
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                isActive ? "text-active" : "text-nav-inactive hover:text-muted-foreground"
               )}
               aria-current={isActive ? "page" : undefined}
             >
               <span
                 className={cn(
-                  "flex h-6 w-6 items-center justify-center rounded-md transition-all duration-100",
-                  isActive && "scale-110"
+                  "flex h-6 w-6 items-center justify-center rounded-md transition-all duration-150",
+                  isActive && "scale-110 drop-shadow-[0_0_6px_rgba(77,255,180,0.5)]"
                 )}
               >
-                <Icon size={22} strokeWidth={isActive ? 2 : 1.5} />
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 1.5} />
               </span>
               <span className="max-w-[52px] truncate capitalize">
                 {t(key as Parameters<typeof t>[0])}

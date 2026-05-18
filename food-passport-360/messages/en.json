@@ -76,5 +76,8 @@
     "sectionMeals": "Meal quality",
     "sectionMacros": "Macronutrients",
     "commentPlaceholder": "Recommendations, observations, upcoming adjustments…"
+  },
+  "orders": {
+    "emptyDesc": "Place your first order with the catering team."
   }
 }
