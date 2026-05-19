@@ -1,6 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Image from "next/image";
 
 interface ActionButton {
   label: string;
@@ -12,30 +13,45 @@ interface Props {
   subtitle?: string;
   label?: string;
   action?: ActionButton | ReactNode;
+  showLogo?: boolean;
 }
 
 function isActionButton(action: ActionButton | ReactNode): action is ActionButton {
   return typeof action === "object" && action !== null && "label" in action && "onClick" in action;
 }
 
-export default function PageHeader({ title, subtitle, label, action }: Props) {
+export default function PageHeader({ title, subtitle, label, action, showLogo }: Props) {
   return (
     <div className="flex items-start justify-between gap-4">
-      <div className="space-y-1">
-        {label && (
-          <p
-            className="text-active font-semibold"
-            style={{ fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase" }}
-          >
-            {label}
-          </p>
+      {/* Left: optional logo + text */}
+      <div className="flex items-start gap-3 min-w-0">
+        {showLogo && (
+          <Image
+            src="/logo-om-white.svg"
+            alt="OM"
+            width={24}
+            height={24}
+            className="mt-1 shrink-0"
+            style={{ opacity: 0.85, filter: "brightness(0) invert(1)" }}
+          />
         )}
-        <h1 style={{ fontSize: "24px", fontWeight: 700, lineHeight: 1.2 }}>{title}</h1>
-        {subtitle && (
-          <p style={{ fontSize: "14px", color: "var(--muted-foreground)" }}>{subtitle}</p>
-        )}
+        <div className="space-y-1 min-w-0">
+          {label && (
+            <p
+              className="text-active font-semibold"
+              style={{ fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase" }}
+            >
+              {label}
+            </p>
+          )}
+          <h1 className="truncate" style={{ fontSize: "24px", fontWeight: 700, lineHeight: 1.2 }}>{title}</h1>
+          {subtitle && (
+            <p style={{ fontSize: "14px", color: "var(--muted-foreground)" }}>{subtitle}</p>
+          )}
+        </div>
       </div>
 
+      {/* Right: action */}
       {action && (
         <div className="shrink-0 flex items-center">
           {isActionButton(action) ? (

@@ -4,7 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Clock, MessageSquare } from "lucide-react";
 import { useOrdersQueueRealtime } from "@/hooks/useOrderRealtime";
 import type { HotelOrder } from "@/lib/supabase/queries";
-import { PageHeader, EmptyState } from "@/components/ui";
+import { PageHeader, EmptyState, ProfileHero } from "@/components/ui";
 
 interface Props {
   orders: HotelOrder[];
@@ -36,7 +36,9 @@ export default function HotelPortal({ orders, date, hotelName }: Props) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 pb-6">
+      <ProfileHero />
+      <div className="px-4 space-y-6">
       <PageHeader
         label={t("portalLabel")}
         title={hotelName ?? t("title")}
@@ -211,6 +213,7 @@ export default function HotelPortal({ orders, date, hotelName }: Props) {
       <p className="text-center text-[11px] text-muted-foreground/60 pb-4">
         {t("readOnlyNotice")}
       </p>
+      </div>
     </div>
   );
 }

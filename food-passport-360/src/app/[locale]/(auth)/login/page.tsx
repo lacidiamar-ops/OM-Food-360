@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import FadeIn from "@/components/motion/FadeIn";
 import LoginForm from "./LoginForm";
@@ -20,11 +21,16 @@ export default async function LoginPage({ searchParams }: Props) {
       <div className="w-full max-w-sm space-y-8">
         {/* Logo */}
         <FadeIn>
-          <div className="space-y-2 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary">
-              <span className="text-lg font-bold text-primary-foreground">
-                FP
-              </span>
+          <div className="space-y-3 text-center">
+            <div className="flex justify-center">
+              <Image
+                src="/logo-om-white.svg"
+                alt="Olympique de Marseille"
+                width={64}
+                height={64}
+                style={{ filter: "brightness(0) invert(1)", opacity: 0.92 }}
+                priority
+              />
             </div>
             <h1 className="text-xl font-semibold tracking-tight">
               FOOD PASSPORT 360

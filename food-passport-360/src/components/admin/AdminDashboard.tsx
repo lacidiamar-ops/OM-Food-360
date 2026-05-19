@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { ProfileHero } from "@/components/ui";
 import {
   ShieldCheck,
   User,
@@ -220,15 +222,27 @@ export default function AdminDashboard({ stats }: Props) {
   ];
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 px-4 py-6">
+    <div className="mx-auto max-w-4xl space-y-0 pb-6">
+      <ProfileHero />
+      <div className="space-y-8 px-4 py-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
+        className="flex items-center gap-3"
       >
-        <h1 className="text-xl font-semibold text-foreground">{t("title")}</h1>
-        <p className="mt-0.5 text-sm text-muted-foreground">{t("subtitle")}</p>
+        <Image
+          src="/logo-om-white.svg"
+          alt="OM"
+          width={28}
+          height={28}
+          style={{ opacity: 0.85, filter: "brightness(0) invert(1)", flexShrink: 0 }}
+        />
+        <div>
+          <h1 className="text-xl font-semibold text-foreground">{t("title")}</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">{t("subtitle")}</p>
+        </div>
       </motion.div>
 
       {/* Stats grid */}
@@ -285,6 +299,7 @@ export default function AdminDashboard({ stats }: Props) {
           })}
         </div>
       </section>
+      </div>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { navItemsByRole } from "./nav-items";
@@ -26,7 +27,21 @@ export default function BottomNav({ role, className }: BottomNavProps) {
       }}
       aria-label="Navigation principale"
     >
-      <div className="flex h-16 items-center justify-around px-1">
+      {/* OM watermark behind nav items */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+        aria-hidden="true"
+      >
+        <Image
+          src="/logo-om-white.svg"
+          alt=""
+          width={48}
+          height={48}
+          style={{ opacity: 0.06, filter: "brightness(0) invert(1)" }}
+        />
+      </div>
+
+      <div className="relative flex h-16 items-center justify-around px-1">
         {items.map(({ key, href, icon: Icon }) => {
           const isActive =
             href === "/" ? pathname === "/" : pathname.startsWith(href);

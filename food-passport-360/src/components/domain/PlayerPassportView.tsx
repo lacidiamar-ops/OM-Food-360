@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { User, UtensilsCrossed, Heart, Plane, Trophy, Activity } from "lucide-react";
 import type { FPPlayer, FPOnboardingForm, FPNutritionTracking } from "@/lib/supabase/food-passport.types";
 import AvatarEvolution from "./AvatarEvolution";
-import { PageHeader, StatCard, EmptyState } from "@/components/ui";
+import { PageHeader, StatCard, EmptyState, ProfileHero } from "@/components/ui";
 
 interface Props {
   player: FPPlayer | null;
@@ -130,7 +130,10 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
     .join(" · ");
 
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
+    <div className="max-w-lg mx-auto space-y-5 pb-6">
+      <ProfileHero />
+
+      <div className="px-4 space-y-5">
       {/* Header */}
       <div className="flex items-start gap-4">
         {player.photo_url ? (
@@ -286,6 +289,7 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
       {!form && (
         <p className="text-center text-sm text-muted-foreground py-8">{tc("noData")}</p>
       )}
+      </div>
     </div>
   );
 }

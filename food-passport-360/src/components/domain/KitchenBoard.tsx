@@ -3,7 +3,7 @@
 import { useTranslations, useLocale } from "next-intl";
 import { useKitchenRealtime } from "@/hooks/useOrderRealtime";
 import KitchenOrderCard from "./KitchenOrderCard";
-import { PageHeader, EmptyState } from "@/components/ui";
+import { PageHeader, EmptyState, ProfileHero } from "@/components/ui";
 import type { KitchenOrder } from "@/lib/supabase/queries";
 import { ClipboardCheck } from "lucide-react";
 
@@ -56,7 +56,9 @@ export default function KitchenBoard({ initialOrders }: Props) {
   });
 
   return (
-    <div className="px-4 py-4 lg:px-6 space-y-5">
+    <div className="space-y-5 pb-6">
+      <ProfileHero />
+      <div className="px-4 lg:px-6 space-y-5">
       <PageHeader label={t("label")} title={t("boardTitle")} subtitle={today} />
 
       {/* Kanban — scroll snap mobile, 3 cols desktop */}
@@ -124,6 +126,7 @@ export default function KitchenBoard({ initialOrders }: Props) {
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );

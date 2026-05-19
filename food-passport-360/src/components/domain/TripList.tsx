@@ -4,7 +4,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { CalendarDays, Hotel, ChevronRight } from "lucide-react";
 import type { TripWithHotel } from "@/lib/supabase/queries";
-import { StatusBadge, EmptyState } from "@/components/ui";
+import { StatusBadge, EmptyState, ProfileHero } from "@/components/ui";
 
 interface Props {
   trips: TripWithHotel[];

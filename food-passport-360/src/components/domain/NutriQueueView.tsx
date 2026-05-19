@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { ChevronRight } from "lucide-react";
 import type { FPOrder } from "@/lib/supabase/food-passport.types";
-import { PageHeader, StatusBadge, EmptyState } from "@/components/ui";
+import { PageHeader, StatusBadge, EmptyState, ProfileHero } from "@/components/ui";
 import { useOrdersQueueRealtime } from "@/hooks/useOrderRealtime";
 
 interface Props {
@@ -73,7 +73,10 @@ export default function NutriQueueView({ orders }: Props) {
   );
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+    <div className="max-w-2xl mx-auto space-y-4 pb-6">
+      <ProfileHero />
+
+      <div className="px-4 space-y-4">
       <PageHeader
         label={t("role")}
         title={t("title")}
@@ -142,6 +145,7 @@ export default function NutriQueueView({ orders }: Props) {
           );
         })}
       </ul>
+      </div>
     </div>
   );
 }
