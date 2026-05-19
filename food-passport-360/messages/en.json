@@ -16,7 +16,9 @@
     "kanban": "Kanban",
     "confirmations": "Confirmations",
     "rooming": "Rooming",
-    "access": "Access"
+    "access": "Access",
+    "messages": "Messages",
+    "planning": "Planning"
   },
   "orderStatus": {
     "brouillon": "Draft",
@@ -47,16 +49,14 @@
     "direction": "Management"
   },
   "common": {
+    "send": "Send",
+    "sending": "Sending…",
     "save": "Save",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "loading": "Loading…",
-    "error": "An error occurred",
-    "success": "Success",
-    "required": "This field is required"
+    "back": "Back",
+    "loading": "Loading…"
   },
   "auth": {
     "login": "Sign in",
@@ -178,5 +178,62 @@
     "articleLabel": "Article",
     "newArticle": "New article",
     "catalogLabel": "Catalog"
+  },
+  "chat": {
+    "conversations": "Messages",
+    "conversationsDesc": "Your conversations with staff",
+    "messages": "Conversation",
+    "noConversations": "No conversations",
+    "noConversationsDesc": "You don't have any messages yet",
+    "noMessages": "Start the conversation…",
+    "inputPlaceholder": "Your message…",
+    "unknownContact": "Unknown contact",
+    "forwardTitle": "Forward to",
+    "targetCuisine": "Kitchen",
+    "targetHotel": "Hotel",
+    "noRecipientFound": "No recipient found",
+    "sendError": "Send error",
+    "messagePlaceholder": "Add a message…",
+    "back": "Back",
+    "autoTranslateActive": "Auto-translate on",
+    "translatedFrom": "Translated from {lang}",
+    "showOriginal": "See original",
+    "hideOriginal": "Hide original"
+  },
+  "planning": {
+    "label": "Planning",
+    "title": "Meal planning",
+    "subtitle": "Organise meal schedules",
+    "service": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
+    },
+    "location": {
+      "centre": "Training centre",
+      "hotel": "Hotel",
+      "deplacement": "Away"
+    },
+    "addSlot": "Add slot",
+    "editSlot": "Edit slot",
+    "date": "Date",
+    "timeStart": "Start",
+    "timeEnd": "End",
+    "playerGroup": "Player group",
+    "playerGroupPlaceholder": "E.g. Group A, All players…",
+    "notes": "Notes",
+    "notesPlaceholder": "Additional information…",
+    "save": "Save",
+    "delete": "Delete",
+    "confirmDelete": "Delete this slot?"
+  },
+  "profile": {
+    "title": "My profile",
+    "subtitle": "Manage your preferences",
+    "languageTitle": "My language",
+    "languageDesc": "Messages you receive will be automatically translated into your language",
+    "languageSaving": "Saving…",
+    "languageSaved": "Language updated"
   }
 }

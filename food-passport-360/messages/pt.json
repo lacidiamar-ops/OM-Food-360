@@ -16,7 +16,9 @@
     "kanban": "Kanban",
     "confirmations": "Confirmações",
     "rooming": "Quartos",
-    "access": "Acesso"
+    "access": "Acesso",
+    "messages": "Mensagens",
+    "planning": "Planeamento"
   },
   "orderStatus": {
     "brouillon": "Rascunho",
@@ -47,16 +49,14 @@
     "direction": "Direção"
   },
   "common": {
-    "save": "Salvar",
+    "send": "Enviar",
+    "sending": "A enviar…",
+    "save": "Guardar",
     "cancel": "Cancelar",
     "confirm": "Confirmar",
     "delete": "Eliminar",
-    "edit": "Editar",
-    "close": "Fechar",
-    "loading": "Carregando…",
-    "error": "Ocorreu um erro",
-    "success": "Sucesso",
-    "required": "Este campo é obrigatório"
+    "back": "Voltar",
+    "loading": "A carregar…"
   },
   "auth": {
     "login": "Entrar",
@@ -178,5 +178,62 @@
     "articleLabel": "Artigo",
     "newArticle": "Novo artigo",
     "catalogLabel": "Catálogo"
+  },
+  "chat": {
+    "conversations": "Mensagens",
+    "conversationsDesc": "As suas conversas com o staff",
+    "messages": "Conversa",
+    "noConversations": "Sem conversas",
+    "noConversationsDesc": "Ainda não tem mensagens",
+    "noMessages": "Inicie a conversa…",
+    "inputPlaceholder": "A sua mensagem…",
+    "unknownContact": "Contacto desconhecido",
+    "forwardTitle": "Reencaminhar para",
+    "targetCuisine": "Cozinha",
+    "targetHotel": "Hotel",
+    "noRecipientFound": "Nenhum destinatário encontrado",
+    "sendError": "Erro de envio",
+    "messagePlaceholder": "Adicionar mensagem…",
+    "back": "Voltar",
+    "autoTranslateActive": "Tradução automática ativa",
+    "translatedFrom": "Traduzido do {lang}",
+    "showOriginal": "Ver original",
+    "hideOriginal": "Ocultar original"
+  },
+  "planning": {
+    "label": "Planeamento",
+    "title": "Planeamento de refeições",
+    "subtitle": "Organize os horários das refeições",
+    "service": {
+      "breakfast": "Pequeno-almoço",
+      "lunch": "Almoço",
+      "dinner": "Jantar",
+      "snack": "Lanche"
+    },
+    "location": {
+      "centre": "Centro de treino",
+      "hotel": "Hotel",
+      "deplacement": "Deslocação"
+    },
+    "addSlot": "Adicionar horário",
+    "editSlot": "Editar horário",
+    "date": "Data",
+    "timeStart": "Início",
+    "timeEnd": "Fim",
+    "playerGroup": "Grupo de jogadores",
+    "playerGroupPlaceholder": "Ex. Grupo A, Todos os jogadores…",
+    "notes": "Notas",
+    "notesPlaceholder": "Informações adicionais…",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "confirmDelete": "Eliminar este horário?"
+  },
+  "profile": {
+    "title": "O meu perfil",
+    "subtitle": "Gerir as suas preferências",
+    "languageTitle": "O meu idioma",
+    "languageDesc": "As mensagens recebidas serão automaticamente traduzidas para o seu idioma",
+    "languageSaving": "A guardar…",
+    "languageSaved": "Idioma atualizado"
   }
 }

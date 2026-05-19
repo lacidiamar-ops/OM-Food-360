@@ -380,3 +380,49 @@ export interface FPNutritionTrackingInsert {
   nutri_comment?: string | null;
   status?: TrackingStatus;
 }
+
+// ── chat ──────────────────────────────────────────────────
+export interface FPConversation {
+  id: string
+  type: string
+  participant_ids: string[]
+  trip_id: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface FPMessage {
+  id: string
+  conversation_id: string
+  sender_id: string | null
+  content: string
+  read_by: string[]
+  created_at: string
+}
+
+export type FPMessageWithSender = FPMessage & {
+  sender: { id: string; full_name: string | null; role: string } | null
+}
+
+export type FPConversationWithPreview = FPConversation & {
+  last_message: FPMessage | null
+  other_participant: { id: string; full_name: string | null; role: string } | null
+}
+
+// ── meal schedule ─────────────────────────────────────────
+export type MealService = 'breakfast' | 'lunch' | 'dinner' | 'snack'
+export type MealLocation = 'centre' | 'hotel' | 'deplacement'
+
+export interface FPMealSchedule {
+  id: string
+  date: string
+  service: MealService
+  location: MealLocation
+  trip_id: string | null
+  time_start: string
+  time_end: string
+  player_group: string
+  notes: string | null
+  created_by: string | null
+  created_at: string
+}

@@ -15,6 +15,8 @@ import {
   Settings,
   FileText,
   Key,
+  MessageCircle,
+  Calendar,
 } from "lucide-react";
 import type { UserRole } from "@/lib/rbac/types";
 
@@ -30,12 +32,15 @@ export const navItemsByRole: Record<UserRole, NavItem[]> = {
     { key: "menu", href: "/joueur/menu", icon: UtensilsCrossed },
     { key: "commander", href: "/joueur/commander", icon: ShoppingBag },
     { key: "orders", href: "/joueur/orders", icon: Clock },
+    { key: "messages", href: "/joueur/messages", icon: MessageCircle },
     { key: "profile", href: "/joueur/profile", icon: User },
   ],
   admin_nutri: [
     { key: "queue", href: "/nutri", icon: ClipboardList },
     { key: "players", href: "/nutri/players", icon: Users },
     { key: "validation", href: "/nutri/articles", icon: FileText },
+    { key: "messages", href: "/nutri/messages", icon: MessageCircle },
+    { key: "planning", href: "/nutri/planning", icon: Calendar },
     { key: "profile", href: "/nutri/profile", icon: User },
   ],
   admin_resto: [
@@ -48,17 +53,21 @@ export const navItemsByRole: Record<UserRole, NavItem[]> = {
   cuisine: [
     { key: "kanban", href: "/cuisine", icon: LayoutDashboard },
     { key: "production", href: "/cuisine/production", icon: ChefHat },
+    { key: "messages", href: "/cuisine/messages", icon: MessageCircle },
     { key: "profile", href: "/cuisine/profile", icon: User },
   ],
   hotel: [
     { key: "orders", href: "/hotel", icon: ShoppingBag },
     { key: "confirmations", href: "/hotel/confirmations", icon: Building2 },
+    { key: "messages", href: "/hotel/messages", icon: MessageCircle },
     { key: "profile", href: "/hotel/profile", icon: User },
   ],
   admin_team_manager: [
     { key: "trips", href: "/team-manager", icon: Plane },
     { key: "rooming", href: "/team-manager/rooming", icon: Users },
     { key: "access", href: "/team-manager/access", icon: Key },
+    { key: "messages", href: "/team-manager/messages", icon: MessageCircle },
+    { key: "planning", href: "/team-manager/planning", icon: Calendar },
     { key: "profile", href: "/team-manager/profile", icon: User },
   ],
   super_admin: [

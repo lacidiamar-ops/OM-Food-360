@@ -16,7 +16,9 @@
     "kanban": "كانبان",
     "confirmations": "التأكيدات",
     "rooming": "الغرف",
-    "access": "الوصول"
+    "access": "الوصول",
+    "messages": "الرسائل",
+    "planning": "التخطيط"
   },
   "orderStatus": {
     "brouillon": "مسودة",
@@ -47,16 +49,14 @@
     "direction": "الإدارة"
   },
   "common": {
+    "send": "إرسال",
+    "sending": "جارٍ الإرسال…",
     "save": "حفظ",
     "cancel": "إلغاء",
     "confirm": "تأكيد",
     "delete": "حذف",
-    "edit": "تعديل",
-    "close": "إغلاق",
-    "loading": "جارٍ التحميل…",
-    "error": "حدث خطأ",
-    "success": "تم بنجاح",
-    "required": "هذا الحقل مطلوب"
+    "back": "رجوع",
+    "loading": "جارٍ التحميل…"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -178,5 +178,62 @@
     "articleLabel": "المقالة",
     "newArticle": "مقالة جديدة",
     "catalogLabel": "الكتالوج"
+  },
+  "chat": {
+    "conversations": "الرسائل",
+    "conversationsDesc": "محادثاتك مع الطاقم",
+    "messages": "المحادثة",
+    "noConversations": "لا توجد محادثات",
+    "noConversationsDesc": "ليس لديك رسائل بعد",
+    "noMessages": "ابدأ المحادثة…",
+    "inputPlaceholder": "رسالتك…",
+    "unknownContact": "جهة اتصال غير معروفة",
+    "forwardTitle": "إعادة التوجيه إلى",
+    "targetCuisine": "المطبخ",
+    "targetHotel": "الفندق",
+    "noRecipientFound": "لم يتم العثور على مستلم",
+    "sendError": "خطأ في الإرسال",
+    "messagePlaceholder": "أضف رسالة…",
+    "back": "رجوع",
+    "autoTranslateActive": "الترجمة التلقائية مفعّلة",
+    "translatedFrom": "مترجم من {lang}",
+    "showOriginal": "عرض الأصل",
+    "hideOriginal": "إخفاء الأصل"
+  },
+  "planning": {
+    "label": "التخطيط",
+    "title": "تخطيط الوجبات",
+    "subtitle": "تنظيم مواعيد الوجبات",
+    "service": {
+      "breakfast": "الإفطار",
+      "lunch": "الغداء",
+      "dinner": "العشاء",
+      "snack": "وجبة خفيفة"
+    },
+    "location": {
+      "centre": "مركز التدريب",
+      "hotel": "الفندق",
+      "deplacement": "التنقل"
+    },
+    "addSlot": "إضافة موعد",
+    "editSlot": "تعديل الموعد",
+    "date": "التاريخ",
+    "timeStart": "البداية",
+    "timeEnd": "النهاية",
+    "playerGroup": "مجموعة اللاعبين",
+    "playerGroupPlaceholder": "مثال: المجموعة أ، جميع اللاعبين…",
+    "notes": "ملاحظات",
+    "notesPlaceholder": "معلومات إضافية…",
+    "save": "حفظ",
+    "delete": "حذف",
+    "confirmDelete": "حذف هذا الموعد؟"
+  },
+  "profile": {
+    "title": "ملفي الشخصي",
+    "subtitle": "إدارة تفضيلاتك",
+    "languageTitle": "لغتي",
+    "languageDesc": "ستُترجم الرسائل المستلمة تلقائيًا إلى لغتك",
+    "languageSaving": "جارٍ الحفظ…",
+    "languageSaved": "تم تحديث اللغة"
   }
 }

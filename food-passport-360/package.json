@@ -10,6 +10,7 @@
     "test:integration": "vitest run --config vitest.config.ts tests/integration"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.97.1",
     "@hookform/resolvers": "^5.2.2",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.105.4",

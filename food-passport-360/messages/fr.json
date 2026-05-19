@@ -16,7 +16,9 @@
     "kanban": "Kanban",
     "confirmations": "Confirmations",
     "rooming": "Rooming",
-    "access": "Accès"
+    "access": "Accès",
+    "messages": "Messages",
+    "planning": "Planning"
   },
   "orderStatus": {
     "brouillon": "Brouillon",
@@ -141,21 +143,14 @@
     "direction": "Direction"
   },
   "common": {
+    "send": "Envoyer",
+    "sending": "Envoi…",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "confirm": "Confirmer",
     "delete": "Supprimer",
-    "edit": "Modifier",
-    "close": "Fermer",
-    "loading": "Chargement…",
-    "error": "Une erreur est survenue",
-    "success": "Succès",
-    "required": "Ce champ est obligatoire",
     "back": "Retour",
-    "noData": "Aucune donnée",
-    "optional": "Optionnel",
-    "saving": "Enregistrement…",
-    "saved": "Enregistré"
+    "loading": "Chargement…"
   },
   "auth": {
     "login": "Connexion",
@@ -635,5 +630,62 @@
     "sectionMeals": "Qualité des repas",
     "sectionMacros": "Macronutriments",
     "commentPlaceholder": "Recommandations, observations, ajustements à venir…"
+  },
+  "chat": {
+    "conversations": "Messages",
+    "conversationsDesc": "Vos conversations avec le staff",
+    "messages": "Conversation",
+    "noConversations": "Aucune conversation",
+    "noConversationsDesc": "Vous n'avez pas encore de message",
+    "noMessages": "Démarrez la conversation…",
+    "inputPlaceholder": "Votre message…",
+    "unknownContact": "Contact inconnu",
+    "forwardTitle": "Transmettre à",
+    "targetCuisine": "Cuisine",
+    "targetHotel": "Hôtel",
+    "noRecipientFound": "Aucun destinataire trouvé",
+    "sendError": "Erreur d'envoi",
+    "messagePlaceholder": "Ajouter un message…",
+    "back": "Retour",
+    "autoTranslateActive": "Traduction auto activée",
+    "translatedFrom": "Traduit du {lang}",
+    "showOriginal": "Voir l'original",
+    "hideOriginal": "Masquer l'original"
+  },
+  "planning": {
+    "label": "Planning",
+    "title": "Planning repas",
+    "subtitle": "Organisez les horaires de repas",
+    "service": {
+      "breakfast": "Petit-déjeuner",
+      "lunch": "Déjeuner",
+      "dinner": "Dîner",
+      "snack": "Collation"
+    },
+    "location": {
+      "centre": "Centre d'entraînement",
+      "hotel": "Hôtel",
+      "deplacement": "Déplacement"
+    },
+    "addSlot": "Ajouter un créneau",
+    "editSlot": "Modifier le créneau",
+    "date": "Date",
+    "timeStart": "Début",
+    "timeEnd": "Fin",
+    "playerGroup": "Groupe de joueurs",
+    "playerGroupPlaceholder": "Ex : Groupe A, Tous les joueurs…",
+    "notes": "Notes",
+    "notesPlaceholder": "Informations supplémentaires…",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer ce créneau ?"
+  },
+  "profile": {
+    "title": "Mon profil",
+    "subtitle": "Gérez vos préférences",
+    "languageTitle": "Ma langue",
+    "languageDesc": "Les messages reçus seront automatiquement traduits dans votre langue",
+    "languageSaving": "Enregistrement…",
+    "languageSaved": "Langue mise à jour"
   }
 }
