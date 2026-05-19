@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "next-intl";
+import { PageHeader, StatusBadge, EmptyState } from "@/components/ui";
 import type { AuditLogEntry } from "@/lib/supabase/queries";
+import { ShieldAlert } from "lucide-react";
+
+const PAGE_SIZE = 50;
 
 const TABLE_LABELS: Record<string, string> = {
   orders: "Commandes",
@@ -17,14 +22,34 @@ const TABLE_LABELS: Record<string, string> = {
   audit_logs: "Audit",
 };
 
-const ROLE_COLORS: Record<string, string> = {
-  admin_nutri: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
-  admin_resto: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-  joueur: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
-  cuisine: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
-  hotel: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
-  admin_team_manager: "bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-300",
-  super_admin: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+const ROLE_COLORS: Record<string, { bg: string; color: string }> = {
+  admin_nutri:       { bg: "rgba(77,255,180,0.10)",  color: "var(--color-active)" },
+  admin_resto:       { bg: "rgba(0,91,172,0.15)",    color: "var(--color-om)" },
+  joueur:            { bg: "rgba(139,127,245,0.10)", color: "var(--color-energy)" },
+  cuisine:           { bg: "rgba(255,215,0,0.10)",   color: "var(--warning)" },
+  hotel:             { bg: "rgba(255,215,0,0.08)",   color: "var(--color-gold)" },
+  admin_team_manager:{ bg: "rgba(0,91,172,0.10)",    color: "var(--color-om)" },
+  super_admin:       { bg: "rgba(255,77,106,0.10)",  color: "var(--danger)" },
+  direction:         { bg: "rgba(139,127,245,0.10)", color: "var(--color-energy)" },
+};
+
+function actionToStatusBadge(action: string): "validated" | "processing" | "refused" | "info" | "pending" {
+  const a = action.toLowerCase();
+  if (a.includes("insert") || a.includes("create")) return "validated";
+  if (a.includes("update") || a.includes("edit"))   return "processing";
+  if (a.includes("delete") || a.includes("remove")) return "refused";
+  if (a.includes("login") || a.includes("auth"))    return "info";
+  return "pending";
+}
+
+const INPUT_STYLE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  border: "0.5px solid rgba(255,255,255,0.10)",
+  borderRadius: "10px",
+  color: "var(--foreground)",
+  padding: "6px 12px",
+  fontSize: "13px",
+  outline: "none",
 };
 
 interface Props {
@@ -32,9 +57,11 @@ interface Props {
 }
 
 export default function AuditLogTable({ logs }: Props) {
+  const locale = useLocale();
   const [tableFilter, setTableFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
 
   const tables = Array.from(new Set(logs.map((l) => l.table_name).filter(Boolean)));
   const roles = Array.from(new Set(logs.map((l) => l.actor_role).filter(Boolean)));
@@ -53,21 +80,26 @@ export default function AuditLogTable({ logs }: Props) {
     return true;
   });
 
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
   return (
-    <div className="space-y-4">
-      {/* Filtres */}
-      <div className="flex flex-wrap gap-2">
+    <div className="px-4 py-4 lg:px-6 space-y-5">
+      <PageHeader label="Administration" title="Journal d'audit" />
+
+      {/* Filters */}
+      <div className="flex flex-wrap gap-2 items-center">
         <input
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => { setSearch(e.target.value); setPage(0); }}
           placeholder="Rechercher…"
-          className="rounded-xl border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          style={INPUT_STYLE}
         />
         <select
           value={tableFilter}
-          onChange={(e) => setTableFilter(e.target.value)}
-          className="rounded-xl border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          onChange={(e) => { setTableFilter(e.target.value); setPage(0); }}
+          style={INPUT_STYLE}
         >
           <option value="">Toutes les tables</option>
           {tables.map((t) => (
@@ -76,74 +108,152 @@ export default function AuditLogTable({ logs }: Props) {
         </select>
         <select
           value={roleFilter}
-          onChange={(e) => setRoleFilter(e.target.value)}
-          className="rounded-xl border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          onChange={(e) => { setRoleFilter(e.target.value); setPage(0); }}
+          style={INPUT_STYLE}
         >
           <option value="">Tous les rôles</option>
           {roles.map((r) => (
             <option key={r} value={r!}>{r}</option>
           ))}
         </select>
-        <span className="ml-auto text-xs text-muted-foreground self-center">
+        <span className="ml-auto text-xs text-muted-foreground">
           {filtered.length} entrée{filtered.length !== 1 ? "s" : ""}
         </span>
       </div>
 
       {/* Table */}
-      {filtered.length === 0 ? (
-        <p className="py-8 text-center text-sm text-muted-foreground">Aucune entrée trouvée</p>
+      {paginated.length === 0 ? (
+        <EmptyState
+          icon={<ShieldAlert className="h-6 w-6" />}
+          title="Aucune entrée trouvée"
+        />
       ) : (
-        <div className="rounded-2xl border border-border overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-muted/50 text-xs text-muted-foreground">
-                <tr>
-                  <th className="px-4 py-3 text-left font-medium">Date</th>
-                  <th className="px-4 py-3 text-left font-medium">Acteur</th>
-                  <th className="px-4 py-3 text-left font-medium">Action</th>
-                  <th className="px-4 py-3 text-left font-medium">Table</th>
-                  <th className="px-4 py-3 text-left font-medium">ID enregistrement</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {filtered.map((log) => (
-                  <tr key={log.id} className="hover:bg-muted/20">
-                    <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
-                      {new Date(log.created_at).toLocaleString("fr-FR", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "2-digit",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="space-y-0.5">
-                        <p className="font-medium text-xs">{log.actor_name ?? "Système"}</p>
-                        {log.actor_role && (
+        <>
+          <div
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              border: "0.5px solid rgba(255,255,255,0.07)",
+              borderRadius: "16px",
+              overflow: "hidden",
+            }}
+          >
+            <div className="overflow-x-auto">
+              <table className="w-full" style={{ borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ borderBottom: "0.5px solid rgba(255,255,255,0.07)" }}>
+                    {["Horodatage", "Acteur", "Rôle", "Action", "Table", "ID"].map((h) => (
+                      <th
+                        key={h}
+                        className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground"
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginated.map((log, i) => (
+                    <tr
+                      key={log.id}
+                      style={{
+                        background: i % 2 === 0
+                          ? "rgba(255,255,255,0.015)"
+                          : "transparent",
+                        borderBottom: "0.5px solid rgba(255,255,255,0.04)",
+                      }}
+                    >
+                      <td className="px-4 py-2.5 whitespace-nowrap" style={{ fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--muted-foreground)" }}>
+                        {new Date(log.created_at).toLocaleString(locale, {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </td>
+                      <td className="px-4 py-2.5 text-sm font-medium whitespace-nowrap">
+                        {log.actor_name ?? "Système"}
+                      </td>
+                      <td className="px-4 py-2.5">
+                        {log.actor_role ? (
                           <span
-                            className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-[10px] font-medium ${
-                              ROLE_COLORS[log.actor_role] ?? "bg-muted text-muted-foreground"
-                            }`}
+                            style={{
+                              background: ROLE_COLORS[log.actor_role]?.bg ?? "var(--muted)",
+                              color: ROLE_COLORS[log.actor_role]?.color ?? "var(--muted-foreground)",
+                              borderRadius: "999px",
+                              padding: "1px 7px",
+                              fontSize: "10px",
+                              fontWeight: 600,
+                              whiteSpace: "nowrap",
+                            }}
                           >
                             {log.actor_role}
                           </span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground/50">—</span>
                         )}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs">{log.action}</td>
-                    <td className="px-4 py-3 text-xs">
-                      {log.table_name ? (TABLE_LABELS[log.table_name] ?? log.table_name) : "—"}
-                    </td>
-                    <td className="px-4 py-3 font-mono text-[10px] text-muted-foreground max-w-[120px] truncate">
-                      {log.record_id ? log.record_id.slice(0, 8) + "…" : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                      <td className="px-4 py-2.5">
+                        <StatusBadge status={actionToStatusBadge(log.action)} />
+                        <span
+                          className="block mt-0.5"
+                          style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--muted-foreground)" }}
+                        >
+                          {log.action}
+                        </span>
+                      </td>
+                      <td className="px-4 py-2.5 text-xs text-muted-foreground whitespace-nowrap">
+                        {log.table_name ? (TABLE_LABELS[log.table_name] ?? log.table_name) : "—"}
+                      </td>
+                      <td
+                        className="px-4 py-2.5 max-w-[100px] truncate"
+                        style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--muted-foreground)" }}
+                        title={log.record_id ?? ""}
+                      >
+                        {log.record_id ? log.record_id.slice(0, 8) + "…" : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground text-xs">
+                Page {page + 1} / {totalPages}
+              </span>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  disabled={page === 0}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg disabled:opacity-40"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "0.5px solid rgba(255,255,255,0.10)",
+                  }}
+                >
+                  ← Précédente
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                  disabled={page >= totalPages - 1}
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg disabled:opacity-40"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "0.5px solid rgba(255,255,255,0.10)",
+                  }}
+                >
+                  Suivante →
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

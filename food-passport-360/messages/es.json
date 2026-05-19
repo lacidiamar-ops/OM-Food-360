@@ -78,7 +78,8 @@
     "commentPlaceholder": "Recomendaciones, observaciones, ajustes próximos…"
   },
   "orders": {
-    "emptyDesc": "Realiza tu primer pedido con el servicio de restauración."
+    "emptyDesc": "Realiza tu primer pedido con el servicio de restauración.",
+    "orderRef": "Pedido"
   },
   "admin": {
     "statsTitle": "Actividad en tiempo real",
@@ -110,6 +111,15 @@
     "noItems": "Ningún plato seleccionado"
   },
   "nutriQueue": {
-    "role": "Nutricionista"
+    "role": "Nutricionista",
+    "validationLabel": "Validacion"
+  },
+  "cuisine": {
+    "label": "Cocina",
+    "boardTitle": "Panel de Produccion"
+  },
+  "restoDashboard": {
+    "label": "Restaurante",
+    "kpiCancelled": "Cancelados"
   }
 }

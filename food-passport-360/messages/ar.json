@@ -78,7 +78,8 @@
     "commentPlaceholder": "توصيات، ملاحظات، تعديلات قادمة…"
   },
   "orders": {
-    "emptyDesc": "قدّم طلبك الأول مع فريق الإطعام."
+    "emptyDesc": "قدّم طلبك الأول مع فريق الإطعام.",
+    "orderRef": "طلب"
   },
   "admin": {
     "statsTitle": "النشاط الفوري",
@@ -110,6 +111,15 @@
     "noItems": "لا توجد أطباق محددة"
   },
   "nutriQueue": {
-    "role": "أخصائي التغذية"
+    "role": "أخصائي التغذية",
+    "validationLabel": "التحقق"
+  },
+  "cuisine": {
+    "label": "المطبخ",
+    "boardTitle": "لوحة الانتاج"
+  },
+  "restoDashboard": {
+    "label": "المطعم",
+    "kpiCancelled": "ملغاة"
   }
 }

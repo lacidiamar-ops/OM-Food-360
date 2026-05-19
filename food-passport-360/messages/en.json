@@ -78,7 +78,8 @@
     "commentPlaceholder": "Recommendations, observations, upcoming adjustments…"
   },
   "orders": {
-    "emptyDesc": "Place your first order with the catering team."
+    "emptyDesc": "Place your first order with the catering team.",
+    "orderRef": "Order"
   },
   "admin": {
     "statsTitle": "Live activity",
@@ -110,6 +111,15 @@
     "noItems": "No dishes selected"
   },
   "nutriQueue": {
-    "role": "Nutritionist"
+    "role": "Nutritionist",
+    "validationLabel": "Validation"
+  },
+  "cuisine": {
+    "label": "Kitchen",
+    "boardTitle": "Production Dashboard"
+  },
+  "restoDashboard": {
+    "label": "Restaurant",
+    "kpiCancelled": "Cancelled"
   }
 }

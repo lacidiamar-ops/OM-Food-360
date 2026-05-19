@@ -3,7 +3,6 @@
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Clock, AlertCircle, MessageCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { KitchenOrder } from "@/lib/supabase/queries";
 import {
   markPrepStartedAction,
@@ -13,18 +12,14 @@ import {
 
 interface Props {
   order: KitchenOrder;
+  locale: string;
 }
-
-const PRIORITY_STYLES: Record<string, string> = {
-  urgent: "bg-destructive/15 text-destructive",
-  important: "bg-amber-500/15 text-amber-700 dark:text-amber-400",
-};
 
 const SERVICE_LABEL: Record<string, string> = {
   petit_dejeuner: "P.déj",
   dejeuner: "Déjeuner",
-  collation_pre: "Collation avant",
-  collation_post: "Collation après",
+  collation_pre: "Collation ↑",
+  collation_post: "Collation ↓",
   collation_recup: "Récup",
   diner: "Dîner",
   room_service: "Room",
@@ -32,11 +27,11 @@ const SERVICE_LABEL: Record<string, string> = {
   pre_match: "Avant match",
 };
 
-export default function KitchenOrderCard({ order }: Props) {
+export default function KitchenOrderCard({ order, locale }: Props) {
   const t = useTranslations("cuisine");
   const [isPending, startTransition] = useTransition();
 
-  const time = new Date(order.scheduled_at).toLocaleTimeString("fr-FR", {
+  const time = new Date(order.scheduled_at).toLocaleTimeString(locale, {
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Europe/Paris",
@@ -61,22 +56,43 @@ export default function KitchenOrderCard({ order }: Props) {
         ? t("markReady")
         : t("markDelivered");
 
-  const actionStyle =
+  const actionBg =
     order.status === "transmise_cuisine"
-      ? "bg-amber-500 hover:bg-amber-600 text-white"
+      ? "var(--warning)"
       : order.status === "en_preparation"
-        ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-        : "bg-emerald-600 hover:bg-emerald-700 text-white";
+        ? "var(--primary)"
+        : "var(--color-active)";
+
+  const actionBorder =
+    order.status === "transmise_cuisine"
+      ? "rgba(255,215,0,0.4)"
+      : order.status === "en_preparation"
+        ? "var(--primary-border)"
+        : "rgba(77,255,180,0.4)";
+
+  const actionColor =
+    order.status === "transmise_cuisine"
+      ? "var(--warning-foreground)"
+      : order.status === "en_preparation"
+        ? "var(--primary-foreground)"
+        : "var(--success-foreground)";
+
+  const urgent = order.priority === "urgent" || order.priority === "critique";
 
   return (
     <div
-      className={cn(
-        "rounded-lg border border-border bg-card p-3 shadow-sm",
-        "flex flex-col gap-2",
-        isPending && "opacity-60 pointer-events-none"
-      )}
+      className="flex flex-col gap-2 p-3"
+      style={{
+        background: urgent ? "rgba(255,77,106,0.04)" : "rgba(255,255,255,0.03)",
+        border: urgent
+          ? "0.5px solid rgba(255,77,106,0.30)"
+          : "0.5px solid rgba(255,255,255,0.07)",
+        borderRadius: "12px",
+        opacity: isPending ? 0.6 : 1,
+        pointerEvents: isPending ? "none" : undefined,
+      }}
     >
-      {/* Header: name + priority + time */}
+      {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold leading-tight">
@@ -87,33 +103,57 @@ export default function KitchenOrderCard({ order }: Props) {
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-1">
-          {order.priority !== "normal" && (
+          {urgent && (
             <span
-              className={cn(
-                "rounded-full px-1.5 py-0.5 text-[10px] font-semibold",
-                PRIORITY_STYLES[order.priority]
-              )}
+              style={{
+                background: "rgba(255,77,106,0.15)",
+                color: "var(--danger)",
+                borderRadius: "999px",
+                padding: "1px 6px",
+                fontSize: "10px",
+                fontWeight: 700,
+              }}
             >
-              {order.priority === "urgent" ? "URGENT" : "!"}
+              {order.priority === "critique" ? "CRIT" : "URG"}
             </span>
           )}
-          <span className="flex items-center gap-0.5 text-[11px] text-muted-foreground">
+          <span
+            className="flex items-center gap-0.5 text-[11px] text-muted-foreground"
+          >
             <Clock size={11} />
             {time}
           </span>
         </div>
       </div>
 
-      {/* Diet badges */}
+      {/* Diet tags */}
       {(order.is_halal || order.is_gluten_free) && (
         <div className="flex flex-wrap gap-1">
           {order.is_halal && (
-            <span className="rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-400">
+            <span
+              style={{
+                background: "rgba(77,255,180,0.10)",
+                color: "var(--color-active)",
+                borderRadius: "999px",
+                padding: "1px 6px",
+                fontSize: "10px",
+                fontWeight: 600,
+              }}
+            >
               Halal
             </span>
           )}
           {order.is_gluten_free && (
-            <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-400">
+            <span
+              style={{
+                background: "rgba(255,215,0,0.10)",
+                color: "var(--warning)",
+                borderRadius: "999px",
+                padding: "1px 6px",
+                fontSize: "10px",
+                fontWeight: 600,
+              }}
+            >
               Sans gluten
             </span>
           )}
@@ -135,20 +175,18 @@ export default function KitchenOrderCard({ order }: Props) {
         </p>
       )}
 
-      {/* Reference */}
-      <p className="text-[10px] text-muted-foreground/60">{order.reference}</p>
+      <p className="font-mono text-[10px] text-muted-foreground/50">{order.reference}</p>
 
       {/* CTA */}
       <button
         onClick={handleAction}
         disabled={isPending}
-        className={cn(
-          "mt-1 w-full rounded-md px-3 py-2 text-sm font-semibold",
-          "transition-colors duration-100",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          "disabled:opacity-50 disabled:pointer-events-none",
-          actionStyle
-        )}
+        className="mt-1 w-full rounded-xl px-3 py-2 text-sm font-semibold transition-opacity disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        style={{
+          background: actionBg,
+          border: `1px solid ${actionBorder}`,
+          color: actionColor,
+        }}
       >
         {isPending ? (
           <span className="flex items-center justify-center gap-2">

@@ -1,13 +1,10 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { Printer } from "lucide-react";
+import { useTranslations, useLocale } from "next-intl";
 import { useOrdersQueueRealtime } from "@/hooks/useOrderRealtime";
-import RestoDashboardKpi from "./RestoDashboardKpi";
-import OrderStatusBadge from "./OrderStatusBadge";
+import { PageHeader, StatCard, StatusBadge, EmptyState } from "@/components/ui";
 import type { KitchenStats, RestoOrder } from "@/lib/supabase/queries";
-import { cn } from "@/lib/utils";
+import type { OrderStatus } from "@/lib/supabase/food-passport.types";
 
 interface Props {
   stats: KitchenStats;
@@ -15,129 +12,156 @@ interface Props {
   date: string;
 }
 
-const PRIORITY_DOT: Record<string, string> = {
-  urgent: "bg-destructive",
-  important: "bg-amber-500",
-  normal: "bg-transparent",
-};
+function orderToStatusBadge(status: OrderStatus): "pending" | "processing" | "validated" | "refused" | "info" {
+  switch (status) {
+    case "brouillon":
+    case "envoyee_joueur":
+    case "en_attente_nutri":
+    case "precision_demandee":
+      return "pending";
+    case "validee_nutri":
+    case "ajustee_nutri":
+    case "transmise_resto":
+    case "validee_resto":
+    case "transmise_cuisine":
+    case "transmise_hotel":
+    case "en_preparation":
+      return "processing";
+    case "prete":
+      return "info";
+    case "livree":
+      return "validated";
+    case "refusee_nutri":
+      return "refused";
+    default:
+      return "pending";
+  }
+}
 
 export default function RestoDashboard({ stats, orders, date }: Props) {
   useOrdersQueueRealtime();
   const t = useTranslations("restoDashboard");
+  const tservice = useTranslations("service");
+  const locale = useLocale();
 
-  const today = new Date(date + "T12:00:00").toLocaleDateString("fr-FR", {
+  const today = new Date(date + "T12:00:00").toLocaleDateString(locale, {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
 
+  const annulee = (stats as unknown as { annulee_today?: number }).annulee_today ?? 0;
+
   return (
     <div className="flex flex-col gap-6 px-4 py-4 lg:px-6">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h1 className="text-lg font-semibold">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground capitalize">{today}</p>
-        </div>
-        <Link
-          href="/resto/print"
-          className={cn(
-            "flex items-center gap-2 rounded-md border border-border px-3 py-2",
-            "text-sm font-medium text-foreground",
-            "hover:bg-muted transition-colors duration-100",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          )}
-        >
-          <Printer size={16} />
-          <span className="hidden sm:inline">{t("print")}</span>
-        </Link>
-      </div>
+      <PageHeader
+        label={t("label")}
+        title={t("title")}
+        subtitle={today}
+      />
 
-      {/* KPIs grid */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <RestoDashboardKpi
+      {/* 4 StatCards */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <StatCard
           label={t("kpiTotal")}
           value={stats.total_validated_today}
           variant="default"
         />
-        <RestoDashboardKpi
+        <StatCard
           label={t("kpiToPrepare")}
           value={stats.transmise_cuisine}
-          variant="warning"
+          variant={stats.transmise_cuisine > 0 ? "warning" : "default"}
         />
-        <RestoDashboardKpi
-          label={t("kpiInPrep")}
-          value={stats.en_preparation}
-          variant="default"
-        />
-        <RestoDashboardKpi
-          label={t("kpiReady")}
-          value={stats.prete}
-          variant="success"
-        />
-        <RestoDashboardKpi
+        <StatCard
           label={t("kpiDelivered")}
           value={stats.livree_today}
-          variant="muted"
+          variant="success"
+        />
+        <StatCard
+          label={t("kpiCancelled")}
+          value={annulee}
+          variant={annulee > 0 ? "danger" : "default"}
         />
       </div>
 
       {/* Orders table */}
-      <div className="rounded-lg border border-border overflow-hidden">
-        <div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2">
-          <span className="text-sm font-medium">{t("ordersToday")}</span>
+      <div
+        style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "0.5px solid rgba(255,255,255,0.07)",
+          borderRadius: "16px",
+          overflow: "hidden",
+        }}
+      >
+        {/* Table header */}
+        <div
+          className="flex items-center justify-between px-4 py-2.5"
+          style={{ borderBottom: "0.5px solid rgba(255,255,255,0.07)" }}
+        >
+          <span className="text-sm font-semibold">{t("ordersToday")}</span>
           <span className="text-xs text-muted-foreground">
             {orders.length} {t("ordersCount")}
           </span>
         </div>
 
         {orders.length === 0 ? (
-          <div className="py-12 text-center text-sm text-muted-foreground">
-            {t("noOrders")}
+          <div className="p-6">
+            <EmptyState icon="🍽️" title={t("noOrders")} />
           </div>
         ) : (
-          <div className="divide-y divide-border">
-            {orders.map((order) => (
-              <div
-                key={order.id}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-muted/20 transition-colors"
-              >
-                {/* Priority dot */}
-                <span
-                  className={cn(
-                    "h-2 w-2 shrink-0 rounded-full",
-                    PRIORITY_DOT[order.priority] ?? "bg-transparent"
-                  )}
-                />
-
-                {/* Player */}
-                <span className="w-36 shrink-0 truncate text-sm font-medium">
-                  {order.player_first_name} {order.player_last_name}
-                </span>
-
-                {/* Service + time */}
-                <span className="hidden text-xs text-muted-foreground sm:block w-24 shrink-0 truncate">
-                  {order.service.replace(/_/g, " ")}
-                </span>
-                <span className="hidden text-xs tabular-nums text-muted-foreground md:block w-12 shrink-0">
-                  {new Date(order.scheduled_at).toLocaleTimeString("fr-FR", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    timeZone: "Europe/Paris",
-                  })}
-                </span>
-
-                {/* Items count */}
-                <span className="hidden text-xs text-muted-foreground lg:block w-16 shrink-0">
-                  {order.items_count} plat{order.items_count > 1 ? "s" : ""}
-                </span>
-
-                {/* Status */}
-                <div className="ml-auto shrink-0">
-                  <OrderStatusBadge status={order.status} />
-                </div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr style={{ borderBottom: "0.5px solid rgba(255,255,255,0.05)" }}>
+                  {["Heure", "Joueur", "Service", "Articles", "Statut"].map((h) => (
+                    <th
+                      key={h}
+                      className="px-4 py-2.5 text-left text-xs font-medium text-muted-foreground"
+                    >
+                      {h}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order, i) => {
+                  const urgent = order.priority === "urgent" || order.priority === "critique";
+                  return (
+                    <tr
+                      key={order.id}
+                      style={{
+                        background: i % 2 === 0
+                          ? "rgba(255,255,255,0.015)"
+                          : "transparent",
+                        borderLeft: urgent
+                          ? "2px solid var(--danger)"
+                          : "2px solid transparent",
+                      }}
+                    >
+                      <td className="px-4 py-3 font-mono text-xs text-muted-foreground whitespace-nowrap">
+                        {new Date(order.scheduled_at).toLocaleTimeString(locale, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          timeZone: "Europe/Paris",
+                        })}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-medium whitespace-nowrap">
+                        {order.player_first_name} {order.player_last_name}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">
+                        {tservice(order.service as Parameters<typeof tservice>[0])}
+                      </td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground">
+                        {order.items_count} plat{order.items_count > 1 ? "s" : ""}
+                      </td>
+                      <td className="px-4 py-3">
+                        <StatusBadge status={orderToStatusBadge(order.status)} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
