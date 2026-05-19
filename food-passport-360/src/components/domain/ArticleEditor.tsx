@@ -11,16 +11,31 @@ import type {
   ArticleCategory,
 } from "@/lib/supabase/food-passport.types";
 import ArticleTranslations from "./ArticleTranslations";
+import { PageHeader } from "@/components/ui";
 import { saveArticleAction, saveTranslationAction, archiveArticleAction } from "@/app/[locale]/(resto)/resto/articles/[id]/actions";
 
 interface Props {
-  article: FPArticle | null; // null = new
+  article: FPArticle | null;
   translations: FPArticleTranslation[];
 }
 
-const INPUT = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-muted-foreground/50";
-const SELECT = `${INPUT} cursor-pointer`;
-const TEXTAREA = `${INPUT} resize-none`;
+const INPUT_STYLE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  border: "0.5px solid rgba(255,255,255,0.10)",
+  borderRadius: "12px",
+  color: "var(--foreground)",
+  padding: "8px 12px",
+  fontSize: "14px",
+  width: "100%",
+  outline: "none",
+};
+
+const CARD: React.CSSProperties = {
+  background: "rgba(255,255,255,0.03)",
+  border: "0.5px solid rgba(255,255,255,0.07)",
+  borderRadius: "20px",
+  padding: "16px",
+};
 
 const CATEGORIES: ArticleCategory[] = [
   "feculent",
@@ -59,22 +74,42 @@ function Toggle({
     <button
       type="button"
       onClick={() => onChange(!value)}
-      className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2 text-sm transition-colors ${
+      className="flex items-center justify-between gap-2 text-sm transition-colors"
+      style={
         value
-          ? "border-primary bg-primary/10 text-primary"
-          : "border-border bg-background text-foreground hover:bg-muted/50"
-      }`}
+          ? {
+              background: "rgba(77,255,180,0.08)",
+              border: "0.5px solid rgba(77,255,180,0.25)",
+              borderRadius: "12px",
+              padding: "8px 12px",
+              color: "var(--color-active)",
+            }
+          : {
+              background: "rgba(255,255,255,0.03)",
+              border: "0.5px solid rgba(255,255,255,0.08)",
+              borderRadius: "12px",
+              padding: "8px 12px",
+              color: "var(--muted-foreground)",
+            }
+      }
     >
       <span>{label}</span>
       <span
-        className={`flex h-4 w-7 items-center rounded-full px-0.5 transition-colors ${
-          value ? "bg-primary" : "bg-muted"
-        }`}
+        className="flex items-center rounded-full px-0.5 transition-colors"
+        style={{
+          height: 16,
+          width: 28,
+          background: value ? "var(--color-active)" : "rgba(255,255,255,0.15)",
+        }}
       >
         <span
-          className={`h-3 w-3 rounded-full bg-background transition-transform ${
-            value ? "translate-x-3" : "translate-x-0"
-          }`}
+          className="rounded-full transition-transform"
+          style={{
+            height: 12,
+            width: 12,
+            background: value ? "#07080f" : "rgba(255,255,255,0.60)",
+            transform: value ? "translateX(12px)" : "translateX(0)",
+          }}
         />
       </span>
     </button>
@@ -90,7 +125,6 @@ export default function ArticleEditor({ article, translations }: Props) {
   const [isPending, startTransition] = useTransition();
   const [toast, setToast] = useState<string | null>(null);
 
-  // Article state
   const [name, setName] = useState(article?.name ?? "");
   const [category, setCategory] = useState<ArticleCategory>(article?.category ?? "autre");
   const [subcategory, setSubcategory] = useState(article?.subcategory ?? "");
@@ -159,72 +193,83 @@ export default function ArticleEditor({ article, translations }: Props) {
 
   return (
     <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => router.push(`/${locale}/resto/articles`)}
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          {tc("back")}
-        </button>
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={isPending || !name.trim()}
-          className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60"
-        >
-          <Save className="h-3.5 w-3.5" />
-          {isPending ? tc("saving") : tc("save")}
-        </button>
-      </div>
+      <button
+        type="button"
+        onClick={() => router.push(`/${locale}/resto/articles`)}
+        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ChevronLeft className="h-4 w-4" />
+        {tc("back")}
+      </button>
+
+      <PageHeader
+        label={t("articleLabel")}
+        title={name || t("newArticle")}
+        action={{
+          label: isPending ? tc("saving") : tc("save"),
+          onClick: handleSave,
+        }}
+      />
 
       {/* Identity */}
-      <section className="rounded-2xl border border-border bg-card p-4 space-y-3">
+      <section style={CARD} className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {t("section.identity")}
         </h2>
-        <Field label={t("field.name") + " (FR)"}>
-          <input className={INPUT} value={name} onChange={(e) => setName(e.target.value)} placeholder="Riz basmati" />
+        <Field label={`${t("field.name")} (FR)`}>
+          <input style={INPUT_STYLE} value={name} onChange={(e) => setName(e.target.value)} placeholder="Riz basmati" />
         </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label={t("field.category")}>
-            <select className={SELECT} value={category} onChange={(e) => setCategory(e.target.value as ArticleCategory)}>
+            <select
+              style={{ ...INPUT_STYLE, cursor: "pointer" }}
+              value={category}
+              onChange={(e) => setCategory(e.target.value as ArticleCategory)}
+            >
               {CATEGORIES.map((c) => (
-                <option key={c} value={c}>
+                <option key={c} value={c} style={{ background: "#07080f" }}>
                   {tcat(c)}
                 </option>
               ))}
             </select>
           </Field>
           <Field label={t("field.subcategory")}>
-            <input className={INPUT} value={subcategory} onChange={(e) => setSubcategory(e.target.value)} placeholder="Optionnel" />
+            <input style={INPUT_STYLE} value={subcategory} onChange={(e) => setSubcategory(e.target.value)} placeholder={tc("optional")} />
           </Field>
         </div>
         <Field label={t("field.shortDescription")}>
-          <textarea className={TEXTAREA} rows={2} value={shortDescription} onChange={(e) => setShortDescription(e.target.value)} />
+          <textarea
+            style={{ ...INPUT_STYLE, resize: "none" }}
+            rows={2}
+            value={shortDescription}
+            onChange={(e) => setShortDescription(e.target.value)}
+          />
         </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label={t("field.portionG")}>
-            <input type="number" className={INPUT} value={portionG} onChange={(e) => setPortionG(e.target.value)} placeholder="200" />
+            <input type="number" style={INPUT_STYLE} value={portionG} onChange={(e) => setPortionG(e.target.value)} placeholder="200" />
           </Field>
           <Field label={t("field.unit")}>
-            <input className={INPUT} value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="g, mL, pièce…" />
+            <input style={INPUT_STYLE} value={unit} onChange={(e) => setUnit(e.target.value)} placeholder="g, mL, pièce…" />
           </Field>
         </div>
       </section>
 
       {/* Photo placeholder */}
-      <section className="rounded-2xl border border-dashed border-border bg-muted/30 p-6">
-        <div className="flex flex-col items-center gap-2 text-center">
-          <ImageOff className="h-8 w-8 text-muted-foreground" />
-          <p className="text-xs text-muted-foreground">{t("photoComingSoon")}</p>
-        </div>
+      <section
+        className="p-6 flex flex-col items-center gap-2 text-center"
+        style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "0.5px dashed rgba(255,255,255,0.12)",
+          borderRadius: "20px",
+        }}
+      >
+        <ImageOff className="h-8 w-8 text-muted-foreground" />
+        <p className="text-xs text-muted-foreground">{t("photoComingSoon")}</p>
       </section>
 
       {/* Diet flags */}
-      <section className="rounded-2xl border border-border bg-card p-4 space-y-3">
+      <section style={CARD} className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {t("section.diet")}
         </h2>
@@ -238,7 +283,7 @@ export default function ArticleEditor({ article, translations }: Props) {
       </section>
 
       {/* Availability */}
-      <section className="rounded-2xl border border-border bg-card p-4 space-y-3">
+      <section style={CARD} className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {t("section.availability")}
         </h2>
@@ -254,7 +299,7 @@ export default function ArticleEditor({ article, translations }: Props) {
       </section>
 
       {/* Status */}
-      <section className="rounded-2xl border border-border bg-card p-4 space-y-3">
+      <section style={CARD} className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
           {t("section.status")}
         </h2>
@@ -263,11 +308,15 @@ export default function ArticleEditor({ article, translations }: Props) {
           <Toggle label={t("status.outOfStock")} value={outOfStock} onChange={setOutOfStock} />
         </div>
         <Field label={t("field.restoComment")}>
-          <textarea className={TEXTAREA} rows={2} value={restoComment} onChange={(e) => setRestoComment(e.target.value)} />
+          <textarea
+            style={{ ...INPUT_STYLE, resize: "none" }}
+            rows={2}
+            value={restoComment}
+            onChange={(e) => setRestoComment(e.target.value)}
+          />
         </Field>
       </section>
 
-      {/* Translations — only for existing articles */}
       {article && (
         <ArticleTranslations
           articleId={article.id}
@@ -291,14 +340,28 @@ export default function ArticleEditor({ article, translations }: Props) {
               else router.push(`/${locale}/resto/articles`);
             });
           }}
-          className="w-full rounded-xl border border-destructive/20 bg-destructive/5 text-destructive text-sm py-2 hover:bg-destructive/10"
+          className="w-full text-sm py-2 transition-colors"
+          style={{
+            border: "0.5px solid rgba(255,77,106,0.25)",
+            color: "var(--danger)",
+            background: "rgba(255,77,106,0.04)",
+            borderRadius: "16px",
+          }}
         >
           {t("archive")}
         </button>
       )}
 
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-foreground text-background text-sm px-4 py-2.5 shadow-lg">
+        <div
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 text-sm px-4 py-2.5 shadow-lg"
+          style={{
+            background: "var(--foreground)",
+            color: "var(--background)",
+            borderRadius: "12px",
+            whiteSpace: "nowrap",
+          }}
+        >
           {toast}
         </div>
       )}

@@ -18,9 +18,16 @@ export default function FeedbackSuccessWrapper({ orderId, tripId, hotelId, playe
 
   if (done) {
     return (
-      <div className="flex flex-col items-center gap-3 py-6 text-center">
-        <span className="text-4xl">🎉</span>
-        <p className="font-medium">{t("thankYou")}</p>
+      <div
+        className="flex flex-col items-center gap-3 py-10 text-center"
+        style={{
+          background: "rgba(77,255,180,0.04)",
+          border: "0.5px solid rgba(77,255,180,0.15)",
+          borderRadius: "20px",
+        }}
+      >
+        <span style={{ fontSize: 40 }}>🎉</span>
+        <p className="font-semibold" style={{ color: "var(--color-active)" }}>{t("thankYou")}</p>
         <p className="text-sm text-muted-foreground">{t("thankYouDesc")}</p>
       </div>
     );

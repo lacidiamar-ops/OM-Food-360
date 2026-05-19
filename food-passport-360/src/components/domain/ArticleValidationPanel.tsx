@@ -7,13 +7,37 @@ import { useLocale } from "next-intl";
 import { CheckCircle2, Ban, ChevronLeft, ImageOff, MessageSquare } from "lucide-react";
 import type { FPArticle } from "@/lib/supabase/food-passport.types";
 import DietBadges from "./DietBadges";
+import { PageHeader, StatusBadge } from "@/components/ui";
 import { validateArticleAction, blockArticleAction, commentArticleAction } from "@/app/[locale]/(nutri)/nutri/articles/[id]/actions";
 
 interface Props {
   article: FPArticle;
 }
 
-const TEXTAREA = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none";
+const INPUT_STYLE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  border: "0.5px solid rgba(255,255,255,0.10)",
+  borderRadius: "12px",
+  color: "var(--foreground)",
+  padding: "8px 12px",
+  fontSize: "13px",
+  width: "100%",
+  outline: "none",
+  resize: "none" as const,
+};
+
+const CARD: React.CSSProperties = {
+  background: "rgba(255,255,255,0.03)",
+  border: "0.5px solid rgba(255,255,255,0.07)",
+  borderRadius: "20px",
+  padding: "16px",
+};
+
+function articleBadgeStatus(article: FPArticle) {
+  if (article.nutri_blocked) return "refused" as const;
+  if (article.nutri_validated) return "validated" as const;
+  return "pending" as const;
+}
 
 export default function ArticleValidationPanel({ article }: Props) {
   const t = useTranslations("articles");
@@ -69,80 +93,76 @@ export default function ArticleValidationPanel({ article }: Props) {
       <button
         type="button"
         onClick={() => router.push(`/${locale}/nutri/articles`)}
-        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         <ChevronLeft className="h-4 w-4" />
         {tc("back")}
       </button>
 
+      <PageHeader
+        label={t("validationLabel")}
+        title={article.name}
+        subtitle={tcat(article.category as Parameters<typeof tcat>[0])}
+        action={<StatusBadge status={articleBadgeStatus(article)} />}
+      />
+
       {/* Article preview */}
-      <div className="rounded-2xl border border-border bg-card p-4 space-y-3">
+      <div style={CARD} className="space-y-3">
         <div className="flex gap-3">
           {article.photo_url ? (
             <img
               src={article.photo_url}
               alt={article.name}
-              className="h-20 w-20 rounded-xl object-cover flex-shrink-0"
+              style={{ height: 80, width: 80, borderRadius: 12, objectFit: "cover", flexShrink: 0 }}
             />
           ) : (
-            <div className="flex h-20 w-20 items-center justify-center rounded-xl bg-muted flex-shrink-0">
+            <div
+              className="flex items-center justify-center flex-shrink-0"
+              style={{ height: 80, width: 80, borderRadius: 12, background: "rgba(255,255,255,0.06)" }}
+            >
               <ImageOff className="h-6 w-6 text-muted-foreground" />
             </div>
           )}
           <div className="flex-1 min-w-0 space-y-1">
-            <h1 className="font-semibold text-base">{article.name}</h1>
             <p className="text-xs text-muted-foreground">
-              {tcat(article.category as Parameters<typeof tcat>[0])}
-              {article.subcategory && ` · ${article.subcategory}`}
-              {article.standard_portion_g && ` · ${article.standard_portion_g} g`}
+              {article.subcategory && `${article.subcategory} · `}
+              {article.standard_portion_g && `${article.standard_portion_g} g`}
             </p>
             <DietBadges article={article} size="md" />
           </div>
         </div>
 
         {article.short_description && (
-          <p className="text-sm text-foreground/80">{article.short_description}</p>
+          <p className="text-sm" style={{ color: "rgba(255,255,255,0.75)" }}>{article.short_description}</p>
         )}
 
         {article.resto_comment && (
-          <div className="rounded-lg bg-muted/50 p-2 text-xs text-muted-foreground">
+          <div
+            className="text-xs"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "0.5px solid rgba(255,255,255,0.07)",
+              borderRadius: "10px",
+              padding: "8px 10px",
+              color: "var(--muted-foreground)",
+            }}
+          >
             <span className="font-medium">{t("restoComment")}: </span>
             {article.resto_comment}
           </div>
         )}
       </div>
 
-      {/* Status */}
-      <div className="flex items-center gap-2 text-sm">
-        {article.nutri_validated && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-green-500/15 text-green-700 dark:text-green-400 px-2.5 py-1 text-xs font-medium">
-            <CheckCircle2 className="h-3 w-3" />
-            {t("validated")}
-          </span>
-        )}
-        {article.nutri_blocked && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-destructive/15 text-destructive px-2.5 py-1 text-xs font-medium">
-            <Ban className="h-3 w-3" />
-            {t("blocked")}
-          </span>
-        )}
-        {!article.nutri_validated && !article.nutri_blocked && (
-          <span className="inline-flex items-center rounded-full bg-amber-500/15 text-amber-700 dark:text-amber-400 px-2.5 py-1 text-xs font-medium">
-            {t("pending")}
-          </span>
-        )}
-      </div>
-
-      {/* Comment */}
-      <div className="rounded-2xl border border-border bg-card p-4 space-y-2">
+      {/* Nutri comment */}
+      <div style={CARD} className="space-y-2">
         <div className="flex items-center gap-2">
-          <MessageSquare className="h-4 w-4 text-primary" />
+          <MessageSquare className="h-4 w-4" style={{ color: "var(--color-om)" }} />
           <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             {t("nutriComment")}
           </h2>
         </div>
         <textarea
-          className={TEXTAREA}
+          style={INPUT_STYLE}
           rows={3}
           value={comment}
           onChange={(e) => setComment(e.target.value)}
@@ -152,7 +172,13 @@ export default function ArticleValidationPanel({ article }: Props) {
           type="button"
           onClick={handleSaveComment}
           disabled={isPending}
-          className="w-full rounded-lg bg-muted text-foreground text-xs py-1.5 hover:bg-muted/70 disabled:opacity-60"
+          className="w-full text-xs py-1.5 disabled:opacity-60 transition-colors"
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            border: "0.5px solid rgba(255,255,255,0.10)",
+            borderRadius: "10px",
+            color: "var(--muted-foreground)",
+          }}
         >
           {tc("save")}
         </button>
@@ -164,7 +190,13 @@ export default function ArticleValidationPanel({ article }: Props) {
           type="button"
           onClick={handleBlock}
           disabled={isPending}
-          className="flex items-center justify-center gap-1.5 rounded-xl border border-destructive/30 bg-destructive/5 text-destructive text-sm py-3 font-medium hover:bg-destructive/10 disabled:opacity-60"
+          className="flex items-center justify-center gap-1.5 text-sm py-3 font-medium disabled:opacity-60 transition-colors"
+          style={{
+            border: "0.5px solid rgba(255,77,106,0.35)",
+            color: "var(--danger)",
+            background: "rgba(255,77,106,0.06)",
+            borderRadius: "16px",
+          }}
         >
           <Ban className="h-4 w-4" />
           {t("block")}
@@ -173,7 +205,8 @@ export default function ArticleValidationPanel({ article }: Props) {
           type="button"
           onClick={handleValidate}
           disabled={isPending}
-          className="flex items-center justify-center gap-1.5 rounded-xl bg-green-600 text-white text-sm py-3 font-medium hover:bg-green-700 disabled:opacity-60"
+          className="btn-primary flex items-center justify-center gap-1.5 text-sm py-3 font-semibold disabled:opacity-60"
+          style={{ borderRadius: "16px" }}
         >
           <CheckCircle2 className="h-4 w-4" />
           {t("validate")}
@@ -181,7 +214,15 @@ export default function ArticleValidationPanel({ article }: Props) {
       </div>
 
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-foreground text-background text-sm px-4 py-2.5 shadow-lg">
+        <div
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 text-sm px-4 py-2.5 shadow-lg"
+          style={{
+            background: "var(--foreground)",
+            color: "var(--background)",
+            borderRadius: "12px",
+            whiteSpace: "nowrap",
+          }}
+        >
           {toast}
         </div>
       )}

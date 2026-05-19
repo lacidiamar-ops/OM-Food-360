@@ -248,7 +248,43 @@
     },
     "playersLabel": "Joueurs",
     "playersSubtitle": "{{count}} joueur{{count, plural, one {} other {s}}}",
-    "noResults": "Aucun résultat"
+    "noResults": "Aucun résultat",
+    "tabIdentity": "Identité",
+    "tabFood": "Alimentation",
+    "tabSensitive": "Nutri seul",
+    "section": {
+      "generalFood": "Alimentation générale",
+      "restrictions": "Restrictions",
+      "drinks": "Boissons",
+      "preferences": "Préférences",
+      "travel": "En déplacement",
+      "matchDay": "Jour de match"
+    },
+    "placeholder": {
+      "dietType": "Omnivore, végétarien, halal…",
+      "mealRhythm": "3 repas / jour, collations…",
+      "refusedFoods": "Lait de vache, fruits de mer…",
+      "spiceTolerance": "Faible / Moyenne / Élevée",
+      "waterType": "Plate, gazeuse…",
+      "preferredCuisine": "Méditerranéenne, africaine…",
+      "playerFreeNotes": "Remarques du joueur…",
+      "bodyObjectives": "Prise de masse, sèche, maintien…",
+      "medicalNotes": "Antécédents médicaux, contre-indications…",
+      "privateNutriNotes": "Notes internes nutritionniste…"
+    },
+    "position": {
+      "gardien": "Gardien",
+      "defenseur": "Défenseur",
+      "milieu": "Milieu",
+      "attaquant": "Attaquant"
+    },
+    "playerStatus": {
+      "actif": "Actif",
+      "en_test": "En test",
+      "blesse": "Blessé",
+      "retour_blessure": "Retour blessure",
+      "inactif": "Inactif"
+    }
   },
   "articles": {
     "catalog": "Catalogue articles",
@@ -316,7 +352,11 @@
       "validated": "Validés",
       "pending": "En attente",
       "blocked": "Bloqués"
-    }
+    },
+    "validationLabel": "Validation article",
+    "articleLabel": "Article",
+    "newArticle": "Nouvel article",
+    "catalogLabel": "Catalogue"
   },
   "diet": {
     "halal": "Halal",

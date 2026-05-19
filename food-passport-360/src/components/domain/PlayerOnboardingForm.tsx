@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import { ChevronLeft, Save, Lock, User, Utensils, Heart, Plane, Trophy } from "lucide-react";
+import { ChevronLeft, Save, Lock, User, Utensils, Plane, Trophy } from "lucide-react";
 import type { FPPlayer, FPOnboardingForm } from "@/lib/supabase/food-passport.types";
 import { savePlayerAction, saveFormAction } from "@/app/[locale]/(nutri)/nutri/players/[id]/actions";
 import PlayerPhotoUpload from "./PlayerPhotoUpload";
@@ -15,6 +15,24 @@ interface Props {
 }
 
 type Tab = "identity" | "operational" | "sensitive";
+
+const INPUT_STYLE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  border: "0.5px solid rgba(255,255,255,0.10)",
+  borderRadius: "12px",
+  color: "var(--foreground)",
+  padding: "8px 12px",
+  fontSize: "14px",
+  width: "100%",
+  outline: "none",
+};
+
+const CARD: React.CSSProperties = {
+  background: "rgba(255,255,255,0.03)",
+  border: "0.5px solid rgba(255,255,255,0.07)",
+  borderRadius: "20px",
+  padding: "16px",
+};
 
 function TabButton({
   active,
@@ -29,11 +47,14 @@ function TabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`flex-1 py-2 text-xs font-medium rounded-lg transition-colors ${
-        active
-          ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:text-foreground"
-      }`}
+      className="flex-1 py-2 text-xs font-medium transition-colors"
+      style={{
+        borderBottom: active
+          ? "2px solid var(--color-active)"
+          : "2px solid transparent",
+        color: active ? "var(--color-active)" : "rgba(255,255,255,0.40)",
+        background: "transparent",
+      }}
     >
       {children}
     </button>
@@ -44,28 +65,30 @@ function Field({
   label,
   children,
   required,
-  optional,
 }: {
   label: string;
   children: React.ReactNode;
   required?: boolean;
-  optional?: boolean;
 }) {
   return (
     <div className="space-y-1.5">
       <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
         {label}
-        {required && <span className="text-destructive">*</span>}
-        {optional && <span className="text-muted-foreground/60 text-[10px]">(optionnel)</span>}
+        {required && <span style={{ color: "var(--danger)" }}>*</span>}
       </label>
       {children}
     </div>
   );
 }
 
-const INPUT = "w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 placeholder:text-muted-foreground/50";
-const TEXTAREA = `${INPUT} resize-none`;
-const SELECT = `${INPUT} cursor-pointer`;
+function SectionDivider({ icon: Icon, label }: { icon?: React.ElementType; label: string }) {
+  return (
+    <div className="flex items-center gap-2 pb-1 pt-2" style={{ borderBottom: "0.5px solid rgba(255,255,255,0.07)" }}>
+      {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{label}</span>
+    </div>
+  );
+}
 
 export default function PlayerOnboardingForm({ player, form }: Props) {
   const t = useTranslations("nutri");
@@ -76,7 +99,6 @@ export default function PlayerOnboardingForm({ player, form }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("identity");
   const [toast, setToast] = useState<string | null>(null);
 
-  // Player fields
   const [photoUrl, setPhotoUrl] = useState<string | null>(player.photo_url);
   const [firstName, setFirstName] = useState(player.first_name);
   const [lastName, setLastName] = useState(player.last_name);
@@ -86,14 +108,12 @@ export default function PlayerOnboardingForm({ player, form }: Props) {
   const [status, setStatus] = useState(player.status);
   const [preferredLang, setPreferredLang] = useState(player.preferred_lang);
 
-  // Sensitive fields (nutri only)
   const [weightKg, setWeightKg] = useState(String(player.weight_kg ?? ""));
   const [heightCm, setHeightCm] = useState(String(player.height_cm ?? ""));
   const [bodyObjectives, setBodyObjectives] = useState(player.body_objectives ?? "");
   const [medicalNotes, setMedicalNotes] = useState(player.medical_notes ?? "");
   const [privateNutriNotes, setPrivateNutriNotes] = useState(player.private_nutri_notes ?? "");
 
-  // Form fields (operational)
   const [dietType, setDietType] = useState(form?.diet_type ?? "");
   const [mealRhythm, setMealRhythm] = useState(form?.meal_rhythm ?? "");
   const [refusedFoods, setRefusedFoods] = useState(form?.refused_foods ?? "");
@@ -177,7 +197,7 @@ export default function PlayerOnboardingForm({ player, form }: Props) {
           type="button"
           onClick={handleSave}
           disabled={isPending}
-          className="flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-60 transition-colors"
+          className="btn-primary flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold disabled:opacity-60"
         >
           <Save className="h-3.5 w-3.5" />
           {isPending ? tc("saving") : tc("save")}
@@ -201,154 +221,150 @@ export default function PlayerOnboardingForm({ player, form }: Props) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 p-1 rounded-xl bg-muted">
+      <div
+        className="flex"
+        style={{ borderBottom: "0.5px solid rgba(255,255,255,0.08)" }}
+      >
         <TabButton active={activeTab === "identity"} onClick={() => setActiveTab("identity")}>
-          <span className="flex items-center justify-center gap-1"><User className="h-3 w-3" />Identité</span>
+          <span className="flex items-center justify-center gap-1">
+            <User className="h-3 w-3" />
+            {t("tabIdentity")}
+          </span>
         </TabButton>
         <TabButton active={activeTab === "operational"} onClick={() => setActiveTab("operational")}>
-          <span className="flex items-center justify-center gap-1"><Utensils className="h-3 w-3" />Alimentation</span>
+          <span className="flex items-center justify-center gap-1">
+            <Utensils className="h-3 w-3" />
+            {t("tabFood")}
+          </span>
         </TabButton>
         <TabButton active={activeTab === "sensitive"} onClick={() => setActiveTab("sensitive")}>
-          <span className="flex items-center justify-center gap-1"><Lock className="h-3 w-3" />Nutri seul</span>
+          <span className="flex items-center justify-center gap-1">
+            <Lock className="h-3 w-3" />
+            {t("tabSensitive")}
+          </span>
         </TabButton>
       </div>
 
       {/* Tab: Identity */}
       {activeTab === "identity" && (
-        <div className="rounded-2xl border border-border bg-card p-4 space-y-4">
+        <div style={CARD} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <Field label={t("field.firstName")} required>
-              <input className={INPUT} value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              <input style={INPUT_STYLE} value={firstName} onChange={(e) => setFirstName(e.target.value)} />
             </Field>
             <Field label={t("field.lastName")} required>
-              <input className={INPUT} value={lastName} onChange={(e) => setLastName(e.target.value)} />
+              <input style={INPUT_STYLE} value={lastName} onChange={(e) => setLastName(e.target.value)} />
             </Field>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Field label={t("field.jerseyNumber")}>
-              <input type="number" className={INPUT} value={jerseyNumber} onChange={(e) => setJerseyNumber(e.target.value)} min={1} max={99} />
+              <input type="number" style={INPUT_STYLE} value={jerseyNumber} onChange={(e) => setJerseyNumber(e.target.value)} min={1} max={99} />
             </Field>
             <Field label={t("field.position")}>
-              <select className={SELECT} value={position} onChange={(e) => setPosition(e.target.value)}>
-                <option value="">—</option>
-                <option value="gardien">Gardien</option>
-                <option value="defenseur">Défenseur</option>
-                <option value="milieu">Milieu</option>
-                <option value="attaquant">Attaquant</option>
+              <select style={{ ...INPUT_STYLE, cursor: "pointer" }} value={position} onChange={(e) => setPosition(e.target.value)}>
+                <option value="" style={{ background: "#07080f" }}>—</option>
+                <option value="gardien" style={{ background: "#07080f" }}>{t("position.gardien")}</option>
+                <option value="defenseur" style={{ background: "#07080f" }}>{t("position.defenseur")}</option>
+                <option value="milieu" style={{ background: "#07080f" }}>{t("position.milieu")}</option>
+                <option value="attaquant" style={{ background: "#07080f" }}>{t("position.attaquant")}</option>
               </select>
             </Field>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Field label={t("field.squadGroup")}>
-              <input className={INPUT} value={squadGroup} onChange={(e) => setSquadGroup(e.target.value)} placeholder="A, B, U21…" />
+              <input style={INPUT_STYLE} value={squadGroup} onChange={(e) => setSquadGroup(e.target.value)} placeholder="A, B, U21…" />
             </Field>
             <Field label={t("field.status")}>
-              <select className={SELECT} value={status} onChange={(e) => setStatus(e.target.value as FPPlayer["status"])}>
-                <option value="actif">Actif</option>
-                <option value="en_test">En test</option>
-                <option value="blesse">Blessé</option>
-                <option value="retour_blessure">Retour blessure</option>
-                <option value="inactif">Inactif</option>
+              <select style={{ ...INPUT_STYLE, cursor: "pointer" }} value={status} onChange={(e) => setStatus(e.target.value as FPPlayer["status"])}>
+                <option value="actif" style={{ background: "#07080f" }}>{t("playerStatus.actif")}</option>
+                <option value="en_test" style={{ background: "#07080f" }}>{t("playerStatus.en_test")}</option>
+                <option value="blesse" style={{ background: "#07080f" }}>{t("playerStatus.blesse")}</option>
+                <option value="retour_blessure" style={{ background: "#07080f" }}>{t("playerStatus.retour_blessure")}</option>
+                <option value="inactif" style={{ background: "#07080f" }}>{t("playerStatus.inactif")}</option>
               </select>
             </Field>
           </div>
           <Field label={t("field.preferredLang")}>
-            <select className={SELECT} value={preferredLang} onChange={(e) => setPreferredLang(e.target.value as FPPlayer["preferred_lang"])}>
-              <option value="fr">Français</option>
-              <option value="en">English</option>
-              <option value="es">Español</option>
-              <option value="it">Italiano</option>
-              <option value="pt">Português</option>
-              <option value="ar">العربية</option>
+            <select style={{ ...INPUT_STYLE, cursor: "pointer" }} value={preferredLang} onChange={(e) => setPreferredLang(e.target.value as FPPlayer["preferred_lang"])}>
+              <option value="fr" style={{ background: "#07080f" }}>Français</option>
+              <option value="en" style={{ background: "#07080f" }}>English</option>
+              <option value="es" style={{ background: "#07080f" }}>Español</option>
+              <option value="it" style={{ background: "#07080f" }}>Italiano</option>
+              <option value="pt" style={{ background: "#07080f" }}>Português</option>
+              <option value="ar" style={{ background: "#07080f" }}>العربية</option>
             </select>
           </Field>
         </div>
       )}
 
-      {/* Tab: Operational (alimentaire) */}
+      {/* Tab: Operational */}
       {activeTab === "operational" && (
-        <div className="rounded-2xl border border-border bg-card p-4 space-y-4">
-          <div className="flex items-center gap-2 pb-1 border-b border-border">
-            <Utensils className="h-4 w-4 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Alimentation générale</span>
-          </div>
-          <Field label="Type d'alimentation">
-            <input className={INPUT} value={dietType} onChange={(e) => setDietType(e.target.value)} placeholder="Omnivore, végétarien, halal…" />
+        <div style={CARD} className="space-y-4">
+          <SectionDivider icon={Utensils} label={t("section.generalFood")} />
+          <Field label={t("field.dietType")}>
+            <input style={INPUT_STYLE} value={dietType} onChange={(e) => setDietType(e.target.value)} placeholder={t("placeholder.dietType")} />
           </Field>
-          <Field label="Rythme des repas">
-            <input className={INPUT} value={mealRhythm} onChange={(e) => setMealRhythm(e.target.value)} placeholder="3 repas / jour, collations…" />
+          <Field label={t("field.mealRhythm")}>
+            <input style={INPUT_STYLE} value={mealRhythm} onChange={(e) => setMealRhythm(e.target.value)} placeholder={t("placeholder.mealRhythm")} />
           </Field>
 
-          <div className="flex items-center gap-2 pb-1 border-b border-border pt-2">
-            <Heart className="h-4 w-4 text-destructive" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Restrictions</span>
-          </div>
-          <Field label="Aliments refusés">
-            <textarea className={TEXTAREA} rows={2} value={refusedFoods} onChange={(e) => setRefusedFoods(e.target.value)} placeholder="Lait de vache, fruits de mer…" />
+          <SectionDivider label={t("section.restrictions")} />
+          <Field label={t("field.refusedFoods")}>
+            <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={2} value={refusedFoods} onChange={(e) => setRefusedFoods(e.target.value)} placeholder={t("placeholder.refusedFoods")} />
           </Field>
-          <Field label="Textures évitées">
-            <input className={INPUT} value={refusedTextures} onChange={(e) => setRefusedTextures(e.target.value)} placeholder="Très épicé, trop gras…" />
+          <Field label={t("field.refusedTextures")}>
+            <input style={INPUT_STYLE} value={refusedTextures} onChange={(e) => setRefusedTextures(e.target.value)} />
           </Field>
-          <Field label="Tolérance épices">
-            <input className={INPUT} value={spiceTolerance} onChange={(e) => setSpiceTolerance(e.target.value)} placeholder="Faible / Moyenne / Élevée" />
+          <Field label={t("field.spiceTolerance")}>
+            <input style={INPUT_STYLE} value={spiceTolerance} onChange={(e) => setSpiceTolerance(e.target.value)} placeholder={t("placeholder.spiceTolerance")} />
           </Field>
 
-          <div className="flex items-center gap-2 pb-1 border-b border-border pt-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Boissons</span>
-          </div>
+          <SectionDivider label={t("section.drinks")} />
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Type d'eau">
-              <input className={INPUT} value={waterType} onChange={(e) => setWaterType(e.target.value)} placeholder="Plate, gazeuse…" />
+            <Field label={t("field.waterType")}>
+              <input style={INPUT_STYLE} value={waterType} onChange={(e) => setWaterType(e.target.value)} placeholder={t("placeholder.waterType")} />
             </Field>
-            <Field label="Boissons préférées">
-              <input className={INPUT} value={preferredDrinks} onChange={(e) => setPreferredDrinks(e.target.value)} />
+            <Field label={t("field.preferredDrinks")}>
+              <input style={INPUT_STYLE} value={preferredDrinks} onChange={(e) => setPreferredDrinks(e.target.value)} />
             </Field>
           </div>
-          <Field label="Boissons à éviter">
-            <input className={INPUT} value={avoidedDrinks} onChange={(e) => setAvoidedDrinks(e.target.value)} />
+          <Field label={t("field.avoidedDrinks")}>
+            <input style={INPUT_STYLE} value={avoidedDrinks} onChange={(e) => setAvoidedDrinks(e.target.value)} />
           </Field>
 
-          <div className="flex items-center gap-2 pb-1 border-b border-border pt-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Préférences</span>
-          </div>
-          <Field label="Cuisines préférées">
-            <input className={INPUT} value={preferredCuisine} onChange={(e) => setPreferredCuisine(e.target.value)} placeholder="Méditerranéenne, africaine…" />
+          <SectionDivider label={t("section.preferences")} />
+          <Field label={t("field.preferredCuisine")}>
+            <input style={INPUT_STYLE} value={preferredCuisine} onChange={(e) => setPreferredCuisine(e.target.value)} placeholder={t("placeholder.preferredCuisine")} />
           </Field>
-          <Field label="Plats réconfort">
-            <textarea className={TEXTAREA} rows={2} value={comfortFoods} onChange={(e) => setComfortFoods(e.target.value)} />
+          <Field label={t("field.comfortFoods")}>
+            <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={2} value={comfortFoods} onChange={(e) => setComfortFoods(e.target.value)} />
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="J'aime">
-              <textarea className={TEXTAREA} rows={2} value={playerLikes} onChange={(e) => setPlayerLikes(e.target.value)} />
+            <Field label={t("field.playerLikes")}>
+              <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={2} value={playerLikes} onChange={(e) => setPlayerLikes(e.target.value)} />
             </Field>
-            <Field label="Je n'aime pas">
-              <textarea className={TEXTAREA} rows={2} value={playerDislikes} onChange={(e) => setPlayerDislikes(e.target.value)} />
+            <Field label={t("field.playerDislikes")}>
+              <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={2} value={playerDislikes} onChange={(e) => setPlayerDislikes(e.target.value)} />
             </Field>
           </div>
 
-          <div className="flex items-center gap-2 pb-1 border-b border-border pt-2">
-            <Plane className="h-4 w-4 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">En déplacement</span>
-          </div>
-          <Field label="Petit-déjeuner hôtel">
-            <textarea className={TEXTAREA} rows={2} value={hotelBreakfastPref} onChange={(e) => setHotelBreakfastPref(e.target.value)} />
+          <SectionDivider icon={Plane} label={t("section.travel")} />
+          <Field label={t("field.hotelBreakfastPref")}>
+            <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={2} value={hotelBreakfastPref} onChange={(e) => setHotelBreakfastPref(e.target.value)} />
           </Field>
 
-          <div className="flex items-center gap-2 pb-1 border-b border-border pt-2">
-            <Trophy className="h-4 w-4 text-primary" />
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Jour de match</span>
-          </div>
+          <SectionDivider icon={Trophy} label={t("section.matchDay")} />
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Plat pré-match">
-              <input className={INPUT} value={favPreMatchDish} onChange={(e) => setFavPreMatchDish(e.target.value)} />
+            <Field label={t("field.favPreMatchDish")}>
+              <input style={INPUT_STYLE} value={favPreMatchDish} onChange={(e) => setFavPreMatchDish(e.target.value)} />
             </Field>
-            <Field label="Plat post-match">
-              <input className={INPUT} value={favPostMatchDish} onChange={(e) => setFavPostMatchDish(e.target.value)} />
+            <Field label={t("field.favPostMatchDish")}>
+              <input style={INPUT_STYLE} value={favPostMatchDish} onChange={(e) => setFavPostMatchDish(e.target.value)} />
             </Field>
           </div>
 
-          <Field label="Notes libres joueur">
-            <textarea className={TEXTAREA} rows={3} value={playerFreeNotes} onChange={(e) => setPlayerFreeNotes(e.target.value)} placeholder="Remarques du joueur…" />
+          <Field label={t("field.playerFreeNotes")}>
+            <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={3} value={playerFreeNotes} onChange={(e) => setPlayerFreeNotes(e.target.value)} placeholder={t("placeholder.playerFreeNotes")} />
           </Field>
         </div>
       )}
@@ -356,36 +372,50 @@ export default function PlayerOnboardingForm({ player, form }: Props) {
       {/* Tab: Sensitive (nutri only) */}
       {activeTab === "sensitive" && (
         <div className="space-y-4">
-          <div className="flex items-center gap-2 rounded-xl bg-destructive/10 border border-destructive/20 px-3 py-2">
-            <Lock className="h-4 w-4 text-destructive flex-shrink-0" />
-            <p className="text-xs text-destructive">{t("sensitiveData")}</p>
+          <div
+            className="flex items-center gap-2 px-3 py-2"
+            style={{
+              background: "rgba(255,77,106,0.06)",
+              border: "0.5px solid rgba(255,77,106,0.20)",
+              borderRadius: "12px",
+            }}
+          >
+            <Lock className="h-4 w-4 flex-shrink-0" style={{ color: "var(--danger)" }} />
+            <p className="text-xs" style={{ color: "var(--danger)" }}>{t("sensitiveData")}</p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4 space-y-4">
+          <div style={CARD} className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <Field label={t("field.weightKg")}>
-                <input type="number" className={INPUT} value={weightKg} onChange={(e) => setWeightKg(e.target.value)} placeholder="75" step="0.1" />
+                <input type="number" style={INPUT_STYLE} value={weightKg} onChange={(e) => setWeightKg(e.target.value)} placeholder="75" step="0.1" />
               </Field>
               <Field label={t("field.heightCm")}>
-                <input type="number" className={INPUT} value={heightCm} onChange={(e) => setHeightCm(e.target.value)} placeholder="180" />
+                <input type="number" style={INPUT_STYLE} value={heightCm} onChange={(e) => setHeightCm(e.target.value)} placeholder="180" />
               </Field>
             </div>
             <Field label={t("field.bodyObjectives")}>
-              <textarea className={TEXTAREA} rows={2} value={bodyObjectives} onChange={(e) => setBodyObjectives(e.target.value)} placeholder="Prise de masse, sèche, maintien…" />
+              <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={2} value={bodyObjectives} onChange={(e) => setBodyObjectives(e.target.value)} placeholder={t("placeholder.bodyObjectives")} />
             </Field>
             <Field label={t("field.medicalNotes")}>
-              <textarea className={TEXTAREA} rows={3} value={medicalNotes} onChange={(e) => setMedicalNotes(e.target.value)} placeholder="Antécédents médicaux, contre-indications…" />
+              <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={3} value={medicalNotes} onChange={(e) => setMedicalNotes(e.target.value)} placeholder={t("placeholder.medicalNotes")} />
             </Field>
             <Field label={t("field.privateNutriNotes")}>
-              <textarea className={TEXTAREA} rows={3} value={privateNutriNotes} onChange={(e) => setPrivateNutriNotes(e.target.value)} placeholder="Notes internes nutritionniste…" />
+              <textarea style={{ ...INPUT_STYLE, resize: "none" }} rows={3} value={privateNutriNotes} onChange={(e) => setPrivateNutriNotes(e.target.value)} placeholder={t("placeholder.privateNutriNotes")} />
             </Field>
           </div>
         </div>
       )}
 
-      {/* Toast */}
       {toast && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 rounded-xl bg-foreground text-background text-sm px-4 py-2.5 shadow-lg">
+        <div
+          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 text-sm px-4 py-2.5 shadow-lg"
+          style={{
+            background: "var(--foreground)",
+            color: "var(--background)",
+            borderRadius: "12px",
+            whiteSpace: "nowrap",
+          }}
+        >
           {toast}
         </div>
       )}

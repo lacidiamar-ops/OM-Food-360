@@ -128,7 +128,43 @@
   "nutri": {
     "playersLabel": "اللاعبون",
     "playersSubtitle": "{{count}} لاعب",
-    "noResults": "لا نتائج"
+    "noResults": "لا نتائج",
+    "tabIdentity": "الهوية",
+    "tabFood": "التغذية",
+    "tabSensitive": "للتغذية فقط",
+    "section": {
+      "generalFood": "التغذية العامة",
+      "restrictions": "القيود",
+      "drinks": "المشروبات",
+      "preferences": "التفضيلات",
+      "travel": "في التنقل",
+      "matchDay": "يوم المباراة"
+    },
+    "placeholder": {
+      "dietType": "نباتي، حلال…",
+      "mealRhythm": "3 وجبات يومياً، وجبات خفيفة…",
+      "refusedFoods": "حليب البقر، المأكولات البحرية…",
+      "spiceTolerance": "منخفض / متوسط / عالٍ",
+      "waterType": "عادية، غازية…",
+      "preferredCuisine": "متوسطية، أفريقية…",
+      "playerFreeNotes": "ملاحظات اللاعب…",
+      "bodyObjectives": "كتلة عضلية، تنشيف، صيانة…",
+      "medicalNotes": "التاريخ الطبي، موانع الاستخدام…",
+      "privateNutriNotes": "ملاحظات داخلية للأخصائي…"
+    },
+    "position": {
+      "gardien": "حارس",
+      "defenseur": "مدافع",
+      "milieu": "وسط",
+      "attaquant": "مهاجم"
+    },
+    "playerStatus": {
+      "actif": "نشط",
+      "en_test": "في الاختبار",
+      "blesse": "مصاب",
+      "retour_blessure": "العودة من الإصابة",
+      "inactif": "غير نشط"
+    }
   },
   "trips": {
     "deploymentLabel": "التنقل",
@@ -136,5 +172,11 @@
   },
   "hotelPortal": {
     "portalLabel": "الفندق"
+  },
+  "articles": {
+    "validationLabel": "التحقق من المقالة",
+    "articleLabel": "المقالة",
+    "newArticle": "مقالة جديدة",
+    "catalogLabel": "الكتالوج"
   }
 }

@@ -4,6 +4,17 @@ import { useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+const INPUT_STYLE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  border: "0.5px solid rgba(255,255,255,0.10)",
+  borderRadius: "12px",
+  color: "var(--foreground)",
+  padding: "10px 14px",
+  fontSize: "14px",
+  width: "100%",
+  outline: "none",
+};
+
 export default function ExportForm() {
   const t = useTranslations("export");
   const today = new Date().toISOString().slice(0, 10);
@@ -30,35 +41,46 @@ export default function ExportForm() {
   }
 
   return (
-    <form onSubmit={handleExport} className="space-y-6">
+    <form onSubmit={handleExport} className="space-y-5">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <label className="text-sm font-medium" htmlFor="exp-from">{t("from")}</label>
+          <label className="text-sm font-medium text-muted-foreground" htmlFor="exp-from">
+            {t("from")}
+          </label>
           <input
             id="exp-from"
             type="date"
             value={from}
             max={to}
             onChange={(e) => setFrom(e.target.value)}
-            className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            style={INPUT_STYLE}
           />
         </div>
         <div className="space-y-1.5">
-          <label className="text-sm font-medium" htmlFor="exp-to">{t("to")}</label>
+          <label className="text-sm font-medium text-muted-foreground" htmlFor="exp-to">
+            {t("to")}
+          </label>
           <input
             id="exp-to"
             type="date"
             value={to}
             min={from}
             onChange={(e) => setTo(e.target.value)}
-            className="w-full rounded-2xl border border-input bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            style={INPUT_STYLE}
           />
         </div>
       </div>
 
-      <div className="rounded-2xl bg-muted/40 border border-border p-4 space-y-1 text-sm text-muted-foreground">
-        <p className="font-medium text-foreground">{t("contentTitle")}</p>
-        <ul className="list-disc list-inside space-y-0.5 text-xs">
+      <div
+        className="p-4 space-y-1 text-sm"
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "0.5px solid rgba(255,255,255,0.07)",
+          borderRadius: "16px",
+        }}
+      >
+        <p className="font-medium">{t("contentTitle")}</p>
+        <ul className="list-disc list-inside space-y-0.5 text-xs text-muted-foreground">
           <li>{t("col1")}</li>
           <li>{t("col2")}</li>
           <li>{t("col3")}</li>
@@ -70,7 +92,8 @@ export default function ExportForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-5 py-3 font-medium text-primary-foreground disabled:opacity-60"
+        className="btn-primary w-full inline-flex items-center justify-center gap-2 py-3 font-semibold disabled:opacity-60"
+        style={{ borderRadius: "16px" }}
       >
         {loading ? (
           <><Loader2 className="h-4 w-4 animate-spin" />{t("generating")}</>

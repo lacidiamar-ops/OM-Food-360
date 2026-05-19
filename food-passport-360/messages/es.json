@@ -128,7 +128,43 @@
   "nutri": {
     "playersLabel": "Jugadores",
     "playersSubtitle": "{{count}} jugador{{count, plural, one {} other {es}}}",
-    "noResults": "Sin resultados"
+    "noResults": "Sin resultados",
+    "tabIdentity": "Identidad",
+    "tabFood": "Alimentación",
+    "tabSensitive": "Solo nutri",
+    "section": {
+      "generalFood": "Alimentación general",
+      "restrictions": "Restricciones",
+      "drinks": "Bebidas",
+      "preferences": "Preferencias",
+      "travel": "En desplazamiento",
+      "matchDay": "Día de partido"
+    },
+    "placeholder": {
+      "dietType": "Omnívoro, vegetariano, halal…",
+      "mealRhythm": "3 comidas/día, snacks…",
+      "refusedFoods": "Leche de vaca, mariscos…",
+      "spiceTolerance": "Baja / Media / Alta",
+      "waterType": "Sin gas, con gas…",
+      "preferredCuisine": "Mediterránea, africana…",
+      "playerFreeNotes": "Notas del jugador…",
+      "bodyObjectives": "Ganancia muscular, definición, mantenimiento…",
+      "medicalNotes": "Historial médico, contraindicaciones…",
+      "privateNutriNotes": "Notas internas del nutricionista…"
+    },
+    "position": {
+      "gardien": "Portero",
+      "defenseur": "Defensor",
+      "milieu": "Centrocampista",
+      "attaquant": "Delantero"
+    },
+    "playerStatus": {
+      "actif": "Activo",
+      "en_test": "En prueba",
+      "blesse": "Lesionado",
+      "retour_blessure": "Vuelta de lesión",
+      "inactif": "Inactivo"
+    }
   },
   "trips": {
     "deploymentLabel": "Desplazamiento",
@@ -136,5 +172,11 @@
   },
   "hotelPortal": {
     "portalLabel": "Hotel"
+  },
+  "articles": {
+    "validationLabel": "Validación artículo",
+    "articleLabel": "Artículo",
+    "newArticle": "Nuevo artículo",
+    "catalogLabel": "Catálogo"
   }
 }

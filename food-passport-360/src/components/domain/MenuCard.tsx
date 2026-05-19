@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import { Calendar, Clock, ChevronRight, MapPin, Users } from "lucide-react";
 import type { FPMenu, MenuStatus } from "@/lib/supabase/food-passport.types";
+import { StatusBadge } from "@/components/ui";
 
 interface Props {
   menu: FPMenu;
@@ -12,11 +13,13 @@ interface Props {
   variant?: "resto" | "player";
 }
 
-const STATUS_STYLES: Record<MenuStatus, string> = {
-  draft: "bg-muted text-muted-foreground",
-  validated: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
-  published: "bg-green-500/15 text-green-700 dark:text-green-400",
-  archived: "bg-zinc-500/15 text-muted-foreground",
+type MenuStatusBadge = "pending" | "info" | "validated" | "refused";
+
+const MENU_STATUS_BADGE: Record<MenuStatus, MenuStatusBadge> = {
+  draft:     "pending",
+  validated: "info",
+  published: "validated",
+  archived:  "refused",
 };
 
 function formatDate(date: string, locale: string) {
@@ -38,11 +41,27 @@ export default function MenuCard({ menu, itemsCount, href, variant = "resto" }: 
   const locale = useLocale();
 
   const inner = (
-    <div className="rounded-2xl border border-border bg-card p-4 hover:bg-muted/30 transition-colors active:scale-[0.99] space-y-2">
+    <div
+      className="p-4 space-y-2 transition-colors"
+      style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "0.5px solid rgba(255,255,255,0.07)",
+        borderRadius: "20px",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.05)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.03)";
+      }}
+    >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0 space-y-1">
           <h3 className="font-semibold text-sm truncate">{menu.title}</h3>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+          <div
+            className="flex flex-wrap items-center gap-x-3 gap-y-1"
+            style={{ fontSize: "12px", color: "var(--muted-foreground)" }}
+          >
             <span className="inline-flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               {formatDate(menu.date, locale)}
@@ -64,12 +83,13 @@ export default function MenuCard({ menu, itemsCount, href, variant = "resto" }: 
 
       <div className="flex items-center gap-2">
         {variant === "resto" && (
-          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[menu.status]}`}>
-            {tstatus(menu.status)}
-          </span>
+          <StatusBadge status={MENU_STATUS_BADGE[menu.status] ?? "pending"} />
         )}
         {itemsCount !== undefined && (
-          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <span
+            className="inline-flex items-center gap-1"
+            style={{ fontSize: "12px", color: "var(--muted-foreground)" }}
+          >
             <Users className="h-3 w-3" />
             {itemsCount} {t("articles", { count: itemsCount })}
           </span>
