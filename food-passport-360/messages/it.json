@@ -98,5 +98,18 @@
     "statsTrips": "Trasferte attive",
     "quickLinks": "Scorciatoie",
     "accessDenied": "Accesso negato — ruolo insufficiente"
+  },
+  "passport": {
+    "myPassport": "Il Mio Passaporto"
+  },
+  "menus": {
+    "today": "Oggi"
+  },
+  "commander": {
+    "label": "Ordine",
+    "noItems": "Nessun piatto selezionato"
+  },
+  "nutriQueue": {
+    "role": "Nutrizionista"
   }
 }

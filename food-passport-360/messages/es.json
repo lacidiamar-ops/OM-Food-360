@@ -98,5 +98,18 @@
     "statsTrips": "Desplazamientos activos",
     "quickLinks": "Accesos directos",
     "accessDenied": "Acceso denegado — rol insuficiente"
+  },
+  "passport": {
+    "myPassport": "Mi Pasaporte"
+  },
+  "menus": {
+    "today": "Hoy"
+  },
+  "commander": {
+    "label": "Pedido",
+    "noItems": "Ningún plato seleccionado"
+  },
+  "nutriQueue": {
+    "role": "Nutricionista"
   }
 }

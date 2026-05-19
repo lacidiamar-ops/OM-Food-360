@@ -56,7 +56,8 @@
     "service": "Service",
     "scheduledAt": "Pour",
     "remove": "Retirer",
-    "add": "Ajouter"
+    "add": "Ajouter",
+    "label": "Commande"
   },
   "nutriQueue": {
     "title": "File de validation",
@@ -77,6 +78,7 @@
     "adjusting": "Application…",
     "refusing": "Refus…",
     "asking": "Envoi…",
+    "role": "Nutritionniste",
     "modal": {
       "validateTitle": "Valider la commande",
       "validateDesc": "La commande sera transmise à la restauration.",
@@ -205,6 +207,7 @@
       "milieu": "Milieu",
       "attaquant": "Attaquant"
     },
+    "myPassport": "Mon Passeport",
     "status": {
       "actif": "Actif",
       "en_test": "En test",
@@ -345,7 +348,8 @@
   "menus": {
     "back": "Retour",
     "print": "Imprimer",
-    "noItems": "Aucun article dans ce menu"
+    "noItems": "Aucun article dans ce menu",
+    "today": "Aujourd'hui"
   },
   "menuStatus": {
     "draft": "Brouillon",

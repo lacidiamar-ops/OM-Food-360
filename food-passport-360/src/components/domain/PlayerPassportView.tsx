@@ -1,9 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { FPPlayer, FPOnboardingForm, FPNutritionTracking } from "@/lib/supabase/food-passport.types";
 import { User, UtensilsCrossed, Heart, Plane, Trophy, Activity } from "lucide-react";
+import type { FPPlayer, FPOnboardingForm, FPNutritionTracking } from "@/lib/supabase/food-passport.types";
 import AvatarEvolution from "./AvatarEvolution";
+import { PageHeader, StatCard, EmptyState } from "@/components/ui";
 
 interface Props {
   player: FPPlayer | null;
@@ -21,10 +22,20 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-border bg-card p-4 space-y-3">
+    <section
+      className="p-4 space-y-3"
+      style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "0.5px solid rgba(255,255,255,0.07)",
+        borderRadius: "16px",
+      }}
+    >
       <div className="flex items-center gap-2">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-          <Icon className="h-4 w-4 text-primary" />
+        <div
+          className="flex h-8 w-8 items-center justify-center"
+          style={{ background: "rgba(77,255,180,0.08)", borderRadius: "10px" }}
+        >
+          <Icon className="h-4 w-4 text-active" />
         </div>
         <h2 className="font-semibold text-sm">{title}</h2>
       </div>
@@ -43,20 +54,50 @@ function Field({ label, value }: { label: string; value: string | null | undefin
   );
 }
 
-function StatusBadge({ status }: { status: FPPlayer["status"] }) {
-  const colors: Record<FPPlayer["status"], string> = {
-    actif: "bg-green-500/15 text-green-700 dark:text-green-400",
-    en_test: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
-    blesse: "bg-red-500/15 text-red-700 dark:text-red-400",
-    retour_blessure: "bg-orange-500/15 text-orange-700 dark:text-orange-400",
-    inactif: "bg-muted text-muted-foreground",
-  };
+function PlayerStatusPill({ status }: { status: FPPlayer["status"] }) {
   const t = useTranslations("passport.status");
+  const styles: Record<FPPlayer["status"], { bg: string; color: string }> = {
+    actif:           { bg: "rgba(77,255,180,0.10)",  color: "var(--color-active)" },
+    en_test:         { bg: "rgba(0,91,172,0.15)",    color: "var(--color-om)" },
+    blesse:          { bg: "rgba(255,77,106,0.10)",  color: "var(--danger)" },
+    retour_blessure: { bg: "rgba(255,215,0,0.10)",   color: "var(--warning)" },
+    inactif:         { bg: "var(--muted)",           color: "var(--muted-foreground)" },
+  };
+  const s = styles[status];
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${colors[status]}`}>
+    <span
+      style={{
+        background: s.bg,
+        color: s.color,
+        borderRadius: "999px",
+        padding: "2px 10px",
+        fontSize: "11px",
+        fontWeight: 600,
+      }}
+    >
       {t(status)}
     </span>
   );
+}
+
+function scoreVariant(score: number | null): "default" | "success" | "warning" | "danger" {
+  if (score == null) return "default";
+  if (score >= 75) return "success";
+  if (score >= 50) return "warning";
+  return "danger";
+}
+
+function hydrationVariant(h: number | null): "default" | "success" | "warning" {
+  if (h == null) return "default";
+  if (h >= 8) return "success";
+  if (h < 5) return "warning";
+  return "default";
+}
+
+function caloriesVariant(c: number | null): "default" | "success" | "warning" {
+  if (c == null) return "default";
+  if (c >= 2200 && c <= 3500) return "success";
+  return "warning";
 }
 
 export default function PlayerPassportView({ player, form, tracking }: Props) {
@@ -67,14 +108,12 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
 
   if (!player) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 px-6 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
-          <User className="h-8 w-8 text-muted-foreground" />
-        </div>
-        <div className="space-y-1">
-          <h1 className="font-semibold text-base">{t("noPassport")}</h1>
-          <p className="text-sm text-muted-foreground">{t("noPassportDesc")}</p>
-        </div>
+      <div className="max-w-lg mx-auto px-4 py-12">
+        <EmptyState
+          icon={<User className="h-7 w-7" />}
+          title={t("noPassport")}
+          description={t("noPassportDesc")}
+        />
       </div>
     );
   }
@@ -83,77 +122,117 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
     ? t(`position.${player.position}` as Parameters<typeof t>[0])
     : null;
 
+  const subtitle = [
+    player.jersey_number != null ? `#${player.jersey_number}` : null,
+    position,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
-    <div className="max-w-lg mx-auto px-4 py-6 space-y-4">
-      {/* Header joueur */}
+    <div className="max-w-lg mx-auto px-4 py-6 space-y-5">
+      {/* Header */}
       <div className="flex items-start gap-4">
         {player.photo_url ? (
           <img
             src={player.photo_url}
             alt={`${player.first_name} ${player.last_name}`}
-            className="h-16 w-16 rounded-2xl object-cover"
+            className="h-16 w-16 object-cover flex-shrink-0"
+            style={{ borderRadius: "16px" }}
           />
         ) : (
-          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary font-bold text-xl">
+          <div
+            className="flex h-16 w-16 items-center justify-center text-active font-bold text-xl flex-shrink-0"
+            style={{ background: "rgba(77,255,180,0.08)", borderRadius: "16px" }}
+          >
             {player.first_name[0]}{player.last_name[0]}
           </div>
         )}
-        <div className="flex-1 min-w-0">
-          <h1 className="font-bold text-lg leading-tight">
-            {player.first_name} {player.last_name}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {player.jersey_number != null && `#${player.jersey_number} · `}
-            {position}
-          </p>
-          <div className="mt-1.5">
-            <StatusBadge status={player.status} />
-          </div>
+        <div className="flex-1 min-w-0 space-y-1.5">
+          <PageHeader
+            label={t("myPassport")}
+            title={`${player.first_name} ${player.last_name}`}
+            subtitle={subtitle || undefined}
+          />
+          <PlayerStatusPill status={player.status} />
         </div>
       </div>
 
-      {/* Suivi nutritionnel */}
+      {/* Stats row */}
+      {tracking && (
+        <div className="grid grid-cols-3 gap-2">
+          <StatCard
+            label={tt("calories")}
+            value={tracking.calories != null ? `${tracking.calories} kcal` : "—"}
+            variant={caloriesVariant(tracking.calories)}
+            icon={<Activity className="h-4 w-4" />}
+          />
+          <StatCard
+            label={tt("hydration")}
+            value={tracking.hydration != null ? `${tracking.hydration} L` : "—"}
+            variant={hydrationVariant(tracking.hydration)}
+          />
+          <StatCard
+            label={tt("scoreNutrition")}
+            value={tracking.score_nutrition != null ? tracking.score_nutrition : "—"}
+            variant={scoreVariant(tracking.score_nutrition)}
+          />
+        </div>
+      )}
+
+      {/* AvatarEvolution */}
       {tracking ? (
-        <section className="rounded-2xl border border-border bg-card p-4 space-y-3">
+        <section
+          className="p-4 space-y-3"
+          style={{
+            background: "rgba(255,255,255,0.03)",
+            border: "0.5px solid rgba(255,255,255,0.07)",
+            borderRadius: "16px",
+          }}
+        >
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
-              <Activity className="h-4 w-4 text-primary" />
+            <div
+              className="flex h-8 w-8 items-center justify-center"
+              style={{ background: "rgba(77,255,180,0.08)", borderRadius: "10px" }}
+            >
+              <Activity className="h-4 w-4 text-active" />
             </div>
             <h2 className="font-semibold text-sm">{tt("title")}</h2>
             <span className="ml-auto text-xs text-muted-foreground">
-              {new Date(tracking.tracking_date).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+              {new Date(tracking.tracking_date).toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+              })}
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            <AvatarEvolution score={tracking.score_nutrition} size="sm" />
-            <div className="flex-1 space-y-1">
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-2xl font-bold tabular-nums">
-                  {tracking.score_nutrition ?? "—"}
-                </span>
-                {tracking.score_nutrition != null && (
-                  <span className="text-xs text-muted-foreground">/100</span>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground">{tt("scoreNutrition")}</p>
-            </div>
-          </div>
+          <AvatarEvolution score={tracking.score_nutrition} size="sm" />
           {tracking.nutri_comment && (
-            <div className="rounded-xl bg-muted/50 px-3 py-2">
-              <p className="text-xs font-medium text-muted-foreground mb-0.5">{tt("recommendations")}</p>
+            <div
+              className="px-3 py-2"
+              style={{ background: "var(--muted)", borderRadius: "12px" }}
+            >
+              <p className="text-xs font-medium text-muted-foreground mb-0.5">
+                {tt("recommendations")}
+              </p>
               <p className="text-sm">{tracking.nutri_comment}</p>
             </div>
           )}
         </section>
       ) : (
-        <section className="rounded-2xl border border-border bg-muted/30 p-4 text-center">
+        <div
+          className="p-4 text-center"
+          style={{
+            background: "rgba(255,255,255,0.02)",
+            border: "0.5px solid rgba(255,255,255,0.07)",
+            borderRadius: "16px",
+          }}
+        >
           <p className="text-sm text-muted-foreground">{tt("noTracking")}</p>
-        </section>
+        </div>
       )}
 
       {form && (
         <>
-          {/* Alimentation */}
           <Section icon={UtensilsCrossed} title={t("section.diet")}>
             <dl className="space-y-2">
               <Field label={tf("dietType")} value={form.diet_type} />
@@ -163,7 +242,6 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
             </dl>
           </Section>
 
-          {/* Restrictions */}
           {(form.refused_foods || form.refused_textures) && (
             <Section icon={Heart} title={t("section.allergies")}>
               <dl className="space-y-2">
@@ -173,7 +251,6 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
             </Section>
           )}
 
-          {/* Préférences */}
           {(form.preferred_cuisine || form.comfort_foods || form.player_likes || form.player_dislikes) && (
             <Section icon={Heart} title={t("section.preferences")}>
               <dl className="space-y-2">
@@ -187,7 +264,6 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
             </Section>
           )}
 
-          {/* Déplacement */}
           {form.hotel_breakfast_pref && (
             <Section icon={Plane} title={t("section.travel")}>
               <dl className="space-y-2">
@@ -196,7 +272,6 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
             </Section>
           )}
 
-          {/* Jour de match */}
           {(form.fav_pre_match_dish || form.fav_post_match_dish) && (
             <Section icon={Trophy} title={t("section.matchDay")}>
               <dl className="space-y-2">
@@ -209,9 +284,7 @@ export default function PlayerPassportView({ player, form, tracking }: Props) {
       )}
 
       {!form && (
-        <p className="text-center text-sm text-muted-foreground py-8">
-          {tc("noData")}
-        </p>
+        <p className="text-center text-sm text-muted-foreground py-8">{tc("noData")}</p>
       )}
     </div>
   );

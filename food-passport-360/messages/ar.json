@@ -98,5 +98,18 @@
     "statsTrips": "رحلات نشطة",
     "quickLinks": "روابط سريعة",
     "accessDenied": "رفض الوصول — صلاحية غير كافية"
+  },
+  "passport": {
+    "myPassport": "جواز سفري"
+  },
+  "menus": {
+    "today": "اليوم"
+  },
+  "commander": {
+    "label": "الطلب",
+    "noItems": "لا توجد أطباق محددة"
+  },
+  "nutriQueue": {
+    "role": "أخصائي التغذية"
   }
 }

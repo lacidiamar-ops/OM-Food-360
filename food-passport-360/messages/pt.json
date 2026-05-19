@@ -98,5 +98,18 @@
     "statsTrips": "Deslocamentos ativos",
     "quickLinks": "Atalhos",
     "accessDenied": "Acesso negado — função insuficiente"
+  },
+  "passport": {
+    "myPassport": "Meu Passaporte"
+  },
+  "menus": {
+    "today": "Hoje"
+  },
+  "commander": {
+    "label": "Pedido",
+    "noItems": "Nenhum prato selecionado"
+  },
+  "nutriQueue": {
+    "role": "Nutricionista"
   }
 }

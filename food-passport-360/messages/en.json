@@ -98,5 +98,18 @@
     "statsTrips": "Active trips",
     "quickLinks": "Quick links",
     "accessDenied": "Access denied — insufficient role"
+  },
+  "passport": {
+    "myPassport": "My Passport"
+  },
+  "menus": {
+    "today": "Today"
+  },
+  "commander": {
+    "label": "Order",
+    "noItems": "No dishes selected"
+  },
+  "nutriQueue": {
+    "role": "Nutritionist"
   }
 }
