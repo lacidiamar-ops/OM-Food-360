@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
-import { useLocale } from "next-intl";
-import { Search, ChevronRight, Users } from "lucide-react";
+import { Search, ChevronRight } from "lucide-react";
 import type { FormStatus } from "@/lib/supabase/food-passport.types";
+import { PageHeader, StatusBadge, EmptyState } from "@/components/ui";
 
 interface PlayerWithForm {
   id: string;
@@ -27,24 +27,49 @@ interface Props {
   players: PlayerWithForm[];
 }
 
-const STATUS_COLORS: Record<FormStatus, string> = {
-  brouillon: "bg-muted text-muted-foreground",
-  incomplete: "bg-orange-500/15 text-orange-700 dark:text-orange-400",
-  a_mettre_a_jour: "bg-yellow-500/15 text-yellow-700 dark:text-yellow-400",
-  complete: "bg-blue-500/15 text-blue-700 dark:text-blue-400",
-  validee: "bg-active/15 text-active",
+type BadgeStatus = "pending" | "validated" | "refused" | "urgent" | "info" | "processing";
+
+const STATUS_BADGE: Record<FormStatus, BadgeStatus> = {
+  brouillon:      "pending",
+  incomplete:     "urgent",
+  a_mettre_a_jour:"pending",
+  complete:       "processing",
+  validee:        "validated",
 };
 
 function ProgressBar({ value }: { value: number }) {
+  const pct = Math.min(100, Math.max(0, value));
   return (
-    <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
+    <div
+      className="h-1 w-full overflow-hidden"
+      style={{ background: "var(--muted)", borderRadius: "999px" }}
+    >
       <div
-        className="h-full rounded-full bg-primary transition-all"
-        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+        className="h-full transition-all"
+        style={{
+          width: `${pct}%`,
+          background: pct >= 100
+            ? "var(--color-active)"
+            : pct >= 60
+              ? "var(--primary-foreground)"
+              : "var(--warning)",
+          borderRadius: "999px",
+        }}
       />
     </div>
   );
 }
+
+const INPUT_STYLE: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  border: "0.5px solid rgba(255,255,255,0.10)",
+  borderRadius: "12px",
+  color: "var(--foreground)",
+  padding: "10px 12px 10px 36px",
+  fontSize: "14px",
+  width: "100%",
+  outline: "none",
+};
 
 export default function NutriPlayerList({ players }: Props) {
   const t = useTranslations("nutri");
@@ -61,35 +86,55 @@ export default function NutriPlayerList({ players }: Props) {
     );
   });
 
+  const countBadge = (
+    <span
+      style={{
+        background: "rgba(77,255,180,0.10)",
+        color: "var(--color-active)",
+        border: "1px solid rgba(77,255,180,0.20)",
+        borderRadius: "999px",
+        padding: "3px 10px",
+        fontSize: "12px",
+        fontWeight: 700,
+      }}
+    >
+      {players.length}
+    </span>
+  );
+
   return (
-    <div className="max-w-2xl mx-auto px-4 py-6 space-y-4">
-      <div className="flex items-center justify-between">
-        <h1 className="font-bold text-lg">{t("players")}</h1>
-        <span className="text-sm text-muted-foreground">{players.length} joueurs</span>
-      </div>
+    <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
+      <PageHeader
+        label={t("playersLabel")}
+        title={t("players")}
+        subtitle={t("playersSubtitle", { count: players.length })}
+        action={countBadge}
+      />
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <svg
+          className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none"
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+        >
+          <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
+        </svg>
         <input
           type="search"
           placeholder={t("search")}
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2.5 rounded-xl border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+          style={INPUT_STYLE}
         />
       </div>
 
       {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted">
-            <Users className="h-6 w-6 text-muted-foreground" />
-          </div>
-          <p className="text-sm text-muted-foreground">
-            {search ? "Aucun résultat" : t("noPlayersDesc")}
-          </p>
-        </div>
+        <EmptyState
+          icon={<Search className="h-6 w-6" />}
+          title={search ? t("noResults") : t("noPlayers")}
+          description={search ? undefined : t("noPlayersDesc")}
+        />
       )}
 
       {/* Player list */}
@@ -101,45 +146,67 @@ export default function NutriPlayerList({ players }: Props) {
           const positionLabel = player.position
             ? tp(`position.${player.position}` as Parameters<typeof tp>[0])
             : null;
+          const initials = `${player.first_name[0]}${player.last_name[0]}`.toUpperCase();
 
           return (
             <li key={player.id}>
               <Link
                 href={`/${locale}/nutri/players/${player.id}`}
-                className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 hover:bg-muted/50 transition-colors active:scale-[0.99]"
+                className="flex items-center gap-3 p-3 transition-colors active:scale-[0.99]"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  border: "0.5px solid rgba(255,255,255,0.07)",
+                  borderRadius: "16px",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.05)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.background = "rgba(255,255,255,0.03)";
+                }}
               >
                 {/* Avatar */}
                 {player.photo_url ? (
                   <img
                     src={player.photo_url}
                     alt={`${player.first_name} ${player.last_name}`}
-                    className="h-11 w-11 rounded-xl object-cover flex-shrink-0"
+                    className="h-11 w-11 object-cover flex-shrink-0"
+                    style={{ borderRadius: "12px" }}
                   />
                 ) : (
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary font-semibold text-sm flex-shrink-0">
-                    {player.first_name[0]}{player.last_name[0]}
+                  <div
+                    className="flex h-11 w-11 items-center justify-center font-semibold text-sm flex-shrink-0 text-active"
+                    style={{
+                      background: "rgba(77,255,180,0.08)",
+                      borderRadius: "12px",
+                    }}
+                  >
+                    {initials}
                   </div>
                 )}
 
                 {/* Info */}
-                <div className="flex-1 min-w-0 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-sm truncate">
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-sm truncate">
                       {player.last_name} {player.first_name}
                     </span>
                     {player.jersey_number != null && (
-                      <span className="text-xs text-muted-foreground">#{player.jersey_number}</span>
+                      <span className="text-xs text-muted-foreground font-mono">
+                        #{player.jersey_number}
+                      </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     {positionLabel && (
                       <span className="text-xs text-muted-foreground">{positionLabel}</span>
                     )}
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[formStatus]}`}
-                    >
-                      {tp(`formStatus.${formStatus}` as Parameters<typeof tp>[0])}
-                    </span>
+                    <StatusBadge status={STATUS_BADGE[formStatus]} />
+                    {progress > 0 && (
+                      <span className="text-[10px] text-muted-foreground/60 font-mono">
+                        {progress}%
+                      </span>
+                    )}
                   </div>
                   <ProgressBar value={progress} />
                 </div>

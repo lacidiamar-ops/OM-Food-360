@@ -245,7 +245,10 @@
       "bodyObjectives": "Objectifs corporels",
       "medicalNotes": "Notes médicales",
       "privateNutriNotes": "Notes privées nutritionniste"
-    }
+    },
+    "playersLabel": "Joueurs",
+    "playersSubtitle": "{{count}} joueur{{count, plural, one {} other {s}}}",
+    "noResults": "Aucun résultat"
   },
   "articles": {
     "catalog": "Catalogue articles",
@@ -351,7 +354,10 @@
     "back": "Retour",
     "print": "Imprimer",
     "noItems": "Aucun article dans ce menu",
-    "today": "Aujourd'hui"
+    "today": "Aujourd'hui",
+    "menuLabel": "Menu",
+    "untitled": "Menu sans titre",
+    "emptyMenuDesc": "Ajoutez des articles validés par le nutritionniste"
   },
   "menuStatus": {
     "draft": "Brouillon",
@@ -419,7 +425,9 @@
     "rawTokenCopy": "Copier",
     "rawTokenCopied": "Copié !",
     "generateBtn": "Générer",
-    "generating": "Génération…"
+    "generating": "Génération…",
+    "deploymentLabel": "Déplacement",
+    "noAccessDesc": "Aucun accès hôtel généré"
   },
   "hotelPortal": {
     "title": "Portail hôtel",
@@ -427,7 +435,8 @@
     "noAccessDesc": "Votre accès est expiré ou n'a pas encore été activé. Contactez le Team Manager.",
     "noOrders": "Aucune commande",
     "noOrdersDesc": "Il n'y a pas encore de commandes validées pour aujourd'hui.",
-    "readOnlyNotice": "Portail en lecture seule. Les commandes sont gérées par le staff de l'équipe."
+    "readOnlyNotice": "Portail en lecture seule. Les commandes sont gérées par le staff de l'équipe.",
+    "portalLabel": "Hôtel"
   },
   "restoDashboard": {
     "title": "Dashboard Restauration",

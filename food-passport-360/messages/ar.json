@@ -104,7 +104,10 @@
     "myPassport": "جواز سفري"
   },
   "menus": {
-    "today": "اليوم"
+    "today": "اليوم",
+    "menuLabel": "القائمة",
+    "untitled": "قائمة بدون عنوان",
+    "emptyMenuDesc": "أضف مقالات معتمدة من أخصائي التغذية"
   },
   "commander": {
     "label": "الطلب",
@@ -121,5 +124,17 @@
   "restoDashboard": {
     "label": "المطعم",
     "kpiCancelled": "ملغاة"
+  },
+  "nutri": {
+    "playersLabel": "اللاعبون",
+    "playersSubtitle": "{{count}} لاعب",
+    "noResults": "لا نتائج"
+  },
+  "trips": {
+    "deploymentLabel": "التنقل",
+    "noAccessDesc": "لم يتم إنشاء وصول للفندق"
+  },
+  "hotelPortal": {
+    "portalLabel": "الفندق"
   }
 }

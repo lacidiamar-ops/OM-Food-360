@@ -104,7 +104,10 @@
     "myPassport": "Mi Pasaporte"
   },
   "menus": {
-    "today": "Hoy"
+    "today": "Hoy",
+    "menuLabel": "Menú",
+    "untitled": "Menú sin título",
+    "emptyMenuDesc": "Añade artículos validados por el nutricionista"
   },
   "commander": {
     "label": "Pedido",
@@ -121,5 +124,17 @@
   "restoDashboard": {
     "label": "Restaurante",
     "kpiCancelled": "Cancelados"
+  },
+  "nutri": {
+    "playersLabel": "Jugadores",
+    "playersSubtitle": "{{count}} jugador{{count, plural, one {} other {es}}}",
+    "noResults": "Sin resultados"
+  },
+  "trips": {
+    "deploymentLabel": "Desplazamiento",
+    "noAccessDesc": "No se ha generado acceso al hotel"
+  },
+  "hotelPortal": {
+    "portalLabel": "Hotel"
   }
 }

@@ -1,19 +1,18 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
 import {
   CalendarDays, Hotel, MapPin, Clock, Utensils,
-  Plus, Pencil, Trash2, ChevronLeft
+  Plus, Pencil, Trash2, ChevronLeft,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { TripWithDetails, HotelAccessWithProfile } from "@/lib/supabase/queries";
 import type { FPHotel } from "@/lib/supabase/food-passport.types";
 import TripForm from "./TripForm";
 import HotelAccessCard from "./HotelAccessCard";
 import GenerateAccessModal from "./GenerateAccessModal";
+import { PageHeader, StatusBadge, EmptyState } from "@/components/ui";
 import { archiveTripAction } from "@/app/[locale]/(team-manager)/team-manager/trips/actions";
 
 interface Props {
@@ -22,23 +21,25 @@ interface Props {
   hotelProfiles: Array<{ id: string; email: string }>;
 }
 
-const STATUS_STYLE: Record<string, string> = {
-  planifie: "bg-blue-500/10 text-blue-700 dark:text-blue-400",
-  en_cours: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
-  termine:  "bg-muted text-muted-foreground",
-  annule:   "bg-destructive/10 text-destructive",
+type TripStatusBadge = "info" | "processing" | "validated" | "refused";
+
+const TRIP_STATUS_BADGE: Record<string, TripStatusBadge> = {
+  planifie: "info",
+  en_cours: "processing",
+  termine:  "validated",
+  annule:   "refused",
 };
 
-const STATUS_LABEL: Record<string, string> = {
-  planifie: "Planifié", en_cours: "En cours", termine: "Terminé", annule: "Annulé",
-};
-
-function formatDateRange(start: string, end: string) {
-  const fmt = (d: string) =>
-    new Date(d + "T12:00:00").toLocaleDateString("fr-FR", {
-      weekday: "long", day: "numeric", month: "long", year: "numeric",
-    });
-  return { start: fmt(start), end: fmt(end) };
+function InfoRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-2">
+      <Icon size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
+      <div>
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-sm capitalize">{value}</p>
+      </div>
+    </div>
+  );
 }
 
 export default function TripDetail({ trip, hotels, hotelProfiles }: Props) {
@@ -51,8 +52,13 @@ export default function TripDetail({ trip, hotels, hotelProfiles }: Props) {
   const [isPendingArchive, startArchive] = useTransition();
   const [newAccess, setNewAccess] = useState<{ access: HotelAccessWithProfile; rawToken: string } | null>(null);
 
-  const dates = formatDateRange(trip.start_date, trip.end_date);
   const isArchived = trip.status === "annule";
+
+  function formatDate(d: string) {
+    return new Date(d + "T12:00:00").toLocaleDateString(locale, {
+      weekday: "long", day: "numeric", month: "long", year: "numeric",
+    });
+  }
 
   function handleArchive() {
     if (!confirm(t("archiveConfirm"))) return;
@@ -62,18 +68,19 @@ export default function TripDetail({ trip, hotels, hotelProfiles }: Props) {
     });
   }
 
-  // All accesses to display (newly generated one is shown first with rawToken)
   const displayAccesses: Array<HotelAccessWithProfile & { _rawToken?: string }> = [
-    ...(newAccess
-      ? [{ ...newAccess.access, _rawToken: newAccess.rawToken }]
-      : []),
-    ...trip.accesses.filter(a => !newAccess || a.id !== newAccess.access.id),
+    ...(newAccess ? [{ ...newAccess.access, _rawToken: newAccess.rawToken }] : []),
+    ...trip.accesses.filter((a) => !newAccess || a.id !== newAccess.access.id),
   ];
+
+  const badgeStatus = TRIP_STATUS_BADGE[trip.status] ?? "info";
+  const subtitle = [trip.city, formatDate(trip.start_date)].filter(Boolean).join(" · ");
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       {/* Back */}
       <button
+        type="button"
         onClick={() => router.push(`/${locale}/team-manager/trips`)}
         className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
@@ -81,96 +88,76 @@ export default function TripDetail({ trip, hotels, hotelProfiles }: Props) {
         {t("backToList")}
       </button>
 
-      {/* Header card */}
-      <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="font-bold text-lg truncate">{trip.name}</h1>
-              <span className={cn(
-                "rounded-full px-2 py-0.5 text-[11px] font-semibold",
-                STATUS_STYLE[trip.status] ?? STATUS_STYLE.planifie
-              )}>
-                {STATUS_LABEL[trip.status] ?? trip.status}
-              </span>
-            </div>
-          </div>
-
-          {!isArchived && !isEditing && (
-            <div className="flex shrink-0 gap-2">
-              <button
-                onClick={() => setIsEditing(true)}
-                className="flex items-center gap-1.5 rounded-xl border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted transition-colors"
-              >
-                <Pencil size={12} />
-                {tc("edit")}
-              </button>
-              <button
-                onClick={handleArchive}
-                disabled={isPendingArchive}
-                className="flex items-center gap-1.5 rounded-xl border border-destructive/30 px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/5 transition-colors disabled:opacity-50"
-              >
-                <Trash2 size={12} />
-                {t("archive")}
-              </button>
-            </div>
-          )}
-        </div>
-
-        {isEditing ? (
-          <TripForm
-            hotels={hotels}
-            trip={trip}
-            onCancel={() => setIsEditing(false)}
-          />
-        ) : (
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 text-sm">
-            <div className="flex items-start gap-2">
-              <CalendarDays size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
-              <div>
-                <p className="text-xs text-muted-foreground">{t("fieldStartDate")}</p>
-                <p className="capitalize">{dates.start}</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-2">
-              <CalendarDays size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
-              <div>
-                <p className="text-xs text-muted-foreground">{t("fieldEndDate")}</p>
-                <p className="capitalize">{dates.end}</p>
-              </div>
-            </div>
-            {trip.city && (
-              <div className="flex items-start gap-2">
-                <MapPin size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">{t("fieldCity")}</p>
-                  <p>{trip.city}</p>
-                </div>
-              </div>
+      {/* PageHeader */}
+      <PageHeader
+        label={t("deploymentLabel")}
+        title={trip.name}
+        subtitle={subtitle}
+        action={
+          <div className="flex items-center gap-2">
+            <StatusBadge status={badgeStatus} />
+            {!isArchived && !isEditing && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-colors"
+                  style={{ border: "0.5px solid rgba(255,255,255,0.10)", background: "rgba(255,255,255,0.04)" }}
+                >
+                  <Pencil size={11} />
+                  {tc("edit")}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleArchive}
+                  disabled={isPendingArchive}
+                  className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium disabled:opacity-50 transition-colors"
+                  style={{ border: "0.5px solid rgba(255,77,106,0.30)", color: "var(--danger)", background: "rgba(255,77,106,0.05)" }}
+                >
+                  <Trash2 size={11} />
+                  {t("archive")}
+                </button>
+              </>
             )}
+          </div>
+        }
+      />
+
+      {/* Card details */}
+      <div
+        className="p-5 space-y-4"
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "0.5px solid rgba(255,255,255,0.07)",
+          borderRadius: "20px",
+        }}
+      >
+        {isEditing ? (
+          <TripForm hotels={hotels} trip={trip} onCancel={() => setIsEditing(false)} />
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <InfoRow icon={CalendarDays} label={t("fieldStartDate")} value={formatDate(trip.start_date)} />
+            <InfoRow icon={CalendarDays} label={t("fieldEndDate")} value={formatDate(trip.end_date)} />
+            {trip.city && <InfoRow icon={MapPin} label={t("fieldCity")} value={trip.city} />}
             {trip.hotel && (
-              <div className="flex items-start gap-2">
-                <Hotel size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">{t("fieldHotel")}</p>
-                  <p>{trip.hotel.name}{trip.hotel.city ? ` · ${trip.hotel.city}` : ""}</p>
-                </div>
-              </div>
+              <InfoRow
+                icon={Hotel}
+                label={t("fieldHotel")}
+                value={`${trip.hotel.name}${trip.hotel.city ? ` · ${trip.hotel.city}` : ""}`}
+              />
             )}
             {trip.match_time && (
-              <div className="flex items-start gap-2">
-                <Clock size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
-                <div>
-                  <p className="text-xs text-muted-foreground">{t("fieldMatchTime")}</p>
-                  <p>{new Date(trip.match_time).toLocaleString("fr-FR", {
-                    weekday: "short", day: "numeric", month: "short",
-                    hour: "2-digit", minute: "2-digit"
-                  })}</p>
-                </div>
-              </div>
+              <InfoRow
+                icon={Clock}
+                label={t("fieldMatchTime")}
+                value={new Date(trip.match_time).toLocaleString(locale, {
+                  weekday: "short", day: "numeric", month: "short",
+                  hour: "2-digit", minute: "2-digit",
+                })}
+              />
             )}
             {trip.meal_times && (
-              <div className="flex items-start gap-2 sm:col-span-2">
+              <div className="sm:col-span-2 flex items-start gap-2">
                 <Utensils size={15} className="mt-0.5 shrink-0 text-muted-foreground" />
                 <div>
                   <p className="text-xs text-muted-foreground">{t("fieldMealTimes")}</p>
@@ -182,14 +169,15 @@ export default function TripDetail({ trip, hotels, hotelProfiles }: Props) {
         )}
       </div>
 
-      {/* Accès hôtel */}
-      <div className="space-y-3">
+      {/* Hotel accesses */}
+      <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold">{t("accessSection")}</h2>
           {!isArchived && (
             <button
+              type="button"
               onClick={() => setShowGenerate(true)}
-              className="flex items-center gap-1.5 rounded-xl bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="btn-primary flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-semibold"
             >
               <Plus size={13} />
               {t("generateAccess")}
@@ -198,12 +186,14 @@ export default function TripDetail({ trip, hotels, hotelProfiles }: Props) {
         </div>
 
         {displayAccesses.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-border py-8 text-center text-sm text-muted-foreground">
-            {t("noAccess")}
-          </p>
+          <EmptyState
+            icon={<Hotel className="h-6 w-6" />}
+            title={t("noAccess")}
+            description={t("noAccessDesc")}
+          />
         ) : (
           <div className="space-y-2">
-            {displayAccesses.map(access => (
+            {displayAccesses.map((access) => (
               <HotelAccessCard
                 key={access.id}
                 access={access}
@@ -213,9 +203,8 @@ export default function TripDetail({ trip, hotels, hotelProfiles }: Props) {
             ))}
           </div>
         )}
-      </div>
+      </section>
 
-      {/* Modal génération accès */}
       {showGenerate && (
         <GenerateAccessModal
           trip={trip}

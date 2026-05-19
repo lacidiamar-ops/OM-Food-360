@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
-import { CheckCircle2, AlertTriangle, Ban, ChevronRight, ImageOff } from "lucide-react";
+import { Ban, ChevronRight, ImageOff } from "lucide-react";
 import type { FPArticle } from "@/lib/supabase/food-passport.types";
 import DietBadges from "./DietBadges";
+import { StatusBadge } from "@/components/ui";
 
 interface Props {
   article: FPArticle;
@@ -14,14 +15,10 @@ interface Props {
   translatedName?: string | null;
 }
 
-function StatusIcon({ article }: { article: FPArticle }) {
-  if (article.nutri_blocked) {
-    return <Ban className="h-3.5 w-3.5 text-destructive flex-shrink-0" />;
-  }
-  if (article.nutri_validated) {
-    return <CheckCircle2 className="h-3.5 w-3.5 text-active flex-shrink-0" />;
-  }
-  return <AlertTriangle className="h-3.5 w-3.5 text-warning flex-shrink-0" />;
+function articleBadgeStatus(article: FPArticle): "refused" | "validated" | "pending" {
+  if (article.nutri_blocked) return "refused";
+  if (article.nutri_validated) return "validated";
+  return "pending";
 }
 
 export default function ArticleCard({
@@ -36,42 +33,85 @@ export default function ArticleCard({
   const locale = useLocale();
 
   const displayName = translatedName ?? article.name;
+
   const inner = (
-    <div className="flex items-start gap-3 rounded-2xl border border-border bg-card p-3 hover:bg-muted/50 transition-colors active:scale-[0.99]">
-      {/* Photo */}
+    <div
+      className="flex items-start gap-3 p-3 transition-colors active:scale-[0.99]"
+      style={{
+        background: "rgba(255,255,255,0.03)",
+        border: "0.5px solid rgba(255,255,255,0.07)",
+        borderRadius: "16px",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.05)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLDivElement).style.background = "rgba(255,255,255,0.03)";
+      }}
+    >
+      {/* Photo 48px round */}
       {article.photo_url ? (
         <img
           src={article.photo_url}
           alt={displayName}
-          className="h-16 w-16 rounded-xl object-cover flex-shrink-0"
+          className="h-12 w-12 object-cover flex-shrink-0"
+          style={{ borderRadius: "50%" }}
         />
       ) : (
-        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-muted flex-shrink-0">
-          <ImageOff className="h-5 w-5 text-muted-foreground" />
+        <div
+          className="flex h-12 w-12 items-center justify-center flex-shrink-0"
+          style={{ background: "var(--muted)", borderRadius: "50%" }}
+        >
+          <ImageOff className="h-4 w-4 text-muted-foreground" />
         </div>
       )}
 
       {/* Body */}
       <div className="flex-1 min-w-0 space-y-1.5">
-        <div className="flex items-center gap-1.5">
-          {showStatus && <StatusIcon article={article} />}
-          <span className="font-medium text-sm truncate">{displayName}</span>
+        {/* Name + out-of-stock */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="font-semibold text-sm truncate">{displayName}</span>
           {article.out_of_stock && (
-            <span className="rounded-full bg-destructive/15 text-destructive text-[10px] font-medium px-1.5 py-0.5">
+            <span
+              style={{
+                background: "rgba(255,77,106,0.10)",
+                color: "var(--danger)",
+                borderRadius: "999px",
+                padding: "1px 6px",
+                fontSize: "10px",
+                fontWeight: 600,
+              }}
+            >
               {t("outOfStock")}
             </span>
           )}
+          {article.nutri_blocked && (
+            <Ban className="h-3 w-3 text-danger flex-shrink-0" />
+          )}
         </div>
 
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>
+        {/* Category + portion + validation badge */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <span
+            style={{
+              background: "var(--primary)",
+              border: "1px solid var(--primary-border)",
+              color: "var(--primary-foreground)",
+              borderRadius: "999px",
+              padding: "1px 8px",
+              fontSize: "11px",
+              fontWeight: 600,
+            }}
+          >
             {tcat(article.category as Parameters<typeof tcat>[0])}
           </span>
           {article.standard_portion_g && (
-            <>
-              <span>·</span>
-              <span>{article.standard_portion_g} g</span>
-            </>
+            <span className="text-xs text-muted-foreground">
+              {article.standard_portion_g} g
+            </span>
+          )}
+          {showStatus && (
+            <StatusBadge status={articleBadgeStatus(article)} />
           )}
         </div>
 
@@ -84,7 +124,9 @@ export default function ArticleCard({
         )}
       </div>
 
-      {href && <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 self-center" />}
+      {href && (
+        <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 self-center" />
+      )}
     </div>
   );
 
