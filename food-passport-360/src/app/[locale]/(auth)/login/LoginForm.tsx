@@ -5,41 +5,76 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Mail, ArrowRight, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
-import { sendMagicLink } from "./actions";
+import {
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+} from "lucide-react";
+import { sendMagicLink, signInWithPassword } from "./actions";
 import { cn } from "@/lib/utils";
 
-const schema = z.object({
+const passwordSchema = z.object({
   email: z.string().email(),
+  password: z.string().min(1, "required"),
 });
-type Schema = z.infer<typeof schema>;
+
+const magicSchema = z.object({
+  email: z.string().email(),
+  password: z.string().optional(),
+});
+
+type Schema = { email: string; password?: string };
 
 export default function LoginForm() {
   const t = useTranslations("auth");
   const tCommon = useTranslations("common");
+  const router = useRouter();
   const reduce = useReducedMotion();
+
+  const [mode, setMode] = useState<"password" | "magic">("password");
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">(
     "idle"
   );
   const [serverError, setServerError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<Schema>({ resolver: zodResolver(schema) });
+  } = useForm<Schema>({
+    resolver: zodResolver(mode === "password" ? passwordSchema : magicSchema),
+  });
 
-  async function onSubmit({ email }: Schema) {
+  async function onSubmit({ email, password }: Schema) {
     setState("loading");
     setServerError("");
-    const result = await sendMagicLink(email);
+
+    if (mode === "magic") {
+      const result = await sendMagicLink(email);
+      if (result.error) {
+        setState("error");
+        setServerError(result.error);
+      } else {
+        setState("success");
+      }
+      return;
+    }
+
+    const result = await signInWithPassword(email, password ?? "");
     if (result.error) {
       setState("error");
-      setServerError(result.error);
+      setServerError(t("wrongCredentials"));
     } else {
-      setState("success");
+      router.push("/");
     }
   }
 
@@ -63,7 +98,7 @@ export default function LoginForm() {
         </motion.div>
       ) : (
         <motion.form
-          key="form"
+          key={`form-${mode}`}
           initial={{ opacity: 0, y: reduce ? 0 : 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
@@ -78,7 +113,9 @@ export default function LoginForm() {
               className="text-sm font-medium text-foreground"
             >
               {t("email")}
-              <span className="ml-1 text-danger" aria-hidden>*</span>
+              <span className="ml-1 text-danger" aria-hidden>
+                *
+              </span>
             </label>
             <div className="relative">
               <Mail
@@ -106,16 +143,89 @@ export default function LoginForm() {
               />
             </div>
             {errors.email && (
-              <p id="email-error" className="flex items-center gap-1.5 text-xs text-danger" role="alert">
+              <p
+                id="email-error"
+                className="flex items-center gap-1.5 text-xs text-danger"
+                role="alert"
+              >
                 <AlertCircle size={12} />
                 {tCommon("required")}
               </p>
             )}
           </div>
 
+          {/* Password field — only in password mode */}
+          {mode === "password" && (
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-foreground"
+              >
+                {t("password")}
+                <span className="ml-1 text-danger" aria-hidden>
+                  *
+                </span>
+              </label>
+              <div className="relative">
+                <Lock
+                  size={16}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  {...register("password")}
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: `0.5px solid ${errors.password ? "var(--danger)" : "rgba(255,255,255,0.10)"}`,
+                    borderRadius: "10px",
+                    color: "var(--foreground)",
+                  }}
+                  className={cn(
+                    "h-11 w-full pl-9 pr-10",
+                    "text-base placeholder:text-muted-foreground",
+                    "transition-colors duration-100",
+                    "focus:outline-none focus:ring-2",
+                    errors.password
+                      ? "focus:ring-danger/50"
+                      : "focus:ring-[var(--color-active)]"
+                  )}
+                  aria-invalid={!!errors.password}
+                  aria-describedby={
+                    errors.password ? "password-error" : undefined
+                  }
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label={
+                    showPassword ? t("hidePassword") : t("showPassword")
+                  }
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p
+                  id="password-error"
+                  className="flex items-center gap-1.5 text-xs text-danger"
+                  role="alert"
+                >
+                  <AlertCircle size={12} />
+                  {tCommon("required")}
+                </p>
+              )}
+            </div>
+          )}
+
           {/* Server error */}
           {state === "error" && serverError && (
-            <p className="flex items-center gap-1.5 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger" role="alert">
+            <p
+              className="flex items-center gap-1.5 rounded-lg bg-danger/10 px-3 py-2 text-sm text-danger"
+              role="alert"
+            >
               <AlertCircle size={14} />
               {serverError}
             </p>
@@ -135,6 +245,11 @@ export default function LoginForm() {
           >
             {state === "loading" ? (
               <Loader2 size={16} className="animate-spin" />
+            ) : mode === "password" ? (
+              <>
+                {t("login")}
+                <ArrowRight size={16} />
+              </>
             ) : (
               <>
                 {t("magicLink")}
@@ -142,6 +257,33 @@ export default function LoginForm() {
               </>
             )}
           </button>
+
+          {/* Mode toggle link */}
+          {mode === "password" ? (
+            <button
+              type="button"
+              onClick={() => {
+                setState("idle");
+                setServerError("");
+                setMode("magic");
+              }}
+              className="text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t("noPasswordLink")}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                setState("idle");
+                setServerError("");
+                setMode("password");
+              }}
+              className="text-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t("backToPassword")}
+            </button>
+          )}
         </motion.form>
       )}
     </AnimatePresence>

@@ -150,7 +150,8 @@
     "confirm": "Confirmer",
     "delete": "Supprimer",
     "back": "Retour",
-    "loading": "Chargement…"
+    "loading": "Chargement…",
+    "required": "Champ requis"
   },
   "auth": {
     "login": "Connexion",
@@ -159,7 +160,14 @@
     "magicLink": "Recevoir un lien magique",
     "magicLinkSent": "Lien envoyé ! Vérifiez votre boîte mail.",
     "logout": "Déconnexion",
-    "authError": "Erreur d'authentification — détail :"
+    "authError": "Erreur d'authentification — détail :",
+    "password": "Mot de passe",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "wrongCredentials": "Email ou mot de passe incorrect",
+    "noPasswordLink": "Connexion sans mot de passe",
+    "backToPassword": "← Retour connexion avec mot de passe",
+    "required": "Champ requis"
   },
   "passport": {
     "title": "Mon passeport",
@@ -589,7 +597,35 @@
     "statsFeedbacks": "Feedbacks reçus",
     "statsTrips": "Déplacements actifs",
     "quickLinks": "Raccourcis",
-    "accessDenied": "Accès refusé — rôle insuffisant"
+    "accessDenied": "Accès refusé — rôle insuffisant",
+    "users": "Utilisateurs",
+    "usersTitle": "Gestion des utilisateurs",
+    "newUser": "Nouvel utilisateur",
+    "editUser": "Modifier l'utilisateur",
+    "userCreated": "Utilisateur créé",
+    "tempPasswordLabel": "Mot de passe temporaire",
+    "tempPasswordNote": "Affiché une seule fois — copiez-le maintenant",
+    "copyPassword": "Copier",
+    "copied": "Copié !",
+    "changePassword": "Changer le mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "generatePassword": "Générer un mot de passe fort",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordTooShort": "Minimum 8 caractères, 1 majuscule, 1 chiffre",
+    "passwordChanged": "Mot de passe modifié",
+    "deactivateUser": "Désactiver",
+    "reactivateUser": "Réactiver",
+    "deactivateConfirm": "Désactiver cet utilisateur ?",
+    "deactivateNote": "L'utilisateur ne pourra plus se connecter.",
+    "userDeactivated": "Utilisateur désactivé",
+    "userReactivated": "Utilisateur réactivé",
+    "fullName": "Nom complet",
+    "roleLabel": "Rôle",
+    "preferredLang": "Langue préférée",
+    "activeLabel": "Compte actif",
+    "createdAt": "Créé le",
+    "administration": "Administration"
   },
   "tracking": {
     "title": "Suivi nutritionnel",

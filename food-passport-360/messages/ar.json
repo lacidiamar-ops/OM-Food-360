@@ -56,7 +56,8 @@
     "confirm": "تأكيد",
     "delete": "حذف",
     "back": "رجوع",
-    "loading": "جارٍ التحميل…"
+    "loading": "جارٍ التحميل…",
+    "required": "حقل مطلوب"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -65,7 +66,14 @@
     "magicLink": "إرسال رابط سحري",
     "magicLinkSent": "تم إرسال الرابط! تحقق من بريدك الإلكتروني.",
     "logout": "تسجيل الخروج",
-    "authError": "خطأ في المصادقة — التفاصيل:"
+    "authError": "خطأ في المصادقة — التفاصيل:",
+    "password": "كلمة المرور",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "wrongCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    "noPasswordLink": "تسجيل الدخول بدون كلمة مرور",
+    "backToPassword": "← العودة إلى تسجيل الدخول بكلمة المرور",
+    "required": "حقل مطلوب"
   },
   "tracking": {
     "tierAlert": "تنبيه غذائي",
@@ -98,7 +106,35 @@
     "statsFeedbacks": "التغذية الراجعة",
     "statsTrips": "رحلات نشطة",
     "quickLinks": "روابط سريعة",
-    "accessDenied": "رفض الوصول — صلاحية غير كافية"
+    "accessDenied": "رفض الوصول — صلاحية غير كافية",
+    "users": "المستخدمون",
+    "usersTitle": "إدارة المستخدمين",
+    "newUser": "مستخدم جديد",
+    "editUser": "تعديل المستخدم",
+    "userCreated": "تم إنشاء المستخدم",
+    "tempPasswordLabel": "كلمة مرور مؤقتة",
+    "tempPasswordNote": "تُعرض مرة واحدة فقط — انسخها الآن",
+    "copyPassword": "نسخ",
+    "copied": "تم النسخ!",
+    "changePassword": "تغيير كلمة المرور",
+    "newPassword": "كلمة مرور جديدة",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "generatePassword": "توليد كلمة مرور قوية",
+    "passwordMismatch": "كلمتا المرور غير متطابقتين",
+    "passwordTooShort": "8 أحرف كحد أدنى، حرف كبير ورقم",
+    "passwordChanged": "تم تغيير كلمة المرور",
+    "deactivateUser": "تعطيل",
+    "reactivateUser": "إعادة تفعيل",
+    "deactivateConfirm": "تعطيل هذا المستخدم؟",
+    "deactivateNote": "لن يتمكن المستخدم من تسجيل الدخول بعد الآن.",
+    "userDeactivated": "تم تعطيل المستخدم",
+    "userReactivated": "تم إعادة تفعيل المستخدم",
+    "fullName": "الاسم الكامل",
+    "roleLabel": "الدور",
+    "preferredLang": "اللغة المفضلة",
+    "activeLabel": "الحساب نشط",
+    "createdAt": "تاريخ الإنشاء",
+    "administration": "الإدارة"
   },
   "passport": {
     "myPassport": "جواز سفري"

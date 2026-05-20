@@ -56,7 +56,8 @@
     "confirm": "Confirmar",
     "delete": "Eliminar",
     "back": "Volver",
-    "loading": "Cargando…"
+    "loading": "Cargando…",
+    "required": "Campo requerido"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -65,7 +66,14 @@
     "magicLink": "Enviar enlace mágico",
     "magicLinkSent": "¡Enlace enviado! Revisa tu correo.",
     "logout": "Cerrar sesión",
-    "authError": "Error de autenticación — detalle:"
+    "authError": "Error de autenticación — detalle:",
+    "password": "Contraseña",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "wrongCredentials": "Email o contraseña incorrectos",
+    "noPasswordLink": "Iniciar sesión sin contraseña",
+    "backToPassword": "← Volver al inicio con contraseña",
+    "required": "Campo requerido"
   },
   "tracking": {
     "tierAlert": "Alerta nutricional",
@@ -98,7 +106,35 @@
     "statsFeedbacks": "Feedbacks recibidos",
     "statsTrips": "Desplazamientos activos",
     "quickLinks": "Accesos directos",
-    "accessDenied": "Acceso denegado — rol insuficiente"
+    "accessDenied": "Acceso denegado — rol insuficiente",
+    "users": "Usuarios",
+    "usersTitle": "Gestión de usuarios",
+    "newUser": "Nuevo usuario",
+    "editUser": "Editar usuario",
+    "userCreated": "Usuario creado",
+    "tempPasswordLabel": "Contraseña temporal",
+    "tempPasswordNote": "Mostrada una sola vez — cópiela ahora",
+    "copyPassword": "Copiar",
+    "copied": "¡Copiado!",
+    "changePassword": "Cambiar contraseña",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "generatePassword": "Generar contraseña segura",
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "passwordTooShort": "Mínimo 8 caracteres, 1 mayúscula, 1 dígito",
+    "passwordChanged": "Contraseña cambiada",
+    "deactivateUser": "Desactivar",
+    "reactivateUser": "Reactivar",
+    "deactivateConfirm": "¿Desactivar este usuario?",
+    "deactivateNote": "El usuario ya no podrá iniciar sesión.",
+    "userDeactivated": "Usuario desactivado",
+    "userReactivated": "Usuario reactivado",
+    "fullName": "Nombre completo",
+    "roleLabel": "Rol",
+    "preferredLang": "Idioma preferido",
+    "activeLabel": "Cuenta activa",
+    "createdAt": "Creado el",
+    "administration": "Administración"
   },
   "passport": {
     "myPassport": "Mi Pasaporte"

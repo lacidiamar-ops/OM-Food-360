@@ -56,7 +56,8 @@
     "confirm": "Conferma",
     "delete": "Elimina",
     "back": "Indietro",
-    "loading": "Caricamento…"
+    "loading": "Caricamento…",
+    "required": "Campo obbligatorio"
   },
   "auth": {
     "login": "Accedi",
@@ -65,7 +66,14 @@
     "magicLink": "Invia link magico",
     "magicLinkSent": "Link inviato! Controlla la tua casella email.",
     "logout": "Disconnetti",
-    "authError": "Errore di autenticazione — dettaglio:"
+    "authError": "Errore di autenticazione — dettaglio:",
+    "password": "Password",
+    "showPassword": "Mostra password",
+    "hidePassword": "Nascondi password",
+    "wrongCredentials": "Email o password errati",
+    "noPasswordLink": "Accedi senza password",
+    "backToPassword": "← Torna all'accesso con password",
+    "required": "Campo obbligatorio"
   },
   "tracking": {
     "tierAlert": "Allerta nutrizionale",
@@ -98,7 +106,35 @@
     "statsFeedbacks": "Feedback ricevuti",
     "statsTrips": "Trasferte attive",
     "quickLinks": "Scorciatoie",
-    "accessDenied": "Accesso negato — ruolo insufficiente"
+    "accessDenied": "Accesso negato — ruolo insufficiente",
+    "users": "Utenti",
+    "usersTitle": "Gestione utenti",
+    "newUser": "Nuovo utente",
+    "editUser": "Modifica utente",
+    "userCreated": "Utente creato",
+    "tempPasswordLabel": "Password temporanea",
+    "tempPasswordNote": "Mostrata una sola volta — copiarla ora",
+    "copyPassword": "Copia",
+    "copied": "Copiato!",
+    "changePassword": "Cambia password",
+    "newPassword": "Nuova password",
+    "confirmPassword": "Conferma password",
+    "generatePassword": "Genera password sicura",
+    "passwordMismatch": "Le password non corrispondono",
+    "passwordTooShort": "Minimo 8 caratteri, 1 maiuscola, 1 cifra",
+    "passwordChanged": "Password modificata",
+    "deactivateUser": "Disattiva",
+    "reactivateUser": "Riattiva",
+    "deactivateConfirm": "Disattivare questo utente?",
+    "deactivateNote": "L'utente non potrà più accedere.",
+    "userDeactivated": "Utente disattivato",
+    "userReactivated": "Utente riattivato",
+    "fullName": "Nome completo",
+    "roleLabel": "Ruolo",
+    "preferredLang": "Lingua preferita",
+    "activeLabel": "Account attivo",
+    "createdAt": "Creato il",
+    "administration": "Amministrazione"
   },
   "passport": {
     "myPassport": "Il Mio Passaporto"

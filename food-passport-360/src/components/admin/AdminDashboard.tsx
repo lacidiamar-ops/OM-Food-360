@@ -217,6 +217,7 @@ export default function AdminDashboard({ stats }: Props) {
   ];
 
   const quickLinks = [
+    { href: "/admin/users", label: t("users"), desc: t("usersTitle"), icon: Users },
     { href: "/admin/audit", label: t("audit.title"), desc: t("audit.subtitle"), icon: FileText },
     { href: "/nutri/players", label: "Fiches joueurs", desc: t("navNutriDesc"), icon: BookOpen },
   ];

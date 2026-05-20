@@ -76,6 +76,7 @@ export const navItemsByRole: Record<UserRole, NavItem[]> = {
   super_admin: [
     { key: "dashboard", href: "/admin", icon: BarChart2 },
     { key: "players", href: "/admin/players", icon: Users },
+    { key: "users", href: "/admin/users", icon: Users },
     { key: "settings", href: "/admin/settings", icon: Settings },
     { key: "profile", href: "/admin/profile", icon: User },
   ],

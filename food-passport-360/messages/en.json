@@ -56,7 +56,8 @@
     "confirm": "Confirm",
     "delete": "Delete",
     "back": "Back",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "required": "Required field"
   },
   "auth": {
     "login": "Sign in",
@@ -65,7 +66,14 @@
     "magicLink": "Send magic link",
     "magicLinkSent": "Link sent! Check your inbox.",
     "logout": "Sign out",
-    "authError": "Authentication error — detail:"
+    "authError": "Authentication error — detail:",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "wrongCredentials": "Email or password incorrect",
+    "noPasswordLink": "Sign in without password",
+    "backToPassword": "← Back to password sign in",
+    "required": "Required field"
   },
   "tracking": {
     "tierAlert": "Nutritional alert",
@@ -98,7 +106,35 @@
     "statsFeedbacks": "Feedbacks received",
     "statsTrips": "Active trips",
     "quickLinks": "Quick links",
-    "accessDenied": "Access denied — insufficient role"
+    "accessDenied": "Access denied — insufficient role",
+    "users": "Users",
+    "usersTitle": "User management",
+    "newUser": "New user",
+    "editUser": "Edit user",
+    "userCreated": "User created",
+    "tempPasswordLabel": "Temporary password",
+    "tempPasswordNote": "Shown once only — copy it now",
+    "copyPassword": "Copy",
+    "copied": "Copied!",
+    "changePassword": "Change password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "generatePassword": "Generate strong password",
+    "passwordMismatch": "Passwords do not match",
+    "passwordTooShort": "Minimum 8 characters, 1 uppercase, 1 digit",
+    "passwordChanged": "Password changed",
+    "deactivateUser": "Deactivate",
+    "reactivateUser": "Reactivate",
+    "deactivateConfirm": "Deactivate this user?",
+    "deactivateNote": "The user will no longer be able to sign in.",
+    "userDeactivated": "User deactivated",
+    "userReactivated": "User reactivated",
+    "fullName": "Full name",
+    "roleLabel": "Role",
+    "preferredLang": "Preferred language",
+    "activeLabel": "Active account",
+    "createdAt": "Created",
+    "administration": "Administration"
   },
   "passport": {
     "myPassport": "My Passport"

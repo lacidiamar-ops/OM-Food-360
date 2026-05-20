@@ -56,7 +56,8 @@
     "confirm": "Confirmar",
     "delete": "Eliminar",
     "back": "Voltar",
-    "loading": "A carregar…"
+    "loading": "A carregar…",
+    "required": "Campo obrigatório"
   },
   "auth": {
     "login": "Entrar",
@@ -65,7 +66,14 @@
     "magicLink": "Enviar link mágico",
     "magicLinkSent": "Link enviado! Verifique sua caixa de entrada.",
     "logout": "Sair",
-    "authError": "Erro de autenticação — detalhe:"
+    "authError": "Erro de autenticação — detalhe:",
+    "password": "Palavra-passe",
+    "showPassword": "Mostrar palavra-passe",
+    "hidePassword": "Ocultar palavra-passe",
+    "wrongCredentials": "Email ou palavra-passe incorretos",
+    "noPasswordLink": "Entrar sem palavra-passe",
+    "backToPassword": "← Voltar à entrada com palavra-passe",
+    "required": "Campo obrigatório"
   },
   "tracking": {
     "tierAlert": "Alerta nutricional",
@@ -98,7 +106,35 @@
     "statsFeedbacks": "Feedbacks recebidos",
     "statsTrips": "Deslocamentos ativos",
     "quickLinks": "Atalhos",
-    "accessDenied": "Acesso negado — função insuficiente"
+    "accessDenied": "Acesso negado — função insuficiente",
+    "users": "Utilizadores",
+    "usersTitle": "Gestão de utilizadores",
+    "newUser": "Novo utilizador",
+    "editUser": "Editar utilizador",
+    "userCreated": "Utilizador criado",
+    "tempPasswordLabel": "Palavra-passe temporária",
+    "tempPasswordNote": "Mostrada uma única vez — copie agora",
+    "copyPassword": "Copiar",
+    "copied": "Copiado!",
+    "changePassword": "Alterar palavra-passe",
+    "newPassword": "Nova palavra-passe",
+    "confirmPassword": "Confirmar palavra-passe",
+    "generatePassword": "Gerar palavra-passe forte",
+    "passwordMismatch": "As palavras-passe não coincidem",
+    "passwordTooShort": "Mínimo 8 caracteres, 1 maiúscula, 1 dígito",
+    "passwordChanged": "Palavra-passe alterada",
+    "deactivateUser": "Desativar",
+    "reactivateUser": "Reativar",
+    "deactivateConfirm": "Desativar este utilizador?",
+    "deactivateNote": "O utilizador deixará de poder iniciar sessão.",
+    "userDeactivated": "Utilizador desativado",
+    "userReactivated": "Utilizador reativado",
+    "fullName": "Nome completo",
+    "roleLabel": "Função",
+    "preferredLang": "Idioma preferido",
+    "activeLabel": "Conta ativa",
+    "createdAt": "Criado em",
+    "administration": "Administração"
   },
   "passport": {
     "myPassport": "Meu Passaporte"
