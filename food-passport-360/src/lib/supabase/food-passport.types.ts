@@ -558,3 +558,34 @@ export interface FPProgramWithStats extends FPNutritionProgram {
   player_count: number
   avg_score: number | null
 }
+
+// ── Hydration ──────────────────────────────────────────────────────────────
+
+export type HydrationContext =
+  | 'morning' | 'before_training' | 'during_training' | 'after_training'
+  | 'with_meal' | 'before_match' | 'during_match' | 'post_match' | 'evening';
+
+export type HydrationWaterType =
+  | 'flat' | 'st_yorre' | 'isotonic_powerbar'
+  | 'isotonic_apurna' | 'sislab_electrolyte' | 'other';
+
+export interface FPHydrationLog {
+  id: string;
+  player_id: string;
+  date: string;
+  logged_at: string;
+  water_type: HydrationWaterType | null;
+  quantity_ml: number;
+  context: HydrationContext | null;
+  urine_color: number | null;
+}
+
+export interface FPHydrationDaySummary {
+  flat_ml: number;
+  st_yorre_ml: number;
+  isotonic_ml: number;
+  total_ml: number;
+  target_ml: number;
+  urine_color_latest: number | null;
+  logs: FPHydrationLog[];
+}

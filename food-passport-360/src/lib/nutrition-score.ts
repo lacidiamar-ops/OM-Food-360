@@ -167,3 +167,35 @@ export function computeDayType(date: string, matchDate: string | null): DayType 
   if (diffDays === -6) return "j-6";
   return "normal";
 }
+
+// ── Hydration score helpers ────────────────────────────────────────────────
+
+export function calculateHydrationScore(
+  totalMl: number,
+  targetMl: number,
+  urineColor: number | null,
+  dayType: string
+): { points: number; maxPoints: number; flags: string[] } {
+  const maxPoints = dayType === 'match' || dayType === 'j-1' ? 10 : 5;
+  const flags: string[] = [];
+
+  const ratio = targetMl > 0 ? Math.min(totalMl / targetMl, 1) : 0;
+  let points = Math.round(ratio * maxPoints);
+
+  if (urineColor !== null && urineColor >= 6) {
+    points = Math.max(0, points - 3);
+    flags.push('dehydrated');
+  }
+  if (urineColor !== null && urineColor >= 7) {
+    flags.push('alert_nutri');
+  }
+  // Malus spécifique J-1/match si St Yorre non consommée
+  // (appelé depuis le composant avec st_yorre_ml vs target)
+
+  return { points, maxPoints, flags };
+}
+
+export function hydrationScoreToAvatarBonus(flags: string[]): boolean {
+  // Bloque le score gold si déshydratation détectée
+  return flags.includes('dehydrated');
+}
