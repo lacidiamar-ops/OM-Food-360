@@ -426,3 +426,135 @@ export interface FPMealSchedule {
   created_by: string | null
   created_at: string
 }
+
+// ── nutrition tracking complete ───────────────────────────
+
+export type TrainingLoad = 'rest' | 'light' | 'medium' | 'high' | 'double' | 'match'
+export type DayType = 'j-6' | 'j-5' | 'j-4' | 'j-3' | 'j-2' | 'j-1' | 'match' | 'j+1' | 'j+2' | 'normal'
+export type SupplementBrand = 'nutrition_x' | 'apurna' | 'sislab' | 'powerbar' | 'beet_it' | 'other'
+export type SupplementType = 'protein_shake' | 'gel' | 'bar' | 'recovery_drink' | 'isotonic' | 'beetroot_shot' | 'bcaa' | 'omega3' | 'vitamin' | 'other'
+export type MealService2 = 'breakfast' | 'snack_am' | 'lunch' | 'snack_pm' | 'dinner' | 'pre_match' | 'post_match'
+export type AvatarColor = 'red' | 'orange' | 'yellow' | 'green' | 'blue' | 'gold'
+export type ProgramStatus = 'draft' | 'active' | 'completed' | 'archived'
+
+export interface TrainingLoadEntry {
+  date: string
+  load: TrainingLoad
+}
+
+export interface FPNutritionProgram {
+  id: string
+  name: string
+  type: 'individual' | 'collective'
+  player_ids: string[]
+  created_by: string | null
+  match_date: string | null
+  start_date: string
+  end_date: string
+  training_load: TrainingLoadEntry[]
+  status: ProgramStatus
+  created_at: string
+}
+
+export interface FPDailyNutritionPlan {
+  id: string
+  program_id: string
+  player_id: string
+  date: string
+  day_type: DayType
+  target_calories: number | null
+  target_protein_g: number | null
+  target_carbs_g: number | null
+  target_fat_g: number | null
+  target_water_ml: number | null
+  target_fiber_g: number | null
+  meal_priorities: Record<string, number>
+  notes_from_nutri: string | null
+  nutri_message: string | null
+  nutri_message_lang: string
+  created_at: string
+}
+
+export interface FPPrescribedMeal {
+  id: string
+  daily_plan_id: string
+  service: MealService2
+  vegetables_g: number
+  starch_g: number
+  protein_g: number
+  water_ml: number
+  points_vegetables: number
+  points_starch: number
+  points_protein: number
+  points_water: number
+  points_supplements: number
+  sort_order: number
+  notes: string | null
+}
+
+export interface FPPrescribedSupplement {
+  id: string
+  daily_plan_id: string
+  meal_service: MealService2 | 'any'
+  brand: SupplementBrand
+  brand_other: string | null
+  product_name: string
+  product_type: SupplementType
+  quantity_g: number | null
+  quantity_ml: number | null
+  quantity_units: number | null
+  water_ml: number
+  timing_minutes_before_effort: number | null
+  timing_minutes_after_effort: number | null
+  timing_note: string | null
+  points: number
+  sort_order: number
+}
+
+export interface FPMealConsumption {
+  id: string
+  daily_plan_id: string
+  player_id: string
+  service: string
+  vegetables_g_actual: number | null
+  starch_g_actual: number | null
+  protein_g_actual: number | null
+  water_ml_actual: number | null
+  consumed_at: string
+}
+
+export interface FPSupplementConsumption {
+  id: string
+  prescribed_supplement_id: string
+  player_id: string
+  taken: boolean
+  taken_at: string | null
+  notes: string | null
+}
+
+export interface FPDailyScore {
+  id: string
+  player_id: string
+  program_id: string
+  date: string
+  score_percent: number | null
+  avatar_color: AvatarColor | null
+  points_earned: number
+  points_possible: number
+  streak_days: number
+  created_at: string
+}
+
+// Enriched types for UI
+export interface FPDailyPlanFull extends FPDailyNutritionPlan {
+  meals: FPPrescribedMeal[]
+  supplements: FPPrescribedSupplement[]
+  consumption: FPMealConsumption[]
+  supplement_consumption: FPSupplementConsumption[]
+  score: FPDailyScore | null
+}
+
+export interface FPProgramWithStats extends FPNutritionProgram {
+  player_count: number
+  avg_score: number | null
+}
