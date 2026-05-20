@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 
 interface Props {
   currentUserId: string;
+  senderRole: "admin_nutri" | "admin_team_manager";
   contextMessage?: string;
   hasActiveTrip?: boolean;
   onClose: () => void;
@@ -15,7 +16,7 @@ interface Props {
 
 type Target = "cuisine" | "hotel";
 
-export default function ForwardModal({ currentUserId, contextMessage, hasActiveTrip, onClose, onSent }: Props) {
+export default function ForwardModal({ currentUserId, senderRole, contextMessage, hasActiveTrip, onClose, onSent }: Props) {
   const t = useTranslations("chat");
   const tc = useTranslations("common");
   const [target, setTarget] = useState<Target | null>(null);
@@ -24,8 +25,8 @@ export default function ForwardModal({ currentUserId, contextMessage, hasActiveT
   const [error, setError] = useState<string | null>(null);
 
   const CONV_TYPE: Record<Target, string> = {
-    cuisine: "nutri_cuisine",
-    hotel: "nutri_hotel",
+    cuisine: senderRole === "admin_nutri" ? "nutri_cuisine" : "manager_cuisine",
+    hotel:   senderRole === "admin_nutri" ? "nutri_hotel"   : "manager_hotel",
   };
 
   async function handleSend() {

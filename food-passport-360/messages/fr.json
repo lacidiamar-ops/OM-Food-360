@@ -650,7 +650,10 @@
     "autoTranslateActive": "Traduction auto activée",
     "translatedFrom": "Traduit du {lang}",
     "showOriginal": "Voir l'original",
-    "hideOriginal": "Masquer l'original"
+    "hideOriginal": "Masquer l'original",
+    "openChat": "Écrire",
+    "relay": "Relayer →",
+    "joueurContactsDesc": "Envoyez un message à votre Team Manager ou Nutritionniste"
   },
   "planning": {
     "label": "Planning",

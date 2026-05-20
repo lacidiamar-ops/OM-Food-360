@@ -18,5 +18,5 @@ export default async function JoueurMessagesPage() {
     redirect(`/${locale}/login`);
   }
 
-  return <MessagesClient currentUserId={user.id} basePath="/joueur/messages" />;
+  return <MessagesClient currentUserId={user.id} basePath="/joueur/messages" role="joueur" />;
 }

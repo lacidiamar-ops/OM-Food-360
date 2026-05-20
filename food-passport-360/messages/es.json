@@ -198,7 +198,10 @@
     "autoTranslateActive": "Traducción automática activada",
     "translatedFrom": "Traducido del {lang}",
     "showOriginal": "Ver original",
-    "hideOriginal": "Ocultar original"
+    "hideOriginal": "Ocultar original",
+    "openChat": "Escribir",
+    "relay": "Reenviar →",
+    "joueurContactsDesc": "Envía un mensaje a tu Team Manager o Nutricionista"
   },
   "planning": {
     "label": "Planificación",

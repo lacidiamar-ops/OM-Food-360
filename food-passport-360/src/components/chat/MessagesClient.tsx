@@ -1,20 +1,29 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { ProfileHero } from "@/components/ui";
 import ConversationList from "./ConversationList";
+import JoueurContactPicker from "./JoueurContactPicker";
 import type { FPConversationWithPreview } from "@/lib/supabase/food-passport.types";
+import type { UserRole } from "@/lib/rbac/types";
 
 interface Props {
   currentUserId: string;
   basePath: string;
+  role?: UserRole;
 }
 
-export default function MessagesClient({ currentUserId, basePath }: Props) {
+export default function MessagesClient({ currentUserId, basePath, role }: Props) {
   const t = useTranslations("chat");
   const router = useRouter();
+
+  // Joueur sees a fixed contact picker (Team Manager + Nutritionniste)
+  if (role === "joueur") {
+    return (
+      <JoueurContactPicker currentUserId={currentUserId} basePath={basePath} />
+    );
+  }
 
   function handleSelect(conv: FPConversationWithPreview) {
     router.push(`${basePath}/${conv.id}`);

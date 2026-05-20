@@ -198,7 +198,10 @@
     "autoTranslateActive": "الترجمة التلقائية مفعّلة",
     "translatedFrom": "مترجم من {lang}",
     "showOriginal": "عرض الأصل",
-    "hideOriginal": "إخفاء الأصل"
+    "hideOriginal": "إخفاء الأصل",
+    "openChat": "راسِل",
+    "relay": "إعادة توجيه ←",
+    "joueurContactsDesc": "أرسل رسالة إلى مديرك أو أخصائي التغذية"
   },
   "planning": {
     "label": "التخطيط",
