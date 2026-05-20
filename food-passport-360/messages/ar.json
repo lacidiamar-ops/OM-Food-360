@@ -363,5 +363,43 @@
     },
     "noplan": "لا توجد خطة تغذية لليوم",
     "noplanDesc": "لم يحدد مغذيك بعد خطة لهذا التاريخ."
+  },
+  "hydration": {
+    "title": "الترطيب",
+    "objective": "الهدف",
+    "total": "المجموع المشروب",
+    "jourAvantMatch": "عشية المباراة — St. Yorre مُوصى بها",
+    "jourMatch": "يوم المباراة — البروتوكول الخاص نشط",
+    "addMl": "+{ml} مل",
+    "urineColor": "لون البول",
+    "urineColorDesc": "قيّم مستوى ترطيبك",
+    "urineOk": "ممتاز، استمر هكذا!",
+    "urineDrinkMore": "اشرب المزيد من الماء",
+    "urineAlert": "⚠️ جفاف — اشرب 500 مل الآن",
+    "urineEmergency": "🚨 تنبيه — تواصل مع أخصائي التغذية",
+    "history": "سجل اليوم",
+    "noLogs": "لا توجد إدخالات لليوم",
+    "stYorreReminder": "250 مل × 4 موزعة على مدار اليوم",
+    "regoReminder": "خلال 20 دقيقة بعد المباراة",
+    "sources": {
+      "flat": "ماء عادي",
+      "st_yorre": "St. Yorre",
+      "isotonic_powerbar": "PowerBar إيزوتوني",
+      "isotonic_apurna": "Apurna إيزوتوني",
+      "sislab_electrolyte": "SiSLab Electrolyte",
+      "sislab_rego": "SiSLab REGO",
+      "other": "أخرى"
+    },
+    "contexts": {
+      "morning": "الصباح",
+      "before_training": "قبل التدريب",
+      "during_training": "أثناء التدريب",
+      "after_training": "بعد التدريب",
+      "with_meal": "مع الوجبة",
+      "before_match": "قبل المباراة",
+      "during_match": "أثناء المباراة",
+      "post_match": "بعد المباراة",
+      "evening": "المساء"
+    }
   }
 }

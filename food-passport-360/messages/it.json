@@ -363,5 +363,43 @@
     },
     "noplan": "Nessun piano nutrizionale per oggi",
     "noplanDesc": "Il tuo nutrizionista non ha ancora definito un piano per questa data."
+  },
+  "hydration": {
+    "title": "Idratazione",
+    "objective": "Obiettivo",
+    "total": "Totale bevuto",
+    "jourAvantMatch": "Vigilia della partita — St. Yorre consigliata",
+    "jourMatch": "Giorno di partita — protocollo speciale attivo",
+    "addMl": "+{ml} ml",
+    "urineColor": "Colore delle urine",
+    "urineColorDesc": "Valuta il tuo livello di idratazione",
+    "urineOk": "Perfetto, continua così!",
+    "urineDrinkMore": "Bevi più acqua",
+    "urineAlert": "⚠️ Disidratazione — bevi 500 ml adesso",
+    "urineEmergency": "🚨 Allerta — contatta il nutrizionista",
+    "history": "Registro del giorno",
+    "noLogs": "Nessuna voce per oggi",
+    "stYorreReminder": "250 ml × 4 distribuiti durante la giornata",
+    "regoReminder": "Entro 20 min dopo la partita",
+    "sources": {
+      "flat": "Acqua liscia",
+      "st_yorre": "St. Yorre",
+      "isotonic_powerbar": "PowerBar Isotonico",
+      "isotonic_apurna": "Apurna Isotonico",
+      "sislab_electrolyte": "SiSLab Electrolyte",
+      "sislab_rego": "SiSLab REGO",
+      "other": "Altro"
+    },
+    "contexts": {
+      "morning": "Mattina",
+      "before_training": "Prima dell'allenamento",
+      "during_training": "Durante l'allenamento",
+      "after_training": "Dopo l'allenamento",
+      "with_meal": "Con il pasto",
+      "before_match": "Prima della partita",
+      "during_match": "Durante la partita",
+      "post_match": "Post-partita",
+      "evening": "Sera"
+    }
   }
 }

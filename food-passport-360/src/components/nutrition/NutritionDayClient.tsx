@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import ProfileHero from "@/components/ui/ProfileHero";
 import AvatarEvolution from "@/components/nutrition/AvatarEvolution";
 import MealTracker from "@/components/nutrition/MealTracker";
+import HydrationTracker from "@/components/nutrition/HydrationTracker";
 import SupplementTracker from "@/components/nutrition/SupplementTracker";
 import DailyScoreBar from "@/components/nutrition/DailyScoreBar";
 import NutriMessageCard from "@/components/nutrition/NutriMessageCard";
@@ -227,6 +228,16 @@ export default function NutritionDayClient({
             />
           );
         })}
+
+        {/* Hydration */}
+        <HydrationTracker
+          playerId={currentUserId}
+          date={plan.date}
+          dayType={plan.day_type}
+          targetFlatMl={plan.water_ml_flat ?? 2500}
+          targetStYorreMl={plan.water_ml_st_yorre ?? 0}
+          targetIsotonicMl={plan.water_ml_isotonic ?? 0}
+        />
 
         {/* Supplements */}
         {plan.supplements.length > 0 && (

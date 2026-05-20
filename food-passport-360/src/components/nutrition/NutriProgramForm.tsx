@@ -7,6 +7,7 @@ import { ChevronDown, ChevronUp, Trash2, GripVertical, Loader2 } from "lucide-re
 import TrainingLoadCalendar from "@/components/nutrition/TrainingLoadCalendar";
 import SupplementModal from "@/components/nutrition/SupplementModal";
 import { computeDayType, EXPERT_RECOMMENDATIONS } from "@/lib/nutrition-score";
+import { HYDRATION_PROTOCOLS } from "@/lib/hydration-constants";
 import type {
   TrainingLoadEntry,
   FPPrescribedSupplement,
@@ -27,6 +28,8 @@ interface Props {
   players: Player[];
 }
 
+type IsotonicBrand = "powerbar" | "apurna" | "sislab";
+
 interface DayPlan {
   date:              string;
   day_type:          string;
@@ -38,6 +41,13 @@ interface DayPlan {
   target_fiber_g:    number | "";
   nutri_message:     string;
   supplements:       Partial<FPPrescribedSupplement>[];
+  // Hydration fields
+  water_ml_flat:     number;
+  water_ml_st_yorre: number;
+  water_ml_isotonic: number;
+  isotonic_brand:    IsotonicBrand;
+  hydration_note:    string;
+  points_hydration:  number; // 1-5
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
@@ -77,6 +87,240 @@ const BRAND_COLORS: Record<SupplementBrand, string> = {
   beet_it:     "rgba(220,50,80,1)",
   other:       "var(--muted-foreground)",
 };
+
+// ─── HydrationDayForm ────────────────────────────────────────────────────────
+
+const ISOTONIC_BRANDS: { key: IsotonicBrand; label: string }[] = [
+  { key: "powerbar", label: "PowerBar" },
+  { key: "apurna",   label: "Apurna"   },
+  { key: "sislab",   label: "SiSLab"   },
+];
+
+interface HydrationDayFormProps {
+  plan:     DayPlan;
+  onChange: (field: keyof DayPlan, value: string | number) => void;
+}
+
+function HydrationDayForm({ plan, onChange }: HydrationDayFormProps) {
+  const t = useTranslations("hydration");
+  const [open, setOpen] = useState(false);
+
+  const isMatchDay  = plan.day_type === "match";
+  const isPreMatch  = plan.day_type === "j-1";
+
+  return (
+    <div
+      style={{
+        background:   "rgba(255,255,255,0.02)",
+        border:       "0.5px solid rgba(255,255,255,0.07)",
+        borderRadius: "12px",
+        overflow:     "hidden",
+      }}
+    >
+      {/* Collapsible header */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center gap-2 px-3 py-2.5 text-left hover:opacity-80 transition-opacity"
+      >
+        <span style={{ fontSize: "13px" }}>
+          {open ? "▼" : "▶"}
+        </span>
+        <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--muted-foreground)", flex: 1 }}>
+          {t("form.sectionTitle")}
+        </span>
+
+        {/* Day-type badges */}
+        {isPreMatch && (
+          <span
+            style={{
+              fontSize:     "10px",
+              fontWeight:   700,
+              padding:      "2px 8px",
+              borderRadius: "999px",
+              background:   "rgba(255,200,80,0.12)",
+              color:        "var(--warning)",
+              border:       "1px solid rgba(255,200,80,0.3)",
+            }}
+          >
+            ⚡ {t("form.badgePreMatch")}
+          </span>
+        )}
+        {isMatchDay && (
+          <span
+            style={{
+              fontSize:     "10px",
+              fontWeight:   700,
+              padding:      "2px 8px",
+              borderRadius: "999px",
+              background:   "rgba(255,80,80,0.12)",
+              color:        "var(--danger)",
+              border:       "1px solid rgba(255,80,80,0.3)",
+            }}
+          >
+            🔴 {t("form.badgeMatchDay")}
+          </span>
+        )}
+
+        {/* Summary when collapsed */}
+        {!open && (plan.water_ml_flat > 0 || plan.water_ml_st_yorre > 0 || plan.water_ml_isotonic > 0) && (
+          <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>
+            {plan.water_ml_flat + plan.water_ml_st_yorre + plan.water_ml_isotonic} ml
+          </span>
+        )}
+      </button>
+
+      {/* Expanded content */}
+      {open && (
+        <div
+          className="px-3 pb-3 space-y-3"
+          style={{ borderTop: "0.5px solid rgba(255,255,255,0.06)" }}
+        >
+          {/* Water inputs row */}
+          <div className="grid gap-2 pt-3" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+            {(
+              [
+                { field: "water_ml_flat"     as const, label: t("form.flatWater") },
+                { field: "water_ml_st_yorre" as const, label: t("form.stYorre")   },
+                { field: "water_ml_isotonic" as const, label: t("form.isotonic")  },
+              ] as const
+            ).map(({ field, label }) => (
+              <label key={field} className="block space-y-1">
+                <span style={{ fontSize: "10px", color: "var(--muted-foreground)", fontWeight: 500 }}>
+                  {label} (ml)
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  step={50}
+                  value={plan[field]}
+                  onChange={(e) =>
+                    onChange(field, e.target.value === "" ? 0 : Number(e.target.value))
+                  }
+                  placeholder="0"
+                  className="w-full px-2 py-1.5"
+                  style={{
+                    background:   "rgba(255,255,255,0.05)",
+                    border:       "0.5px solid rgba(255,255,255,0.12)",
+                    borderRadius: "8px",
+                    fontSize:     "12px",
+                    color:        "var(--foreground)",
+                    outline:      "none",
+                  }}
+                />
+              </label>
+            ))}
+          </div>
+
+          {/* Isotonic brand pills */}
+          <div>
+            <p style={{ fontSize: "10px", color: "var(--muted-foreground)", fontWeight: 500, marginBottom: "6px" }}>
+              {t("form.isotonicBrand")}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {ISOTONIC_BRANDS.map(({ key, label }) => {
+                const active = plan.isotonic_brand === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => onChange("isotonic_brand", key)}
+                    style={{
+                      padding:      "4px 12px",
+                      borderRadius: "999px",
+                      fontSize:     "11px",
+                      fontWeight:   600,
+                      cursor:       "pointer",
+                      background:   active ? "rgba(77,255,180,0.12)" : "rgba(255,255,255,0.04)",
+                      color:        active ? "var(--color-active)" : "var(--muted-foreground)",
+                      border:       active
+                        ? "1px solid rgba(77,255,180,0.3)"
+                        : "0.5px solid rgba(255,255,255,0.1)",
+                      transition:   "all 0.15s",
+                    }}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Hydration note */}
+          <label className="block space-y-1">
+            <span style={{ fontSize: "10px", color: "var(--muted-foreground)", fontWeight: 500 }}>
+              {t("form.note")}
+            </span>
+            <textarea
+              value={plan.hydration_note}
+              onChange={(e) => onChange("hydration_note", e.target.value)}
+              rows={2}
+              placeholder={t("form.notePlaceholder")}
+              className="w-full px-2 py-1.5 resize-none"
+              style={{
+                background:   "rgba(255,255,255,0.05)",
+                border:       "0.5px solid rgba(255,255,255,0.12)",
+                borderRadius: "8px",
+                fontSize:     "12px",
+                color:        "var(--foreground)",
+                outline:      "none",
+              }}
+            />
+          </label>
+
+          {/* Points slider */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <span style={{ fontSize: "10px", color: "var(--muted-foreground)", fontWeight: 500 }}>
+                {t("form.points")}
+              </span>
+              <span
+                style={{
+                  fontSize:     "11px",
+                  fontWeight:   700,
+                  color:        "var(--color-active)",
+                  padding:      "1px 8px",
+                  borderRadius: "999px",
+                  background:   "rgba(77,255,180,0.1)",
+                  border:       "1px solid rgba(77,255,180,0.25)",
+                }}
+              >
+                {plan.points_hydration}/5
+              </span>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={5}
+              step={1}
+              value={plan.points_hydration}
+              onChange={(e) => onChange("points_hydration", Number(e.target.value))}
+              style={{
+                width:       "100%",
+                accentColor: "var(--color-active)",
+                cursor:      "pointer",
+              }}
+            />
+            <div className="flex justify-between">
+              {[1, 2, 3, 4, 5].map((v) => (
+                <span
+                  key={v}
+                  style={{
+                    fontSize:  "9px",
+                    color:     plan.points_hydration === v ? "var(--color-active)" : "rgba(255,255,255,0.2)",
+                    fontWeight: plan.points_hydration === v ? 700 : 400,
+                  }}
+                >
+                  {v}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 // ─── Sub-components ─────────────────────────────────────────────────────────
 
@@ -236,17 +480,24 @@ export default function NutriProgramForm({ players }: Props) {
       const existing = dailyPlans.find((d) => d.date === date);
       if (existing) return existing;
       const day_type = computeDayType(date, effectiveMatchDate);
+      const proto = HYDRATION_PROTOCOLS[day_type as keyof typeof HYDRATION_PROTOCOLS];
       return {
         date,
         day_type,
-        target_calories:  "",
-        target_protein_g: "",
-        target_carbs_g:   "",
-        target_fat_g:     "",
-        target_water_ml:  "",
-        target_fiber_g:   "",
-        nutri_message:    "",
-        supplements:      [],
+        target_calories:   "",
+        target_protein_g:  "",
+        target_carbs_g:    "",
+        target_fat_g:      "",
+        target_water_ml:   "",
+        target_fiber_g:    "",
+        nutri_message:     "",
+        supplements:       [],
+        water_ml_flat:     proto?.flat_ml     ?? 2500,
+        water_ml_st_yorre: proto?.st_yorre_ml ?? 0,
+        water_ml_isotonic: proto?.isotonic_ml ?? 0,
+        isotonic_brand:    "powerbar",
+        hydration_note:    proto?.note ?? "",
+        points_hydration:  2,
       };
     });
     setDailyPlans(plans);
@@ -280,28 +531,37 @@ export default function NutriProgramForm({ players }: Props) {
       const aiPlans: AIDailyPlan[] = await resp.json();
 
       setDailyPlans(
-        aiPlans.map((p) => ({
-          date:              p.date,
-          day_type:          p.day_type,
-          target_calories:   p.target_calories,
-          target_protein_g:  p.target_protein_g,
-          target_carbs_g:    p.target_carbs_g,
-          target_fat_g:      p.target_fat_g,
-          target_water_ml:   p.target_water_ml,
-          target_fiber_g:    p.target_fiber_g,
-          nutri_message:     p.nutri_message,
-          supplements:       p.supplements.map((s) => ({
-            brand:          s.brand as SupplementBrand,
-            product_name:   s.product_name,
-            product_type:   s.product_type as FPPrescribedSupplement["product_type"],
-            quantity_g:     s.quantity_g ?? null,
-            quantity_ml:    s.quantity_ml ?? null,
-            water_ml:       s.water_ml ?? 0,
-            timing_note:    s.timing_note,
-            points:         s.points,
-            sort_order:     0,
-          })),
-        }))
+        aiPlans.map((p) => {
+          const proto = HYDRATION_PROTOCOLS[p.day_type as keyof typeof HYDRATION_PROTOCOLS];
+          return {
+            date:              p.date,
+            day_type:          p.day_type,
+            target_calories:   p.target_calories,
+            target_protein_g:  p.target_protein_g,
+            target_carbs_g:    p.target_carbs_g,
+            target_fat_g:      p.target_fat_g,
+            target_water_ml:   p.target_water_ml,
+            target_fiber_g:    p.target_fiber_g,
+            nutri_message:     p.nutri_message,
+            supplements:       p.supplements.map((s) => ({
+              brand:          s.brand as SupplementBrand,
+              product_name:   s.product_name,
+              product_type:   s.product_type as FPPrescribedSupplement["product_type"],
+              quantity_g:     s.quantity_g ?? null,
+              quantity_ml:    s.quantity_ml ?? null,
+              water_ml:       s.water_ml ?? 0,
+              timing_note:    s.timing_note,
+              points:         s.points,
+              sort_order:     0,
+            })),
+            water_ml_flat:     proto?.flat_ml     ?? 2500,
+            water_ml_st_yorre: proto?.st_yorre_ml ?? 0,
+            water_ml_isotonic: proto?.isotonic_ml ?? 0,
+            isotonic_brand:    "powerbar" as IsotonicBrand,
+            hydration_note:    proto?.note ?? "",
+            points_hydration:  2,
+          };
+        })
       );
     } catch {
       // silently fall through
@@ -785,6 +1045,12 @@ export default function NutriProgramForm({ players }: Props) {
                         {plan.nutri_message.length}/200
                       </span>
                     </label>
+
+                    {/* Hydration section */}
+                    <HydrationDayForm
+                      plan={plan}
+                      onChange={(field, value) => updateDayPlan(plan.date, field, value)}
+                    />
                   </div>
                 )}
               </div>
