@@ -473,6 +473,13 @@ export interface FPDailyNutritionPlan {
   nutri_message: string | null
   nutri_message_lang: string
   created_at: string
+  // Hydration targets
+  water_ml_flat: number | null
+  water_ml_st_yorre: number | null
+  water_ml_isotonic: number | null
+  isotonic_brand: string | null
+  hydration_note: string | null
+  points_hydration: number | null
 }
 
 export interface FPPrescribedMeal {

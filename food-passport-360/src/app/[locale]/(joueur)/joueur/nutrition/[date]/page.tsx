@@ -158,6 +158,12 @@ export default async function NutritionDayPage({ params }: PageProps) {
   }
 
   const planFull: FPDailyPlanFull = {
+    water_ml_flat:     null,
+    water_ml_st_yorre: null,
+    water_ml_isotonic: null,
+    isotonic_brand:    null,
+    hydration_note:    null,
+    points_hydration:  null,
     ...plan,
     day_type: plan.day_type as FPDailyPlanFull["day_type"],
     meals,
