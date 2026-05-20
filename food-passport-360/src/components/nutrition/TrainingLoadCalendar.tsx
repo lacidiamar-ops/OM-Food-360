@@ -37,7 +37,6 @@ const LOAD_CONFIG: Record<TrainingLoad, LoadConfig> = {
   },
 };
 
-const DAY_SHORTS = ["Di", "Lu", "Ma", "Me", "Je", "Ve", "Sa"];
 
 function buildDateRange(start: string, end: string): string[] {
   const dates: string[] = [];

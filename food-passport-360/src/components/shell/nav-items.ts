@@ -17,6 +17,7 @@ import {
   Key,
   MessageCircle,
   Calendar,
+  Activity,
 } from "lucide-react";
 import type { UserRole } from "@/lib/rbac/types";
 
@@ -33,6 +34,7 @@ export const navItemsByRole: Record<UserRole, NavItem[]> = {
     { key: "commander", href: "/joueur/commander", icon: ShoppingBag },
     { key: "orders", href: "/joueur/orders", icon: Clock },
     { key: "messages", href: "/joueur/messages", icon: MessageCircle },
+    { key: "nutrition", href: "/joueur/nutrition", icon: Activity },
     { key: "profile", href: "/joueur/profile", icon: User },
   ],
   admin_nutri: [
@@ -41,6 +43,7 @@ export const navItemsByRole: Record<UserRole, NavItem[]> = {
     { key: "validation", href: "/nutri/articles", icon: FileText },
     { key: "messages", href: "/nutri/messages", icon: MessageCircle },
     { key: "planning", href: "/nutri/planning", icon: Calendar },
+    { key: "programs", href: "/nutri/programs", icon: ClipboardList },
     { key: "profile", href: "/nutri/profile", icon: User },
   ],
   admin_resto: [
