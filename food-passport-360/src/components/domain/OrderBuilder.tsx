@@ -301,7 +301,6 @@ export default function OrderBuilder({ menus, date }: Props) {
                   border: "0.5px solid rgba(255,255,255,0.10)",
                   borderRadius: "12px",
                   color: "var(--foreground)",
-                  focusRingColor: "var(--color-active)",
                 }}
               />
             </div>
