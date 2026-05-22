@@ -6,6 +6,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { navItemsByRole } from "./nav-items";
 import type { UserRole } from "@/lib/rbac/types";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface BottomNavProps {
   role: UserRole;
@@ -18,8 +19,11 @@ export default function BottomNav({ role, className }: BottomNavProps) {
   const items = navItemsByRole[role] ?? navItemsByRole.joueur;
 
   return (
-    <nav
+    <motion.nav
       className={cn("fixed bottom-0 left-0 right-0 z-40 lg:hidden", className)}
+      initial={{ y: 80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
       style={{
         background: "var(--nav-bg)",
         borderTop: "1px solid var(--nav-border)",
@@ -37,7 +41,7 @@ export default function BottomNav({ role, className }: BottomNavProps) {
           alt=""
           width={48}
           height={48}
-          style={{ opacity: 0.06, filter: "brightness(0) invert(1)" }}
+          style={{ opacity: 0.05, filter: "brightness(0) invert(1)" }}
         />
       </div>
 
@@ -51,28 +55,52 @@ export default function BottomNav({ role, className }: BottomNavProps) {
               key={key}
               href={href}
               className={cn(
-                "flex min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5",
-                "rounded-lg py-1 text-[10px] font-semibold transition-colors duration-150",
+                "relative flex min-w-[44px] flex-1 flex-col items-center justify-center gap-0.5",
+                "rounded-lg py-1 text-[10px] font-semibold",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                isActive ? "text-active" : "text-nav-inactive hover:text-muted-foreground"
+                "transition-colors duration-150",
+                isActive ? "text-[color:var(--color-active)]" : "text-[color:var(--nav-inactive)] hover:text-[color:var(--muted-foreground)]"
               )}
               aria-current={isActive ? "page" : undefined}
             >
-              <span
-                className={cn(
-                  "flex h-6 w-6 items-center justify-center rounded-md transition-all duration-150",
-                  isActive && "scale-110 drop-shadow-[0_0_6px_rgba(77,255,180,0.5)]"
+              {/* Active pill background */}
+              <AnimatePresence>
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-x-1 inset-y-0.5 -z-10 rounded-xl"
+                    style={{ background: "rgba(77,255,180,0.08)" }}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
                 )}
+              </AnimatePresence>
+
+              <motion.span
+                className="flex h-6 w-6 items-center justify-center rounded-md"
+                animate={
+                  isActive
+                    ? { scale: 1.15, filter: "drop-shadow(0 0 6px rgba(77,255,180,0.55))" }
+                    : { scale: 1,    filter: "drop-shadow(0 0 0px transparent)" }
+                }
+                transition={{ type: "spring", stiffness: 400, damping: 28 }}
               >
                 <Icon size={22} strokeWidth={isActive ? 2.5 : 1.5} />
-              </span>
-              <span className="max-w-[52px] truncate capitalize">
+              </motion.span>
+
+              <motion.span
+                className="max-w-[52px] truncate capitalize"
+                animate={{ opacity: isActive ? 1 : 0.55 }}
+                transition={{ duration: 0.15 }}
+              >
                 {t(key as Parameters<typeof t>[0])}
-              </span>
+              </motion.span>
             </Link>
           );
         })}
       </div>
-    </nav>
+    </motion.nav>
   );
 }

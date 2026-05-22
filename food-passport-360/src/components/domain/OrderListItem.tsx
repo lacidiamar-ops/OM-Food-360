@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 import { ChevronRight, Clock } from "lucide-react";
 import type { FPOrder } from "@/lib/supabase/food-passport.types";
@@ -28,9 +29,17 @@ export default function OrderListItem({ order }: Props) {
   const locale = useLocale();
 
   return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+      layout
+    >
     <Link
       href={`/${locale}/joueur/orders/${order.id}`}
-      className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 hover:bg-muted/50 transition-colors active:scale-[0.99]"
+      className="flex items-center gap-3 rounded-2xl border border-border bg-card p-3 hover:bg-muted/50 transition-colors"
     >
       <div className="flex-1 min-w-0 space-y-1.5">
         <div className="flex items-center gap-2">
@@ -47,7 +56,15 @@ export default function OrderListItem({ order }: Props) {
           {formatScheduled(order.scheduled_at, locale)}
         </div>
       </div>
-      <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+      <motion.div
+        className="flex-shrink-0"
+        animate={{ x: 0 }}
+        whileHover={{ x: 2 }}
+        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      >
+        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+      </motion.div>
     </Link>
+    </motion.div>
   );
 }

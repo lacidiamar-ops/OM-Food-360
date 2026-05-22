@@ -1,6 +1,7 @@
 import TopBar from "./TopBar";
 import BottomNav from "./BottomNav";
 import Sidebar from "./Sidebar";
+import PageTransition from "@/components/motion/PageTransition";
 import type { UserRole } from "@/lib/rbac/types";
 
 interface AppShellProps {
@@ -25,7 +26,9 @@ export default function AppShell({
           className="flex-1 overflow-y-auto pb-20 lg:pb-6 print:overflow-visible print:pb-0"
           id="main-content"
         >
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
         </main>
 
         <BottomNav role={role} className="print:hidden" />

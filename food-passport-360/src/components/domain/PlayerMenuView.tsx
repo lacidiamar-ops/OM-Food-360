@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { UtensilsCrossed } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import type {
   FPArticle,
   FPMenu,
@@ -89,23 +90,27 @@ export default function PlayerMenuView({ menus, date }: Props) {
         {services.map((service) => {
           const active = service === (activeGroup.menu.service);
           return (
-            <button
+            <motion.button
               key={service}
               type="button"
               onClick={() => setActiveService(service)}
-              className="shrink-0 pb-2.5 px-3 text-sm font-medium transition-colors"
+              className="relative shrink-0 pb-2.5 px-3 text-sm font-medium"
               style={{
-                borderBottom: active
-                  ? "2px solid var(--color-active)"
-                  : "2px solid transparent",
-                color: active
-                  ? "var(--color-active)"
-                  : "rgba(255,255,255,0.40)",
+                color: active ? "var(--color-active)" : "rgba(255,255,255,0.40)",
                 marginBottom: "-1px",
               }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 28 }}
             >
               {tservice(service as Parameters<typeof tservice>[0])}
-            </button>
+              <motion.span
+                className="absolute bottom-0 left-0 right-0 h-0.5"
+                style={{ background: "var(--color-active)", borderRadius: "2px" }}
+                initial={false}
+                animate={{ scaleX: active ? 1 : 0, opacity: active ? 1 : 0 }}
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            </motion.button>
           );
         })}
       </div>
@@ -119,12 +124,20 @@ export default function PlayerMenuView({ menus, date }: Props) {
       )}
 
       {/* Dish cards */}
-      <ul className="space-y-2">
-        {activeGroup.items.map((item) => {
+      <AnimatePresence mode="wait">
+      <motion.ul
+        key={activeService}
+        className="space-y-2"
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.22, ease: "easeOut" }}
+      >
+        {activeGroup.items.map((item, index) => {
           const name = item.translation?.name ?? item.article.name;
           const desc = item.translation?.description ?? item.article.short_description;
           return (
-            <li
+            <motion.li
               key={item.id}
               className="flex gap-3 items-center p-3"
               style={{
@@ -132,6 +145,10 @@ export default function PlayerMenuView({ menus, date }: Props) {
                 border: "0.5px solid rgba(255,255,255,0.07)",
                 borderRadius: "16px",
               }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ scale: 1.01, borderColor: "rgba(77,255,180,0.2)" }}
             >
               {/* Round photo 48px */}
               {item.article.photo_url ? (
@@ -178,10 +195,11 @@ export default function PlayerMenuView({ menus, date }: Props) {
                   <DietBadges article={item.article} />
                 </div>
               </div>
-            </li>
+            </motion.li>
           );
         })}
-      </ul>
+      </motion.ul>
+      </AnimatePresence>
     </div>
   );
 }

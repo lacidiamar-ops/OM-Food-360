@@ -2,26 +2,32 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 
-interface FadeInProps {
+interface ScaleInProps {
   children: React.ReactNode;
   delay?: number;
   duration?: number;
-  y?: number;
+  from?: number;
   className?: string;
 }
 
-export default function FadeIn({ children, delay = 0, duration = 0.25, y = 8, className }: FadeInProps) {
+export default function ScaleIn({
+  children,
+  delay = 0,
+  duration = 0.3,
+  from = 0.92,
+  className,
+}: ScaleInProps) {
   const reduce = useReducedMotion();
 
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: reduce ? 0 : y }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: reduce ? 1 : from }}
+      animate={{ opacity: 1, scale: 1 }}
       transition={{
         duration: reduce ? 0 : duration,
         delay,
-        ease: [0.16, 1, 0.3, 1],
+        ease: [0.34, 1.56, 0.64, 1],
       }}
     >
       {children}

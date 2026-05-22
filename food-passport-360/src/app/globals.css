@@ -266,7 +266,85 @@
   }
 }
 
+/* =============================================================================
+ * Animations & Keyframes
+ * ============================================================================= */
+
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(77, 255, 180, 0); }
+  50%       { box-shadow: 0 0 16px 4px rgba(77, 255, 180, 0.2); }
+}
+
+@keyframes float-up {
+  0%   { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  0%   { opacity: 0; transform: scale(0.92); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-down {
+  0%   { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Utility classes */
+.animate-float-up   { animation: float-up 0.3s ease forwards; }
+.animate-scale-in   { animation: scale-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.animate-slide-down { animation: slide-down 0.3s ease forwards; }
+.animate-glow-pulse { animation: glow-pulse 2.5s ease-in-out infinite; }
+
+/* Shimmer skeleton */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  border-radius: var(--radius);
+}
+
+/* Glass card interactive */
+.card-interactive {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  will-change: transform;
+}
+.card-interactive:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+.card-interactive:active {
+  transform: scale(0.98);
+}
+
+/* Smooth page scroll */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: rgba(255,255,255,0.12); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+/* Focus ring global */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Touch tap highlight removal */
+* { -webkit-tap-highlight-color: transparent; }

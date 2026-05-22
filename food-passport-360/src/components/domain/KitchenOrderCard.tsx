@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Clock, AlertCircle, MessageCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import type { KitchenOrder } from "@/lib/supabase/queries";
 import {
   markPrepStartedAction,
@@ -80,7 +81,7 @@ export default function KitchenOrderCard({ order, locale }: Props) {
   const urgent = order.priority === "urgent" || order.priority === "critique";
 
   return (
-    <div
+    <motion.div
       className="flex flex-col gap-2 p-3"
       style={{
         background: urgent ? "rgba(255,77,106,0.04)" : "rgba(255,255,255,0.03)",
@@ -91,6 +92,11 @@ export default function KitchenOrderCard({ order, locale }: Props) {
         opacity: isPending ? 0.6 : 1,
         pointerEvents: isPending ? "none" : undefined,
       }}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: isPending ? 0.6 : 1, y: 0 }}
+      whileHover={{ scale: 1.01, boxShadow: urgent ? "0 4px 20px rgba(255,77,106,0.12)" : "0 4px 20px rgba(77,255,180,0.06)" }}
+      transition={{ type: "spring", stiffness: 300, damping: 28 }}
+      layout
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
@@ -178,15 +184,18 @@ export default function KitchenOrderCard({ order, locale }: Props) {
       <p className="font-mono text-[10px] text-muted-foreground/50">{order.reference}</p>
 
       {/* CTA */}
-      <button
+      <motion.button
         onClick={handleAction}
         disabled={isPending}
-        className="mt-1 w-full rounded-xl px-3 py-2 text-sm font-semibold transition-opacity disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="mt-1 w-full rounded-xl px-3 py-2 text-sm font-semibold disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         style={{
           background: actionBg,
           border: `1px solid ${actionBorder}`,
           color: actionColor,
         }}
+        whileHover={{ opacity: 0.88, scale: 1.01 }}
+        whileTap={{ scale: 0.96 }}
+        transition={{ type: "spring", stiffness: 400, damping: 28 }}
       >
         {isPending ? (
           <span className="flex items-center justify-center gap-2">
@@ -196,7 +205,7 @@ export default function KitchenOrderCard({ order, locale }: Props) {
         ) : (
           actionLabel
         )}
-      </button>
-    </div>
+      </motion.button>
+    </motion.div>
   );
 }

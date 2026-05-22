@@ -1,3 +1,7 @@
+"use client";
+
+import { motion } from "framer-motion";
+
 type Status = "pending" | "validated" | "refused" | "urgent" | "info" | "processing";
 
 interface Props {
@@ -6,7 +10,7 @@ interface Props {
 
 const STYLES: Record<Status, { bg: string; color: string; border: string; shadow?: string }> = {
   pending: {
-    bg:     "var(--warning-bg, rgba(255,215,0,0.10))",
+    bg:     "rgba(255,215,0,0.10)",
     color:  "var(--warning)",
     border: "rgba(255,215,0,0.20)",
   },
@@ -47,11 +51,22 @@ const LABELS: Record<Status, string> = {
   processing: "En cours",
 };
 
+const PULSE_STATUSES: Status[] = ["pending", "urgent", "processing"];
+
 export default function StatusBadge({ status }: Props) {
   const s = STYLES[status];
+  const shouldPulse = PULSE_STATUSES.includes(status);
+
   return (
-    <span
+    <motion.span
+      initial={{ opacity: 0, scale: 0.85 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.2, ease: [0.34, 1.56, 0.64, 1] }}
       style={{
+        position: "relative",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "5px",
         background:   s.bg,
         color:        s.color,
         border:       `1px solid ${s.border}`,
@@ -60,11 +75,33 @@ export default function StatusBadge({ status }: Props) {
         padding:      "3px 10px",
         fontSize:     "11px",
         fontWeight:   600,
-        display:      "inline-flex",
-        alignItems:   "center",
       }}
     >
+      {shouldPulse && (
+        <span style={{ position: "relative", display: "inline-flex", width: 6, height: 6 }}>
+          <motion.span
+            style={{
+              position: "absolute",
+              inset: 0,
+              borderRadius: "50%",
+              background: s.color,
+              opacity: 0.6,
+            }}
+            animate={{ scale: [1, 2.2, 1], opacity: [0.6, 0, 0.6] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <span
+            style={{
+              position: "relative",
+              borderRadius: "50%",
+              width: 6,
+              height: 6,
+              background: s.color,
+            }}
+          />
+        </span>
+      )}
       {LABELS[status]}
-    </span>
+    </motion.span>
   );
 }
